@@ -1,0 +1,159 @@
+/* --- FONTS --- */
+/* Requirement: Correct font selected & locally embedded  */
+@font-face {
+    font-family: 'Boogaloo';
+    /* Adjust path if you move the ttf file to a 'fonts' folder as recommended */
+    src: url('fonts/Boogaloo-Regular.ttf') format('truetype'); 
+}
+
+:root {
+    --main-font: 'Boogaloo', sans-serif;
+}
+
+/* --- GENERAL SETTINGS --- */
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('../img/5_background/first_half_background.png'); /* Using your BG asset */
+    background-size: cover;
+    background-position: center;
+    font-family: var(--main-font);
+    overflow: hidden; /* Requirement: No scrollbars [cite: 37] */
+    user-select: none; /* Prevents highlighting text/images */
+}
+
+/* --- CANVAS / GAME CONTAINER --- */
+h1 {
+    position: absolute;
+    top: 20px;
+    font-size: 48px;
+    color: #DA5F00; /* Matching the orange status bars */
+    text-shadow: 2px 2px 0px #fff;
+    margin: 0;
+}
+
+canvas {
+    background-color: black;
+    box-shadow: 0px 0px 20px 5px rgba(0,0,0,0.5);
+    border-radius: 10px;
+    display: block; 
+    /* The JS will draw the game here */
+}
+
+/* --- SCREENS (Start & End) --- */
+/* Requirement: Start button and clear explanations [cite: 117] */
+.start-screen {
+    position: absolute;
+    width: 720px; /* Match your canvas size */
+    height: 480px;
+    /* Mapping to your specific file path: */
+    background-image: url('../img/9_intro_outro_screens/start/startscreen_1.png');
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    border-radius: 10px;
+}
+
+.game-over-screen {
+    position: absolute;
+    width: 720px;
+    height: 480px;
+    /* Mapping to your specific file path (assuming renamed for safety): */
+    background-image: url('../img/9_intro_outro_screens/game_over/game_over.png'); 
+    background-size: cover;
+    display: none; /* Hidden by default */
+    z-index: 10;
+    border-radius: 10px;
+}
+
+/* --- BUTTONS --- */
+/* Requirement: Buttons must have cursor: pointer [cite: 30] */
+button {
+    cursor: pointer;
+    font-family: var(--main-font);
+    font-size: 24px;
+    padding: 10px 20px;
+    background-color: #FFC107;
+    border: 2px solid #DA5F00;
+    border-radius: 8px;
+    transition: transform 0.1s;
+}
+
+button:hover {
+    transform: scale(1.1);
+}
+
+/* --- MOBILE CONTROLS --- */
+/* Requirement: Buttons visible only on tablet/mobile [cite: 36] */
+#mobile-controls {
+    display: none; /* Hidden on desktop */
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-sizing: border-box;
+    z-index: 50;
+}
+
+.mobile-btn {
+    width: 60px;
+    height: 60px;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+/* --- RESPONSIVENESS --- */
+/* Requirement: Mobile touch buttons visible when screen is small [cite: 36] */
+@media only screen and (max-width: 960px) {
+    canvas {
+        width: 100%;
+        height: 100%;
+    }
+    
+    .start-screen, .game-over-screen {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+
+    #mobile-controls {
+        display: flex; /* Show buttons on mobile */
+    }
+}
+
+/* Requirement: Turn device message if in portrait mode [cite: 32, 35] */
+#rotate-device-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    z-index: 100;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Logic for Portrait Mode */
+@media only screen and (orientation: portrait) and (max-width: 720px) {
+    #rotate-device-overlay {
+        display: flex; /* Show the warning */
+    }
+    
+    /* Hide the game content while rotating */
+    canvas, .start-screen, .game-over-screen, #mobile-controls {
+        display: none !important;
+    }
+}

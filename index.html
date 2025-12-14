@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Pollo Loco</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+</head>
+<body>
+
+    <div id="rotate-device-overlay" class="d-none" aria-hidden="true">
+        <p>Please turn your device to play!</p>
+    </div>
+
+    <header>
+        <h1>El Pollo Loco</h1>
+    </header>
+
+    <main>
+        <section id="game-container" aria-label="Game Screen">
+            
+            <canvas id="canvas" width="720" height="480" aria-label="Game Area showing character and enemies"></canvas>
+
+            <section id="start-screen" class="overlay">
+                <h2>Welcome to the Desert</h2>
+                <button id="start-btn" class="btn-primary" aria-label="Start Game">Start Game</button>
+                <button id="instructions-btn" class="btn-secondary" aria-label="How to Play">How to Play</button>
+            </section>
+
+            <section id="end-screen" class="overlay d-none" aria-hidden="true">
+                <h2 id="game-result-text">Game Over</h2>
+                <button id="restart-btn" class="btn-primary" aria-label="Restart Game">Try Again</button>
+                <button id="home-btn" class="btn-secondary" aria-label="Back to Home">Home</button>
+            </section>
+
+            <nav id="ui-controls" aria-label="Game Controls">
+                <button id="mute-btn" aria-label="Mute Audio" title="Mute Sound">🔇</button>
+                <button id="fullscreen-btn" aria-label="Enter Fullscreen" title="Fullscreen">⛶</button>
+            </nav>
+
+        </section>
+
+        <nav id="mobile-controls" class="d-none" aria-label="Mobile Game Controls">
+            <div id="movement-controls">
+                <button id="btn-left" aria-label="Move Left">⬅️</button>
+                <button id="btn-right" aria-label="Move Right">➡️</button>
+            </div>
+            <div id="action-controls">
+                <button id="btn-jump" aria-label="Jump">⬆️</button>
+                <button id="btn-throw" aria-label="Throw Bottle">🍾</button>
+            </div>
+        </nav>
+    </main>
+
+    <footer>
+        <nav>
+            <a href="impressum.html" target="_blank" aria-label="Legal Notice">Imprint / Legal</a>
+        </nav>
+    </footer>
+
+    <script src="js/classes/movable-object.class.js"></script> 
+    <script src="js/classes/character.class.js"></script>
+    <script src="js/classes/world.class.js"></script>
+    
+    <script src="js/game.js"></script> <script src="js/script.js"></script> </body>
+</html>
