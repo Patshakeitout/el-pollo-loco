@@ -1,4 +1,6 @@
-class MovableObject {
+class MovableObject { 
+    FT = 1000 / 60;
+
     x = 20;
     y = 158;
     img;

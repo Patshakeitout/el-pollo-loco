@@ -1,8 +1,9 @@
 class World {
     canvas;
     ctx;
+
     pepe = new Character();
-    enemies = [new Chicken(), new Chicken(), new Chicken()];
+    enemies = [new Chicken(), new Chicken(), new Chicken(), new Chick(), new Chick(), new Chick()];
     clouds = [new Cloud()];
     backgrounds = [new Background('../../assets/images/5_background/layers/air.png', 0, 0),
         new Background('../../assets/images/5_background/layers/3_third_layer/1.png', 0, -70),

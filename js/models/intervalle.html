@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Intervalle ohne und mit IntervalHub</title>
+    <style>
+        * {
+            scroll-behavior: smooth;
+        }
+
+        #output,
+        #output2 {
+            color: white;
+            padding: 10px;
+            width: 300px;
+            height: 200px;
+            background: red;
+            overflow-y: auto;
+        }
+
+        #output2 {
+            background: teal;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="createBtn">Neue Welt erstellen</button>
+    <button id="restartBtn">Welt mit neuer Instanz ersetzen</button>
+    <div id="output"></div>
+    <br />
+    <div id="output2"></div>
+    <button id="createBtn2">Neue Welt erstellen</button>
+    <button id="restartBtn2">Welt mit neuer Instanz ersetzen</button>
+
+    <script>
+        // #region variables
+        let createWorldWithoutHub = null;
+        let createWorldWithHub = null;
+        // #endregion
+
+        // #region functions
+
+        // weist der Variablen currentWorldWithoutHub eine neue Instanz der class WorldWithoutHub zu
+        function createNewWorldWithoutHub() {
+            createWorldWithoutHub = new WorldWithoutHub();
+        }
+
+        // weist der Variablen currentWorldWithHub eine neue Instanz der class WorldWithHub zu
+        function createNewWorldWithHub() {
+            IntervalHub.stopAllIntervals();
+            createWorldWithHub = new WorldWithHub();
+        }
+
+        // #endregion
+
+        // #region buttons
+        // erstellt erstmalig eine WorldWithoutHub-Instanz
+        document
+            .getElementById("createBtn")
+            .addEventListener("click", () => {
+                createNewWorldWithoutHub();
+            });
+
+        // ersetzt die aktuelle WorldWithoutHub-Instanz durch eine neue
+        document
+            .getElementById("restartBtn")
+            .addEventListener("click", () => {
+                createNewWorldWithoutHub();
+            });
+
+        // erstellt erstmalig eine WorldWithHub-Instanz
+        document
+            .getElementById("createBtn2")
+            .addEventListener("click", () => {
+                createNewWorldWithHub();
+            });
+
+        // ersetzt die aktuelle WorldWithHub-Instanz durch eine neue
+        document
+            .getElementById("restartBtn2")
+            .addEventListener("click", () => {
+                createNewWorldWithHub();
+            });
+
+        // #endregion
+
+        // #region classes
+
+        class WorldWithoutHub {
+            counter = 0;
+
+            constructor() {
+                this.startCounter();
+            }
+
+            /**
+             * Startet das Intervall für den Zähler.
+             * Aktualisiert jede Sekunde den Zählerstand und schreibt die Ausgabe.
+             * ACHTUNG: Läuft weiter, auch wenn das Objekt nicht mehr referenziert wird.
+             */
+            startCounter() {
+                setInterval(() => {
+                    this.counter++;
+                    document.getElementById(
+                        "output"
+                    ).innerHTML += `Objekt ${this.constructor.name}: Zähler = ${this.counter}<br>`;
+                }, 1000);
+            }
+        }
+
+        class IntervalHub {
+            // Speichert alle registrierten Interval-IDs
+            static allIntervals = [];
+
+            // Startet ein neues Intervall und
+            // fügt es dem Array allIntervals hinzu
+            static startInterval(func, timer) {
+                const newInterval = setInterval(func, timer);
+                console.log(
+                    `Neues Intervall gestartet mit ID: ${newInterval}`
+                );
+                IntervalHub.allIntervals.push(newInterval);
+            }
+
+            //Stoppt alle registrierten Intervalle und leert die Registry.
+            static stopAllIntervals() {
+                IntervalHub.allIntervals.forEach(clearInterval);
+                IntervalHub.allIntervals = [];
+            }
+        }
+
+        class WorldWithHub {
+            counter = 0;
+
+            // Konstruktor registriert den Zähler beim IntervalHub.
+            constructor() {
+                IntervalHub.startInterval(this.startCounter, 1000);
+            }
+
+            // alleine das Intervall zu entfernen, würde zu einem Fehler führen, da die Methode nicht an das Objekt gebunden ist
+            // startCounter(){
+            //     this.counter++;
+            //     document.getElementById(
+            //         "output2"
+            //     ).innerHTML += `Objekt ${this.constructor.name}: Zähler = ${this.counter}<br>`;
+            // };
+
+            // um die Methode an das Objekt zu binden, erstellen wir die Methode mithilfe der Arrow-Syntax
+            // Sagt: "Mir egal, wer mich aufruft. Ich gehöre zu dem Objekt, in dem ich geschrieben wurde." (Lexical Scoping).
+            startCounter = () => {
+                this.counter++;
+                document.getElementById(
+                    "output2"
+                ).innerHTML += `Objekt ${this.constructor.name}: Zähler = ${this.counter}<br>`;
+            };
+        }
+
+        // #endregion
+    </script>
+</body>
+
+</html>

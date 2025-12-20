@@ -1,13 +1,13 @@
 /**
  * Chicken class that extends MovableObject
  */
-class Chicken extends MovableObject {
-    y = 374;
-    width = 50;
-    height = 60;
+class Chick extends MovableObject {
+    y = 400;
+    width = 25;
+    height = 30;
 
     constructor() {
-        super().loadImage('../../assets/images/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
+        super().loadImage('../../assets/images/3_enemies_chicken/chicken_small/1_walk/1_w.png');
 
         this.x = 180 + Math.random() * 400;
         }
