@@ -6,11 +6,13 @@ class MovableObject {
     height = 280;
     width = 102;
     imgCache = {};
+    speed = 0.15;
+    currentImage = 0;
 
 
     loadImage(path) {
         this.img = new Image();
-        this.img.src = path;    
+        this.img.src = path;
     }
 
 
@@ -23,12 +25,10 @@ class MovableObject {
     }
 
 
+    moveLeft() {IntervalHub.startInterval(() => this.x -= this.speed, this.FT); }
+
+
     moveRight() {
         console.log('Moving right');
-    }
-
-
-    moveLeft() {
-        console.log('Moving left');
     }
 }

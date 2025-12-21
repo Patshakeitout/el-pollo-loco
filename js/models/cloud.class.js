@@ -11,11 +11,12 @@ class Cloud extends MovableObject {
 
         this.x = -100 + Math.random() * 800;
         this.animate();
-        
     }
 
     animate() {
-        IntervalHub.startInterval(() => this.x -= 0.15, this.FT);
+        this.moveLeft();
     }
+
+    
 
 }
