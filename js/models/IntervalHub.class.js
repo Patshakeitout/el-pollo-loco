@@ -6,9 +6,9 @@ class IntervalHub {
     // fügt es dem Array allIntervals hinzu
     static startInterval(func, timer) {
         const newInterval = setInterval(func, timer);
-        console.log(
-            `Neues Intervall gestartet mit ID: ${newInterval}`
-        );
+        // console.log(
+        //     `Neues Intervall gestartet mit ID: ${newInterval}`
+        // );
         IntervalHub.allIntervals.push(newInterval);
     }
 
