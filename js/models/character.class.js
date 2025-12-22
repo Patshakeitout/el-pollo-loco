@@ -2,6 +2,7 @@
  * Character class that extends MovableObject
  */
 class Character extends MovableObject {
+    speed = 5;
     IMAGES_WALKING = [
         '../../assets/images/2_character_pepe/2_walk/W-21.png',
         '../../assets/images/2_character_pepe/2_walk/W-22.png',
@@ -11,6 +12,7 @@ class Character extends MovableObject {
         '../../assets/images/2_character_pepe/2_walk/W-26.png'
     ];
     currentImage = 0;
+
 
     constructor() {
         super().loadImage('../../assets/images/2_character_pepe/2_walk/W-21.png');
@@ -22,13 +24,25 @@ class Character extends MovableObject {
 
     animate() {
         IntervalHub.startInterval(() => {
-            if (this.world.keyboard.RIGHT) {    
+            if (this.world.keyboard.RIGHT) {
+                this.x += this.speed;
+                this.turnAround = false;
+            }   
+            if (this.world.keyboard.LEFT) {
+                this.x -= this.speed;
+                this.turnAround = true;
+            }
+            this.world.cameraX = -this.x;
+        }, this.FT);
+
+        IntervalHub.startInterval(() => {
+            if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
                 let moduloIndex = this.currentImage % this.IMAGES_WALKING.length;
                 let path = this.IMAGES_WALKING[moduloIndex];
                 this.img = this.imgCache[path];
                 this.currentImage++;
             }
-        }, this.FT * 8);
+        }, this.FT * 5.5);
     }
 
 
