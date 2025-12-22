@@ -26,10 +26,8 @@ class MovableObject {
     }
 
 
-    moveLeft() {IntervalHub.startInterval(() => this.x -= this.speed, this.FT); }
+    moveLeft() { IntervalHub.startInterval(() => this.x -= this.speed, this.FT); }
 
 
-    moveRight() {
-        console.log('Moving right');
-    }
+    moveRight() { IntervalHub.startInterval(() => this.x += this.speed, this.FT); }
 }

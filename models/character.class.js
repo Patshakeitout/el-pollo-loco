@@ -28,11 +28,11 @@ class Character extends MovableObject {
                 this.x += this.speed;
                 this.turnAround = false;
             }   
-            if (this.world.keyboard.LEFT) {
+            if (this.world.keyboard.LEFT && this.x > 0) {
                 this.x -= this.speed;
                 this.turnAround = true;
             }
-            this.world.cameraX = -this.x;
+            this.world.cameraX = -this.x + 50;
         }, this.FT);
 
         IntervalHub.startInterval(() => {
