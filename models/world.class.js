@@ -5,9 +5,7 @@ class World {
     cameraX = 0;
     pepe = new Character();
     turnAround = false;
-    enemies = level1.enemies;
-    clouds = level1.clouds;
-    backgrounds = level1.backgrounds;
+    level = level1;
 
 
     constructor(canvas, keyboard) {
@@ -43,10 +41,10 @@ class World {
 
         this.ctx.translate(this.cameraX, 0);
 
-        this.addObjectsToMap(this.backgrounds);
+        this.addObjectsToMap(this.level.backgrounds);
         this.addToMap(this.pepe);
-        this.addObjectsToMap(this.enemies);
-        this.addObjectsToMap(this.clouds);
+        this.addObjectsToMap(this.level.enemies);
+        this.addObjectsToMap(this.level.clouds);
 
         this.ctx.translate(-this.cameraX, 0);
 

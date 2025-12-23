@@ -1,5 +1,10 @@
+
+const bgRepeat = 4;
+const levelEndX = (bgRepeat + 1) * 720;
+
 const level1 = new Level(
-    [new Chicken(), new Chicken(), new Chicken(), new Chick(), new Chick(), new Chick()],
-    [new Cloud()],
-    4
+    bgRepeat,
+    levelEndX,
+    [new Chicken(), new Chicken(), new Chicken(), new Chick(), new Chick(), new Chick(), new EndBoss(levelEndX)],
+    [new Cloud()]
 );

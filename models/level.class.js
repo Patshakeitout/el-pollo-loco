@@ -5,12 +5,12 @@ class Level {
     bgRepeat;
     levelEndX;
 
-    constructor(enemies, clouds, bgRepeat) {
+    constructor(bgRepeat, levelEndX, enemies, clouds) {
         this.enemies = enemies;
         this.clouds = clouds;
         this.bgRepeat = bgRepeat;
         this.createBackgrounds(this.bgRepeat);
-        this.levelEndX = (bgRepeat + 1) * 720;
+        this.levelEndX = levelEndX;
     }
 
 
