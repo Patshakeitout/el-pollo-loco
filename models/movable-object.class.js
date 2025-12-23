@@ -9,6 +9,8 @@ class MovableObject {
     speed = 0.15;
     currentImage = 0;
     turnedAround = false;
+    speedY = 0;
+    accelerationY = 1.7;
 
 
     loadImage(path) {
@@ -38,4 +40,19 @@ class MovableObject {
 
 
     moveRight() { IntervalHub.startInterval(() => this.x += this.speed, this.FT); }
+
+
+    applyGravity() {
+        IntervalHub.startInterval(() => {
+            if (this.isAboveGround() || this.speedY > 0) {
+                this.y -= this.speedY;
+                this.speedY -= this.accelerationY;
+            }
+        }, this.FT * 2);
+    }
+
+
+    isAboveGround() {
+        return this.y < 156;
+    }
 }
