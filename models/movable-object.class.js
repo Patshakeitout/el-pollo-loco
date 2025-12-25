@@ -1,7 +1,7 @@
 class MovableObject {
     FT = 1000 / 60;
     x = 10;
-    y = 158;
+    y= 158;
     img;
     height = 280;
     width = 102;
@@ -10,7 +10,7 @@ class MovableObject {
     currentImage = 0;
     turnedAround = false;
     speedY = 0;
-    accelerationY = 1.7;
+    accelerationY = 1 ;
 
 
     loadImage(path) {
@@ -29,17 +29,23 @@ class MovableObject {
 
 
     playAnimation(images) {
-        let moduloIndex = this.currentImage % images.length;
+        let moduloIndex = this.currentImage % images.length; 
         let path = images[moduloIndex];
         this.img = this.imgCache[path];
         this.currentImage++;
     }
 
 
-    moveLeft() { IntervalHub.startInterval(() => this.x -= this.speed, this.FT); }
+    moveLeft() { 
+        this.x -= this.speed;
+    }
 
 
-    moveRight() { IntervalHub.startInterval(() => this.x += this.speed, this.FT); }
+    moveRight() { 
+        this.x += this.speed;
+        
+        //IntervalHub.startInterval(() => this.x += this.speed, this.FT); 
+    }
 
 
     applyGravity() {
@@ -48,11 +54,16 @@ class MovableObject {
                 this.y -= this.speedY;
                 this.speedY -= this.accelerationY;
             }
-        }, this.FT * 2);
+        }, this.FT * 2.5);
     }
 
 
     isAboveGround() {
-        return this.y < 156;
+        return this.y < 158;
+    }
+
+
+    jump() {
+        this.speedY = 20;
     }
 }

@@ -27,7 +27,7 @@ class Chick extends MovableObject {
 
 
     animate() {
-        this.moveLeft();
+        IntervalHub.startInterval(() => this.moveLeft(), this.FT);
 
         IntervalHub.startInterval(() => {
             let moduloIndex = this.currentImage % this.IMAGES_WALKING.length;

@@ -25,6 +25,6 @@ class EndBoss extends MovableObject {
     animate() {
         IntervalHub.startInterval(() => {
             this.playAnimation(this.IMAGES_WALKING);
-        }, this.FT * 12);
+        }, this.FT * 10);
     }
 }
