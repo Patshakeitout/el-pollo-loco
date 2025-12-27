@@ -20,17 +20,31 @@ class World {
 
     addToMap(mo) {
         if (mo.turnAround) {
-            this.ctx.save();
-            this.ctx.translate(mo.width, 0);
-            this.ctx.scale(-1, 1);
-            mo.x = mo.x * -1;
+            this.flipImage(mo);
         }
-        this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
+
+        mo.draw(this.ctx);
+        mo.drawCollisionBox(this.ctx);
+        mo.drawCenter(this.ctx)
+
         if (mo.turnAround) {
-            this.ctx.restore();
-            mo.x = mo.x * -1;
+            this.flipImageBack(mo);
         }
     };
+
+
+    flipImage(mo) {
+        this.ctx.save();
+        this.ctx.translate(mo.width, 0);
+        this.ctx.scale(-1, 1);
+        mo.x = mo.x * -1;
+    }
+
+
+    flipImageBack(mo) {
+        this.ctx.restore();
+        mo.x = mo.x * -1;
+    }
 
 
     addObjectsToMap(objArr) { objArr.forEach(o => { this.addToMap(o); }) };
@@ -38,13 +52,13 @@ class World {
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
         this.ctx.translate(this.cameraX, 0);
 
         this.addObjectsToMap(this.level.backgrounds);
-        this.addToMap(this.pepe);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.clouds);
+
+        this.addToMap(this.pepe);
 
         this.ctx.translate(-this.cameraX, 0);
 
