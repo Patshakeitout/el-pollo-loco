@@ -4,6 +4,8 @@
 class Character extends MovableObject {
     speed = 5;
     currentImage = 0;
+    hurtTime = 0;
+    hurtDuration = 1000;
 
     IMAGES_WALKING = [
         'assets/images/2_character_pepe/2_walk/W-21.png',
@@ -52,92 +54,44 @@ class Character extends MovableObject {
         'assets/images/2_character_pepe/1_idle/long_idle/I-20.png'
     ];
 
+    IMAGES_HURT = [
+        'assets/images/2_character_pepe/4_hurt/H-41.png',
+        'assets/images/2_character_pepe/4_hurt/H-42.png',
+        'assets/images/2_character_pepe/4_hurt/H-43.png'
+    ];
+
+    IMAGES_DEAD = [
+        'assets/images/2_character_pepe/5_dead/D-51.png',
+        'assets/images/2_character_pepe/5_dead/D-52.png',
+        'assets/images/2_character_pepe/5_dead/D-53.png',
+        'assets/images/2_character_pepe/5_dead/D-54.png',
+        'assets/images/2_character_pepe/5_dead/D-55.png',
+        'assets/images/2_character_pepe/5_dead/D-56.png',
+        'assets/images/2_character_pepe/5_dead/D-57.png'
+    ];
+
 
     constructor() {
         super().loadImage('assets/images/2_character_pepe/2_walk/W-21.png');
+
+        this.hasOffsetBox = true;
+        this.offsetBox = {
+            x: 0,
+            y: 0,
+            offsetX: 10,
+            offsetY: 105,
+            w: this.width - 25,
+            h: this.height - 115
+        };
+
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_IDLE);
         this.loadImages(this.IMAGES_LONG_IDLE);
+        this.loadImages(this.IMAGES_HURT);
+        this.loadImages(this.IMAGES_DEAD);
         this.applyGravity();
         this.animate();
-    }
-
-
-    animate_old() {
-        // IntervalHub.startInterval(() => {
-        //     if (this.isAboveGround()) {
-        //         this.playAnimation(this.IMAGES_JUMPING);
-        //     }
-        // }, 150);
-
-        // Inside character.class.js -> animate()
-
-        IntervalHub.startInterval(() => {
-            // 1. Is the character in the air?
-            if (this.isAboveGround()) {
-
-                // Jumping UP (Positive Speed)
-                if (this.speedY > 0) {
-                    // Check how fast we are going to decide which "rise" image to show
-                    if (this.speedY > 15) {
-                        this.playAnimation(this.IMAGES_JUMPING.slice(1, 2)); // J-32 Start Rise
-                    } else if (this.speedY > 5) {
-                        this.playAnimation(this.IMAGES_JUMPING.slice(2, 3)); // J-33 Mid Rise
-                    } else {
-                        this.playAnimation(this.IMAGES_JUMPING.slice(3, 4)); // J-34 End Rise
-                    }
-                }
-
-                // Falling DOWN (Negative Speed)
-                else if (this.speedY < -15) {
-                    this.playAnimation(this.IMAGES_JUMPING.slice(7, 8)); // J-38 Fast Fall
-                } else if (this.speedY < -5) {
-                    this.playAnimation(this.IMAGES_JUMPING.slice(6, 7)); // J-37 Mid Fall
-                } else if (this.speedY <= 0) {
-                    // PEAK of the jump (Speed is near 0)
-                    this.playAnimation(this.IMAGES_JUMPING.slice(4, 5)); // J-35 Peak
-                }
-
-            } else {
-                // Character is on the ground
-                if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                    this.playAnimation(this.IMAGES_WALKING);
-                }
-            }
-        }, this.FT * 4); // Update cycle can be slightly slower for image swapping
-
-
-        IntervalHub.startInterval(() => {
-            let maxCameraX = -(this.world.level.levelEndX - this.world.canvas.width);
-            let targetCameraX = -this.x + 40;
-            this.world.cameraX = Math.max(maxCameraX, targetCameraX);
-
-            const minLeft = this.world.cameraX - this.world.canvas.width * 2 + this.width;
-            let maxRight = this.world.level.levelEndX - 40 - this.width;
-
-            if (this.world.keyboard.RIGHT && this.x < maxRight) {
-                this.x += this.speed;
-                this.turnAround = false;
-            }
-
-            if (this.world.keyboard.LEFT && this.x > minLeft) {
-                this.x -= this.speed;
-                this.turnAround = true;
-            }
-
-            if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-                this.speedY = 20;
-            }
-
-        }, this.FT);
-
-        IntervalHub.startInterval(() => {
-
-            if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                this.playAnimation(this.IMAGES_WALKING);
-            }
-        }, this.FT * 5.5);
     }
 
 
@@ -170,15 +124,17 @@ class Character extends MovableObject {
 
         IntervalHub.startInterval(() => {
 
-            if (this.isAboveGround()) {
+            if (this.isHurt()) {
+                this.playAnimation(this.IMAGES_HURT);
+                return;
+            } else if (this.isDead()) {
+                this.playAnimation(this.IMAGES_DEAD);
+                return;
+            } else if (this.isAboveGround()) {
                 this.playJumpAnimation();
-            }
-
-            else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+            } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
                 this.playAnimation(this.IMAGES_WALKING);
-            }
-
-            else {
+            } else {
                 this.playAnimation(this.IMAGES_IDLE);
             }
 

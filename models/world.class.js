@@ -15,21 +15,28 @@ class World {
 
         this.draw();
         this.setWorld();
+        this.checkCollisions();
     }
 
 
     addToMap(mo) {
+
+
         if (mo.turnAround) {
             this.flipImage(mo);
         }
 
         mo.draw(this.ctx);
-        mo.drawCollisionBox(this.ctx);
-        mo.drawCenter(this.ctx)
 
+        mo.drawCollisionBox(this.ctx, mo.x, mo.y, mo.width, mo.height);
+        mo.drawCollisionCenter(this.ctx, mo.x, mo.y, mo.width, mo.height);
+    
         if (mo.turnAround) {
             this.flipImageBack(mo);
         }
+
+        mo.updateOffsetBox();
+        mo.drawOffsetBox(this.ctx);
     };
 
 
@@ -71,5 +78,15 @@ class World {
     }
 
 
+    checkCollisions() {
+        IntervalHub.startInterval(() => {
+            this.level.enemies.forEach(enemy => {
+                if (this.pepe.isColliding(enemy)) {
+                    this.pepe.hit();
+                    this.pepe.isHurt();
+                }
+            });
+        }, 200);
+    }
 
 }
