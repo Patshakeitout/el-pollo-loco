@@ -5,6 +5,11 @@
     src: url('../assets/fonts/thedeadsaloon-Regular.ttf') format('truetype');
 }
 
+@font-face {
+    font-family: 'Boogaloo-Regular';
+    src: url('../assets/fonts/Boogaloo-Regular.ttf') format('truetype');
+}
+
 :root {
     --main-font: 'TheDeadSaloon', sans-serif;
 }

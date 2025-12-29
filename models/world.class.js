@@ -6,9 +6,8 @@ class World {
     keyboard;
     cameraX = 0;
     turnAround = false;
-
-    statusBar = new StatusBar();
-
+    statusIconPepe = new StatusIcon('healthPepe', 10, 0, 50, 50);
+    statusIconEndBoss = new StatusIcon('healthEndBoss', 60, 0, 50, 50);
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -32,7 +31,8 @@ class World {
 
         this.ctx.translate(-this.cameraX, 0);
         // --- Space for fixed objects in canvas ---
-        this.addToMap(this.statusBar);
+        this.addToMap(this.statusIconPepe);
+        this.addToMap(this.statusIconEndBoss);
         this.ctx.translate(this.cameraX, 0);
 
         this.ctx.translate(-this.cameraX, 0);
@@ -90,6 +90,8 @@ class World {
                 if (this.pepe.isColliding(enemy)) {
                     this.pepe.hit();
                     this.pepe.isHurt();
+                    this.statusIconPepe.setPercentage(this.pepe.energy);
+                    this.statusIconEndBoss.setPercentage(this.pepe.energy);
                 }
             });
         }, 200);
