@@ -10,12 +10,10 @@ class ThrowableObject extends MovableObject {
         this.y = 120;
         this.width = 50;
         this.height = 60;        
-        this.throw(100, 160);
+        this.throw();
     }
 
-    throw(x, y) {
-        this.x = x;
-        this.y = y;
+    throw() {
         this.speedY = 8;
         this.speedX = 15;
         this.applyGravity();

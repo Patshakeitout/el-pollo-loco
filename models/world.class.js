@@ -10,7 +10,7 @@ class World {
     statusIconCoin = new StatusIcon('coin', 90, 0, 50, 50);
     statusIconBottle = new StatusIcon('bottle', 160, 5, 50, 50);
     statusIconEndBoss = new StatusIcon('healthEndBoss', 270, 5, 45, 45);
-    throwableObjects = new ThrowableObject();
+    throwableObjects = [];
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -19,7 +19,7 @@ class World {
 
         this.draw();
         this.setWorld();
-        this.checkCollisions();
+        this.run();
     }
 
 
@@ -33,13 +33,13 @@ class World {
         this.addToMap(this.pepe);
 
         this.ctx.translate(-this.cameraX, 0);
-        
+
         // --- Space for fixed objects in canvas ---
         this.addToMap(this.statusIconPepe);
         this.addToMap(this.statusIconCoin);
         this.addToMap(this.statusIconBottle);
         this.addToMap(this.statusIconEndBoss);
-        this.addToMap(this.throwableObjects);
+        this.addObjectsToMap(this.throwableObjects);
 
         this.ctx.translate(this.cameraX, 0);
 
@@ -56,14 +56,14 @@ class World {
         }
 
         mo.draw(this.ctx);
-        
+
         if (mo instanceof MovableObject) {
             mo.drawCollisionBox(this.ctx, mo.x, mo.y, mo.width, mo.height);
             mo.drawCollisionCenter(this.ctx, mo.x, mo.y, mo.width, mo.height);
             mo.updateOffsetBox();
             mo.drawOffsetBox(this.ctx);
         }
-        
+
         if (mo.turnAround) {
             this.flipImageBack(mo);
         }
@@ -92,16 +92,31 @@ class World {
     }
 
 
-    checkCollisions() {
+    run() {
         IntervalHub.startInterval(() => {
-            this.level.enemies.forEach(enemy => {
-                if (this.pepe.isColliding(enemy)) {
-                    this.pepe.hit();
-                    this.pepe.isHurt();
-                    this.statusIconPepe.setPercentage(this.pepe.energy);
-                }
-            });
+            this.checkCollisions();
+            this.checkThrowObjects();
         }, 200);
+    }
+
+
+    checkThrowObjects() {
+        if (this.keyboard.ENTER) {
+            console.log("Throw object!");
+            let bottle = new ThrowableObject(this.pepe.x + 100, this.pepe.y + 100);
+            this.throwableObjects.push(bottle);
+        }   
+    }
+
+
+    checkCollisions() {
+        this.level.enemies.forEach(enemy => {
+            if (this.pepe.isColliding(enemy)) {
+                this.pepe.hit();
+                this.pepe.isHurt();
+                this.statusIconPepe.setPercentage(this.pepe.energy);
+            }
+        });
     }
 
 }
