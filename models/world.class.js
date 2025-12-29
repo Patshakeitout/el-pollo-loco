@@ -10,6 +10,7 @@ class World {
     statusIconCoin = new StatusIcon('coin', 90, 0, 50, 50);
     statusIconBottle = new StatusIcon('bottle', 160, 5, 50, 50);
     statusIconEndBoss = new StatusIcon('healthEndBoss', 270, 5, 45, 45);
+    throwableObjects = new ThrowableObject();
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -32,11 +33,14 @@ class World {
         this.addToMap(this.pepe);
 
         this.ctx.translate(-this.cameraX, 0);
+        
         // --- Space for fixed objects in canvas ---
         this.addToMap(this.statusIconPepe);
         this.addToMap(this.statusIconCoin);
         this.addToMap(this.statusIconBottle);
         this.addToMap(this.statusIconEndBoss);
+        this.addToMap(this.throwableObjects);
+
         this.ctx.translate(this.cameraX, 0);
 
         this.ctx.translate(-this.cameraX, 0);
