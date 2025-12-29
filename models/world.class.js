@@ -1,11 +1,13 @@
 class World {
+    pepe = new Character();
+    level = level1;
     canvas;
     ctx;
     keyboard;
     cameraX = 0;
-    pepe = new Character();
     turnAround = false;
-    level = level1;
+
+    statusBar = new StatusBar();
 
 
     constructor(canvas, keyboard) {
@@ -19,24 +21,44 @@ class World {
     }
 
 
-    addToMap(mo) {
+    draw() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.translate(this.cameraX, 0);
 
+        this.addObjectsToMap(this.level.backgrounds);
+        this.addObjectsToMap(this.level.enemies);
+        this.addObjectsToMap(this.level.clouds);
+        this.addToMap(this.pepe);
+
+        this.ctx.translate(-this.cameraX, 0);
+        // --- Space for fixed objects in canvas ---
+        this.addToMap(this.statusBar);
+        this.ctx.translate(this.cameraX, 0);
+
+        this.ctx.translate(-this.cameraX, 0);
+
+        requestAnimationFrame(() => this.draw());
+    }
+
+
+    addToMap(mo) {
 
         if (mo.turnAround) {
             this.flipImage(mo);
         }
 
         mo.draw(this.ctx);
-
-        mo.drawCollisionBox(this.ctx, mo.x, mo.y, mo.width, mo.height);
-        mo.drawCollisionCenter(this.ctx, mo.x, mo.y, mo.width, mo.height);
-    
+        
+        if (mo instanceof MovableObject) {
+            mo.drawCollisionBox(this.ctx, mo.x, mo.y, mo.width, mo.height);
+            mo.drawCollisionCenter(this.ctx, mo.x, mo.y, mo.width, mo.height);
+            mo.updateOffsetBox();
+            mo.drawOffsetBox(this.ctx);
+        }
+        
         if (mo.turnAround) {
             this.flipImageBack(mo);
         }
-
-        mo.updateOffsetBox();
-        mo.drawOffsetBox(this.ctx);
     };
 
 
@@ -55,22 +77,6 @@ class World {
 
 
     addObjectsToMap(objArr) { objArr.forEach(o => { this.addToMap(o); }) };
-
-
-    draw() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.translate(this.cameraX, 0);
-
-        this.addObjectsToMap(this.level.backgrounds);
-        this.addObjectsToMap(this.level.enemies);
-        this.addObjectsToMap(this.level.clouds);
-
-        this.addToMap(this.pepe);
-
-        this.ctx.translate(-this.cameraX, 0);
-
-        requestAnimationFrame(() => this.draw());
-    }
 
 
     setWorld() {

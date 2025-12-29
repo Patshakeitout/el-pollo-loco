@@ -1,9 +1,5 @@
-class MovableObject {
+class MovableObject extends DrawableObject {
     FT = 1000 / 60;
-    x = 10;
-    y = 158;
-    width = 102;
-    height = 280;
     centerX;
     centerY;
     hasOffsetBox = false;
@@ -16,26 +12,12 @@ class MovableObject {
         h: 0
     };
 
-    img;
-    imgCache = {};
     speed = 0.15;
-    currentImage = 0;
     turnedAround = false;
     speedY = 0;
     accelerationY = 1;
     energy = 100;
     lastHit = 0;
-
-
-    loadImage(path) {
-        this.img = new Image();
-        this.img.src = path;
-    }
-
-
-    draw(ctx) {
-        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-    }
 
 
     drawCollisionBox(ctx, x, y, width, height, boxColor = 'blue') {
@@ -121,15 +103,6 @@ class MovableObject {
     }
 
 
-    loadImages(arr) {
-        arr.forEach(path => {
-            const img = new Image();
-            img.src = path;
-            this.imgCache[path] = img;
-        });
-    }
-
-
     playAnimation(images) {
         let moduloIndex = this.currentImage % images.length;
         let path = images[moduloIndex];
@@ -145,8 +118,6 @@ class MovableObject {
 
     moveRight() {
         this.x += this.speed;
-
-        //IntervalHub.startInterval(() => this.x += this.speed, this.FT); 
     }
 
 
