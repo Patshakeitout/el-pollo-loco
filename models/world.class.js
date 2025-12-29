@@ -7,7 +7,9 @@ class World {
     cameraX = 0;
     turnAround = false;
     statusIconPepe = new StatusIcon('healthPepe', 10, 0, 50, 50);
-    statusIconEndBoss = new StatusIcon('healthEndBoss', 60, 0, 50, 50);
+    statusIconCoin = new StatusIcon('coin', 90, 0, 50, 50);
+    statusIconBottle = new StatusIcon('bottle', 160, 5, 50, 50);
+    statusIconEndBoss = new StatusIcon('healthEndBoss', 270, 5, 45, 45);
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -32,6 +34,8 @@ class World {
         this.ctx.translate(-this.cameraX, 0);
         // --- Space for fixed objects in canvas ---
         this.addToMap(this.statusIconPepe);
+        this.addToMap(this.statusIconCoin);
+        this.addToMap(this.statusIconBottle);
         this.addToMap(this.statusIconEndBoss);
         this.ctx.translate(this.cameraX, 0);
 
@@ -91,7 +95,6 @@ class World {
                     this.pepe.hit();
                     this.pepe.isHurt();
                     this.statusIconPepe.setPercentage(this.pepe.energy);
-                    this.statusIconEndBoss.setPercentage(this.pepe.energy);
                 }
             });
         }, 200);

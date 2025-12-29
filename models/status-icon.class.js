@@ -34,8 +34,6 @@ class StatusIcon extends DrawableObject {
         // Draw the percentage text centered with the icon
         ctx.font = 'bold 22px Boogaloo-Regular';
         ctx.fillStyle = 'white';
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = 3;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         
