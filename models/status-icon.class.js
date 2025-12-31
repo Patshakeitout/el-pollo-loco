@@ -35,10 +35,20 @@ class StatusIcon extends DrawableObject {
         ctx.font = 'bold 22px Boogaloo-Regular';
         ctx.fillStyle = 'white';
         ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
+        ctx.textBaseline = 'middle';        
         
-        const textX = this.x + this.width + 10;
-        const textY = this.y + this.height / 2 + 5
+        let textX, textY;
+        if (this.iconName == 'bottle') {
+            textX = this.x + this.width - 4;
+            textY = this.y + this.height / 2 + 5;
+        } else if (this.iconName == 'healthEndBoss') {
+            textX = this.x + this.width + 11;   
+            textY = this.y + this.height / 2 + 4;
+        }
+        else {
+            textX = this.x + this.width + 8;
+            textY = this.y + this.height / 2 + 5;
+        }
         
         ctx.strokeText(this.percentage, textX, textY);
         ctx.fillText(this.percentage, textX, textY);

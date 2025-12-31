@@ -98,7 +98,7 @@ class Character extends MovableObject {
     animate() {
         IntervalHub.startInterval(() => {
             let maxCameraX = -(this.world.level.levelEndX - this.world.canvas.width);
-            let targetCameraX = -this.x + 40;
+            let targetCameraX = -this.x + 10 ;
             this.world.cameraX = Math.max(maxCameraX, targetCameraX);
 
             const minLeft = this.world.cameraX - this.world.canvas.width * 2 + this.width;

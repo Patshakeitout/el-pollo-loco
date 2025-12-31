@@ -6,10 +6,10 @@ class World {
     keyboard;
     cameraX = 0;
     turnAround = false;
-    statusIconPepe = new StatusIcon('healthPepe', 10, 0, 50, 50);
-    statusIconCoin = new StatusIcon('coin', 90, 0, 50, 50);
-    statusIconBottle = new StatusIcon('bottle', 160, 5, 50, 50);
-    statusIconEndBoss = new StatusIcon('healthEndBoss', 270, 5, 45, 45);
+    statusIconPepe = new StatusIcon('healthPepe', 20, 9, 50, 50);
+    statusIconCoin = new StatusIcon('coin', 101, 12.5, 45, 45);
+    statusIconBottle = new StatusIcon('bottle', 166, 15, 55, 40);
+    statusIconEndBoss = new StatusIcon('healthEndBoss', 242, 17, 40, 40);
     throwableObjects = [];
 
     constructor(canvas, keyboard) {
@@ -20,7 +20,7 @@ class World {
         this.draw();
         this.setWorld();
         this.run();
-    }
+       }
 
 
     draw() {
@@ -102,7 +102,6 @@ class World {
 
     checkThrowObjects() {
         if (this.keyboard.ENTER) {
-            console.log("Throw object!");
             let bottle = new ThrowableObject(this.pepe.x + 100, this.pepe.y + 100);
             this.throwableObjects.push(bottle);
         }   
@@ -117,6 +116,7 @@ class World {
                 this.statusIconPepe.setPercentage(this.pepe.energy);
             }
         });
+
     }
 
 }
