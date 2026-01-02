@@ -97,11 +97,30 @@ class Character extends MovableObject {
 
     animate() {
         IntervalHub.startInterval(() => {
+            // Find the endBoss in the enemies array
+            let endBoss = this.world.level.enemies.find(enemy => enemy instanceof EndBoss);
+            
+            // Check if endBoss is to the left of Pepe (pepe is being hunted from the left)
+            let endBossIsToLeft = endBoss && endBoss.x < this.x;
+            
             let maxCameraX = -(this.world.level.levelEndX - this.world.canvas.width);
-            let targetCameraX = -this.x + 10 ;
-            this.world.cameraX = Math.max(maxCameraX, targetCameraX);
+            let targetCameraX;
+            
+            if (endBossIsToLeft) {
+                // Cinematic mode: position Pepe at the right edge of the canvas
+                targetCameraX = -this.x + (this.world.canvas.width - 150);
+            } else {
+                // Normal mode: standard ca m era follow
+                targetCameraX = -this.x + 20;
+            }
+            
+            targetCameraX = Math.max(maxCameraX, targetCameraX);
+            
+            // Smooth camera transition with lerp + round to avoid visual artifacts
+            let lerpFactor = 0.08;
+            this.world.cameraX = Math.round(this.world.cameraX + (targetCameraX - this.world.cameraX) * lerpFactor);
 
-            const minLeft = this.world.cameraX - this.world.canvas.width * 2 + this.width;
+            const minLeft = this.world.cameraX - this.world.canvas.width + this.width;
             let maxRight = this.world.level.levelEndX - 40 - this.width;
 
             if (this.world.keyboard.RIGHT && this.x < maxRight) {

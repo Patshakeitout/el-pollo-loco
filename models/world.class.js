@@ -102,7 +102,9 @@ class World {
 
     checkThrowObjects() {
         if (this.keyboard.ENTER) {
-            let bottle = new ThrowableObject(this.pepe.x + 100, this.pepe.y + 100);
+            // Determine throw direction based on Pepe's facing direction
+            let throwDirection = this.pepe.turnAround ? -9 : 9;
+            let bottle = new ThrowableObject(this.pepe.x + 100, this.pepe.y + 100, throwDirection);
              this.throwableObjects.push(bottle);
             console.log('Throwing bottle from:', this.pepe.x + 100, this.pepe.y + 100);
         }
@@ -126,6 +128,7 @@ class World {
                         console.log('hit with bottle');
                         if (enemy instanceof EndBoss) {
                             enemy.hit();
+                            enemy.startRolling();
                             this.statusIconEndBoss.setPercentage(enemy.energy);
                         }
                         this.throwableObjects.splice(index, 1);

@@ -18,7 +18,7 @@ class ThrowableObject extends MovableObject {
         'assets/images/6_salsa_bottle/bottle_splash/6_bottle_splash.png'
     ];
 
-    constructor(x, y) {
+    constructor(x, y, speedX = 9) {
         super();
         this.loadImage('assets/images/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png');
         this.loadImages(this.IMAGES_BOTTLE_ROTATE);
@@ -27,6 +27,7 @@ class ThrowableObject extends MovableObject {
         this.y = y;
         this.width = 50;
         this.height = 60;
+        this.speedX = speedX;
         this.throw();
     }
 
@@ -38,7 +39,6 @@ class ThrowableObject extends MovableObject {
  */
     throw() {
         this.speedY = 10;
-        this.speedX = 9;
 
         this.applyGravity();
 
@@ -47,7 +47,7 @@ class ThrowableObject extends MovableObject {
         }, 100);
 
         IntervalHub.startInterval(() => {
-            this.x += 10;
+            this.x += this.speedX;
         }, 25);       
 
     }

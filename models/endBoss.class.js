@@ -1,6 +1,6 @@
 class EndBoss extends MovableObject {
 
-    static secureAreaX = 350;
+    static secureAreaX = 450;
 
     width = 250;
     height = 250;
@@ -10,6 +10,7 @@ class EndBoss extends MovableObject {
     isWalking = false;
     rotationAngle = 0;
     turnedAround = false;
+    rollingStartX = null;
 
     IMAGES_ALERT = [
         'assets/images/4_enemie_boss_chicken/2_alert/G5.png',
@@ -65,7 +66,9 @@ class EndBoss extends MovableObject {
 
     animate() {
         let lastDistance;
-        let directionFlag = 1;
+         let directionFlag = 1;
+        let rollingDirection = 1; // St o  re direction when rolling starts
+        const MIN_ROLLING_DISTANCE = 800; // Minimum distance to roll through
 
         // INTERVAL 1: ANIMATION & STATE LOGIC (Slow)
         IntervalHub.startInterval(() => {
@@ -73,27 +76,31 @@ class EndBoss extends MovableObject {
             //    (But we DO NOT return if we are walking, because we need to update walking frames!)
             if (this.isRolling) return;
 
-            let distance = Math.abs(this.x - world.pepe.x);
-            directionFlag = world.pepe.x < this.x ? 1 : -1;
+            // Calculate distance using centerX of both characters
+            let endBossCenterX = this.x + this.width / 2;
+            let pepeCenterX = world.pepe.x + world.pepe.width / 2;
+            let distance = Math.abs(endBossCenterX - pepeCenterX);
+            
+            directionFlag = pepeCenterX < endBossCenterX ? 1 : -1;
             this.turnAround = directionFlag === -1;
 
-            // ZONE 1: FAR AWAY (Greater than 1.5x) 
+            // ZONE 1: FAR AWAY
             if (distance > EndBoss.secureAreaX) {
 
                 this.playAnimation(this.IMAGES_ALERT);
-                this.isWalking = false; // Stop walking if player runs away
+                this.isWalking = false;
 
-                // ZONE 2: WALKING RANGE (Between 1.0x and 1.5x)
+                // ZONE 2: WALKING RANGE
             } else if (distance > EndBoss.secureAreaX - 100) {
 
                 this.playAnimation(this.IMAGES_WALK);
-                this.isWalking = true; // Enable movement in the fast loop
+                this.isWalking = true;
 
-                // ZONE 3: ATTACK RANGE (Less than 1.0x)
+                // ZONE 3: ATTACK RANGE - Rolling triggers here
             } else {
 
                 this.playAnimation(this.IMAGES_ATTACK_B);
-                this.isWalking = false; // Stop walking to transform
+                this.isWalking = false;
 
                 // Check if we hit the "Ball" frame
                 let frameIndex = this.currentImage % this.IMAGES_ATTACK_B.length;
@@ -101,6 +108,8 @@ class EndBoss extends MovableObject {
 
                 if (path.includes('angry-ball.png')) {
                     this.isRolling = true;
+                    this.rollingStartX = this.x; // Track starting position
+                    rollingDirection = directionFlag; // Capture direction when roll starts
                     lastDistance = undefined; // Reset for the rolling check
                 }
             }
@@ -117,22 +126,35 @@ class EndBoss extends MovableObject {
 
 
         IntervalHub.startInterval(() => {
-            let currentDistance = Math.abs(this.x - world.pepe.x);
+            // Calculate current distance using centerX positions
+            let endBossCenterX = this.x + this.width / 2;
+            let pepeCenterX = world.pepe.x + world.pepe.width / 2;
+            let currentDistance = Math.abs(endBossCenterX - pepeCenterX);
 
             if (this.isRolling) {
-                // If distance is increasing, player is getting away ->  stop rolling
-                if (lastDistance !== undefined && currentDistance > lastDistance) {
+                // Calculate distance rolled using center positions
+                let rollingStartCenterX = this.rollingStartX + this.width / 2;
+                let distanceRolled = Math.abs((this.x + this.width / 2) - rollingStartCenterX);
+                
+                // Stop rolling when minimum rolling distance is covered
+                if (distanceRolled >= MIN_ROLLING_DISTANCE) {
                     this.isRolling = false;
+                    this.rollingStartX = null;
+                    window.endBossRollingDirection = undefined;
                 }
 
-                // Fast Roll Speed
+                // Fast Roll Speed - use rolling direction (towards Pepe when hit by bottle)
                 this.speed = 5
-                if (directionFlag > 0) this.moveLeft();
+                let currentRollingDir = window.endBossRollingDirection || rollingDirection;
+                if (currentRollingDir > 0) this.moveLeft();
                 else this.moveRight();
 
             } else if (this.isWalking) {
+                let currentDistance = Math.abs(this.x - world.pepe.x);
+                // Update direction for walking
+                directionFlag = world.pepe.x < this.x ? 1 : -1;
                 // Slow Walk Speed
-                this.speed = 0.5; // Walking should be slower than rolling
+                this.speed = 0.5;
                 if (directionFlag > 0) this.moveLeft();
                 else this.moveRight();
             }
@@ -186,6 +208,25 @@ class EndBoss extends MovableObject {
         ctx.drawImage(this.img, -this.width / 2, -this.height / 2, this.width, this.height);
 
         ctx.restore();
+    }
+
+     /**
+     * Trigger rolling when hit by a bottle
+     * Rolling direction is towards Pepe (not away)
+     */
+    startRolling() {
+        // Play attack animation to transition to ball
+        this.playAnimation(this.IMAGES_ATTACK_B);
+        
+        this.isWalking = false;
+        this.rollingStartX = this.x; // Track starting position
+        // Set rolling direction TOWARDS Pepe when hit by bottle
+        window.endBossRollingDirection = world.pepe.x < this.x ? 1 : -1;
+        
+        // Delay rolling to let animation play (400ms for attack animation)
+        setTimeout(() => {
+            this.isRolling = true;
+        }, 800);
     }
 
 }
