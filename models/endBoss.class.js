@@ -37,11 +37,25 @@ class EndBoss extends MovableObject {
         'assets/images/4_enemie_boss_chicken/3b_attack/angry-ball.png'
     ];
 
+    IMAGES_HURT = [
+        'assets/images/4_enemie_boss_chicken/4_hurt/G21.png',
+        'assets/images/4_enemie_boss_chicken/4_hurt/G22.png',
+        'assets/images/4_enemie_boss_chicken/4_hurt/G23.png'
+    ]
+
+    IMAGES_DEAD = [
+        'assets/images/4_enemie_boss_chicken/5_dead/G24.png',
+        'assets/images/4_enemie_boss_chicken/5_dead/G25.png',
+        'assets/images/4_enemie_boss_chicken/5_dead/G26.png'
+    ]
+
     constructor(levelEndX) {
         super().loadImage(this.IMAGES_ALERT[0]);
         this.loadImages(this.IMAGES_ALERT);
         this.loadImages(this.IMAGES_WALK);
         this.loadImages(this.IMAGES_ATTACK_B);
+        this.loadImages(this.IMAGES_HURT);
+        this.loadImages(this.IMAGES_DEAD);
         this.x = levelEndX - this.width;
         this.animate();
     }

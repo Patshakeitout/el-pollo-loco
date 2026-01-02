@@ -20,7 +20,7 @@ class World {
         this.draw();
         this.setWorld();
         this.run();
-       }
+    }
 
 
     draw() {
@@ -31,6 +31,7 @@ class World {
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.clouds);
         this.addToMap(this.pepe);
+        this.addObjectsToMap(this.throwableObjects);
 
         this.ctx.translate(-this.cameraX, 0);
 
@@ -39,7 +40,6 @@ class World {
         this.addToMap(this.statusIconCoin);
         this.addToMap(this.statusIconBottle);
         this.addToMap(this.statusIconEndBoss);
-        this.addObjectsToMap(this.throwableObjects);
 
         this.ctx.translate(this.cameraX, 0);
 
@@ -81,7 +81,7 @@ class World {
     flipImageBack(mo) {
         this.ctx.restore();
         mo.x = mo.x * -1;
-    }
+    } 
 
 
     addObjectsToMap(objArr) { objArr.forEach(o => { this.addToMap(o); }) };
@@ -92,7 +92,7 @@ class World {
     }
 
 
-    run() {
+     run() {
         IntervalHub.startInterval(() => {
             this.checkCollisions();
             this.checkThrowObjects();
@@ -103,8 +103,9 @@ class World {
     checkThrowObjects() {
         if (this.keyboard.ENTER) {
             let bottle = new ThrowableObject(this.pepe.x + 100, this.pepe.y + 100);
-            this.throwableObjects.push(bottle);
-        }   
+             this.throwableObjects.push(bottle);
+            console.log('Throwing bottle from:', this.pepe.x + 100, this.pepe.y + 100);
+        }
     }
 
 
@@ -115,6 +116,23 @@ class World {
                 this.pepe.isHurt();
                 this.statusIconPepe.setPercentage(this.pepe.energy);
             }
+
+            if (this.throwableObjects.length > 0 && enemy instanceof EndBoss) {
+                console.log('Bottles in array:', this.throwableObjects.length);
+                this.throwableObjects.forEach((bottle, index) => {
+                    console.log(`Bottle ${index}: x=${bottle.x}, y=${bottle.y}`);
+                    console.log(`Enemy: x=${enemy.x}, y=${enemy.y}`);
+                    if (bottle.isColliding(enemy)) {
+                        console.log('hit with bottle');
+                        if (enemy instanceof EndBoss) {
+                            enemy.hit();
+                            this.statusIconEndBoss.setPercentage(enemy.energy);
+                        }
+                        this.throwableObjects.splice(index, 1);
+                    }
+                });
+            }
+            
         });
 
     }

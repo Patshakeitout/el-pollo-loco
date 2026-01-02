@@ -24,7 +24,6 @@ class StatusIcon extends DrawableObject {
 
     setPercentage(percentage) {
         this.percentage = percentage;
-        console.log(this.percentage);
     }
 
     draw(ctx) {
