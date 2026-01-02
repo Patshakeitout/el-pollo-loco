@@ -75,8 +75,6 @@ class EndBoss extends MovableObject {
             directionFlag = world.pepe.x < this.x ? 1 : -1;
             this.turnAround = directionFlag === -1;
 
-            console.log(distance);
-
             // ZONE 1: FAR AWAY (Greater than 1.5x) 
             if (distance > EndBoss.secureAreaX) {
 
@@ -104,6 +102,11 @@ class EndBoss extends MovableObject {
                     lastDistance = undefined; // Reset for the rolling check
                 }
             }
+
+             if (this.isHurt()) {
+                this.playAnimation(this.IMAGES_HURT);
+            }
+
         }, 200);
 
 

@@ -126,6 +126,7 @@ class World {
                         console.log('hit with bottle');
                         if (enemy instanceof EndBoss) {
                             enemy.hit();
+                            enemy.
                             this.statusIconEndBoss.setPercentage(enemy.energy);
                         }
                         this.throwableObjects.splice(index, 1);
