@@ -8,9 +8,7 @@ class StatusIcon extends DrawableObject {
         bottle: 'assets/images/7_statusbars/3_icons/icon_salsa_bottle.png'
     }
 
-    percentage = 100;
-
-    constructor(icon, x, y, width, height) {
+    constructor(icon, x, y, width, height, initialEnergy) {
         super();
         this.iconName = icon;
         this.loadImage(this.IMAGES[icon]);
@@ -18,7 +16,7 @@ class StatusIcon extends DrawableObject {
         this.y = y;
         this.width = width
         this.height = height;
-        this.setPercentage(100);
+        this.setPercentage(initialEnergy);
     }
 
 

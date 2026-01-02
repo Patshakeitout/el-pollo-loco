@@ -232,4 +232,15 @@ class MovableObject extends DrawableObject {
     jump() {
         this.speedY = 20;
     }
+
+
+    /**
+     * Set the energy of this object.
+     * @param {number} energy - The new energy value.
+     * @returns {number} The new energy value.
+     */
+    setEnergy(energy) {
+        this.energy = energy;
+    }
+
 }

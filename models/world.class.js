@@ -5,11 +5,11 @@ class World {
     ctx;
     keyboard;
     cameraX = 0;
-    turnAround = false;
-    statusIconPepe = new StatusIcon('healthPepe', 20, 9, 50, 50);
-    statusIconCoin = new StatusIcon('coin', 101, 12.5, 45, 45);
-    statusIconBottle = new StatusIcon('bottle', 166, 15, 55, 40);
-    statusIconEndBoss = new StatusIcon('healthEndBoss', 242, 17, 40, 40);
+    turnAround = false; 
+    statusIconPepe = new StatusIcon('healthPepe', 20, 9, 50, 50, 100);
+    statusIconCoin = new StatusIcon('coin', 101, 12.5, 45, 45, 100);
+    statusIconBottle = new StatusIcon('bottle', 166, 15, 55, 40, 100);
+    statusIconEndBoss = new StatusIcon('healthEndBoss', 242, 17, 40, 40, 20);
     throwableObjects = [];
 
     constructor(canvas, keyboard) {
@@ -126,7 +126,6 @@ class World {
                         console.log('hit with bottle');
                         if (enemy instanceof EndBoss) {
                             enemy.hit();
-                            enemy.
                             this.statusIconEndBoss.setPercentage(enemy.energy);
                         }
                         this.throwableObjects.splice(index, 1);

@@ -1,5 +1,5 @@
 class EndBoss extends MovableObject {
- 
+
     static secureAreaX = 350;
 
     width = 250;
@@ -57,7 +57,9 @@ class EndBoss extends MovableObject {
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
         this.x = levelEndX - this.width;
+
         this.animate();
+        this.setEnergy(20);
     }
 
 
@@ -70,7 +72,7 @@ class EndBoss extends MovableObject {
             // 1. If we are rolling (Ball Mode), we stop playing standard animations.
             //    (But we DO NOT return if we are walking, because we need to update walking frames!)
             if (this.isRolling) return;
-            
+
             let distance = Math.abs(this.x - world.pepe.x);
             directionFlag = world.pepe.x < this.x ? 1 : -1;
             this.turnAround = directionFlag === -1;
@@ -82,7 +84,7 @@ class EndBoss extends MovableObject {
                 this.isWalking = false; // Stop walking if player runs away
 
                 // ZONE 2: WALKING RANGE (Between 1.0x and 1.5x)
-            } else if (distance > EndBoss.secureAreaX-100) {
+            } else if (distance > EndBoss.secureAreaX - 100) {
 
                 this.playAnimation(this.IMAGES_WALK);
                 this.isWalking = true; // Enable movement in the fast loop
@@ -103,8 +105,12 @@ class EndBoss extends MovableObject {
                 }
             }
 
-             if (this.isHurt()) {
+            if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
+            }
+
+            if (this.isDead()) {
+                this.playAnimation(this.IMAGES_DEAD);
             }
 
         }, 200);
@@ -118,9 +124,9 @@ class EndBoss extends MovableObject {
                 if (lastDistance !== undefined && currentDistance > lastDistance) {
                     this.isRolling = false;
                 }
-                 
+
                 // Fast Roll Speed
-                 this.speed = 5
+                this.speed = 5
                 if (directionFlag > 0) this.moveLeft();
                 else this.moveRight();
 
