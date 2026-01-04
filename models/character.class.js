@@ -73,7 +73,9 @@ class Character extends MovableObject {
 
     constructor() {
         super().loadImage('assets/images/2_character_pepe/2_walk/W-21.png');
-
+    
+        this.lastMovedLeft = false; // Track if last movement was left
+        this.lastDirection = null; // Track previous direction for smooth transitions
         this.hasOffsetBox = true;
         this.offsetBox = {
             x: 0,
@@ -102,26 +104,48 @@ class Character extends MovableObject {
             
             // Check if endBoss is to the left of Pepe (pepe is being hunted from the left)
             let endBossIsToLeft = endBoss && endBoss.x < this.x;
-            
-            let maxCameraX = -(this.world.level.levelEndX - this.world.canvas.width);
+
             let targetCameraX;
             
             if (endBossIsToLeft) {
                 // Cinematic mode: position Pepe at the right edge of the canvas
                 targetCameraX = -this.x + (this.world.canvas.width - 150);
             } else {
-                // Normal mode: standard ca m era follow
-                targetCameraX = -this.x + 20;
+                // Normal mode: directional camera based on movement direction
+                if (this.world.keyboard.RIGHT) { 
+                    // Moving right: Pepe at le ft edge of frame with lead ahead
+                    targetCameraX = -this.x - 110;
+                    this.lastMovedLeft = false;
+                } else if (this.world.keyboard.LEFT) {
+                    // Moving left: Pepe at right edge of frame (or idle camera if at x=0)
+                    if (this.x > 0) {
+                        targetCameraX = -this.x + (this.world.canvas.width);
+                    } else {
+                        targetCameraX = this.world.cameraX; // Camera stays still at left edge
+                    }
+                    this.lastMovedLeft = true;
+                } else {
+                    // Idle: keep camera position stable (prevents jumping on flip)
+                    targetCameraX = this.world.cameraX;
+                }
             }
             
-            targetCameraX = Math.max(maxCameraX, targetCameraX);
             
             // Smooth camera transition with lerp + round to avoid visual artifacts
-            let lerpFactor = 0.08;
+            // Always use smooth transition to prevent jumping
+            let currentDirection = this.world.keyboard.RIGHT ? 'RIGHT' : (this.world.keyboard.LEFT ? 'LEFT' : 'IDLE');
+            let lerpFactor = 0.04; // Consistent smooth transition for all directions
+            
+            this.lastDirection = currentDirection;
             this.world.cameraX = Math.round(this.world.cameraX + (targetCameraX - this.world.cameraX) * lerpFactor);
+            
+            // Constrain camera to valid boundaries
+            let minCameraX = -(this.world.level.levelEndX - this.world.canvas.width);
+            this.world.cameraX = Math.max(minCameraX, Math.min(0, this.world.cameraX));
 
-            const minLeft = this.world.cameraX - this.world.canvas.width + this.width;
-            let maxRight = this.world.level.levelEndX - 40 - this.width;
+            // Calculate movement boundaries
+            let minLeft = 0;
+            let maxRight = this.world.level.levelEndX - this.width;
 
             if (this.world.keyboard.RIGHT && this.x < maxRight) {
                 this.moveRight();

@@ -15,15 +15,6 @@ class Level {
 
 
     createBackgrounds() {
-        let xOffset = -720;
-
-        this.backgrounds.push(
-            new Background('../../assets/images/5_background/layers/air.png', xOffset, 0),
-            new Background('../../assets/images/5_background/layers/3_third_layer/2.png', xOffset, -70),
-            new Background('../../assets/images/5_background/layers/2_second_layer/2.png', xOffset, -28),
-            new Background('../../assets/images/5_background/layers/1_first_layer/2.png', xOffset, 8)
-        );
-
         let i = 0;
         while (i <= this.bgRepeat) {
             let x = i * 720;

@@ -146,8 +146,16 @@ class EndBoss extends MovableObject {
                 // Fast Roll Speed - use rolling direction (towards Pepe when hit by bottle)
                 this.speed = 5
                 let currentRollingDir = window.endBossRollingDirection || rollingDirection;
-                if (currentRollingDir > 0) this.moveLeft();
-                else this.moveRight();
+
+                // Stop rolling if hitting world boundaries
+                if (this.x <= 0 || this.x >= world.level.levelEndX - this.width) {
+                    this.isRolling = false;
+                    this.rollingStartX = null;
+                    window.endBossRollingDirection = undefined;
+                } else {
+                    if (currentRollingDir > 0) this.moveLeft();
+                    else this.moveRight();
+                }
 
             } else if (this.isWalking) {
                 let currentDistance = Math.abs(this.x - world.pepe.x);

@@ -1,6 +1,6 @@
 
 const bgRepeat = 4;
-const levelEndX = (bgRepeat + 1) * 720;
+const levelEndX = bgRepeat * 720;
 
 const level1 = new Level(
     bgRepeat,

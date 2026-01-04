@@ -104,8 +104,14 @@ class World {
         if (this.keyboard.ENTER) {
             // Determine throw direction based on Pepe's facing direction
             let throwDirection = this.pepe.turnAround ? -9 : 9;
-            let bottle = new ThrowableObject(this.pepe.x + 100, this.pepe.y + 100, throwDirection);
-             this.throwableObjects.push(bottle);
+            let bottle;
+            if (throwDirection == 9) {
+                bottle = new ThrowableObject(this.pepe.x + this.pepe.width/2, this.pepe.y + 100, throwDirection);
+            } else {
+                bottle = new ThrowableObject(this.pepe.x, this.pepe.y + 100, throwDirection);
+            }               
+
+            this.throwableObjects.push(bottle);
         }
     }
 
