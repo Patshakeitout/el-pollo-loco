@@ -26,7 +26,7 @@ class ThrowableObject extends MovableObject {
         this.x = x;
         this.y = y;
         this.width = 50;
-        this.height = 60;
+        this.height = 60; 
         this.speedX = speedX;
         this.throw();
     }
@@ -39,11 +39,17 @@ class ThrowableObject extends MovableObject {
  */
     throw() {
         this.speedY = 10;
-
         this.applyGravity();
+        let splashTriggered = false;
 
         IntervalHub.startInterval(() => {
             this.playAnimation(this.IMAGES_BOTTLE_ROTATE);
+            if (this.isOnGround() && !splashTriggered) {
+                splashTriggered = true;
+                this.speedX = 0;
+                this.speedY = 0;
+                this.splash();
+            }
         }, 100);
 
         IntervalHub.startInterval(() => {
@@ -51,5 +57,12 @@ class ThrowableObject extends MovableObject {
         }, 25);       
 
     }
+
+    splash() {
+        IntervalHub.startInterval(() => this.playAnimation(this.IMAGES_SPLASH), 100);
+    }
+
+    
+    isOnGround() { return this.y >= 360; }
 
 }   
