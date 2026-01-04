@@ -11,12 +11,14 @@ class Chicken extends MovableObject {
         'assets/images/3_enemies_chicken/chicken_normal/1_walk/2_w.png',
         'assets/images/3_enemies_chicken/chicken_normal/1_walk/3_w.png'
     ];
+    IMAGES_DEAD = ['assets/images/3_enemies_chicken/chicken_normal/2_dead/dead.png'];
     currentImage = 0;
 
 
     constructor() {
-        super().loadImage('../../assets/images/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
+        super().loadImage('assets/images/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
+        this.loadImages(this.IMAGES_DEAD); // Preload dead image into cache
 
         this.x = 180 + Math.random() * 400;
         this.speed = 0.2 + Math.random() * 0.35;
@@ -26,15 +28,25 @@ class Chicken extends MovableObject {
 
 
     animate() {
-        IntervalHub.startInterval(() => this.moveLeft(), this.FT); 
+        IntervalHub.startInterval(() => {
+            if (!this.isDead()) {
+                this.moveLeft();
+            }
+        }, this.FT);
 
         IntervalHub.startInterval(() => {
-            let moduloIndex = this.currentImage % this.IMAGES_WALKING.length;
-            let path = this.IMAGES_WALKING[moduloIndex];
-            this.img = this.imgCache[path];
-            this.currentImage++;
+            if (this.isDead()) {
+                this.playAnimation(this.IMAGES_DEAD);
+            } else {
+                let moduloIndex = this.currentImage % this.IMAGES_WALKING.length;
+                let path = this.IMAGES_WALKING[moduloIndex];
+                this.img = this.imgCache[path];
+                this.currentImage++;
+            }
         }, this.FT * 10);
     }
+
+
 
 
     jump() {

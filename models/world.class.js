@@ -106,7 +106,7 @@ class World {
             let throwDirection = this.pepe.turnAround ? -9 : 9;
             let bottle;
             if (throwDirection == 9) {
-                bottle = new ThrowableObject(this.pepe.x + this.pepe.width/2, this.pepe.y + 100, throwDirection);
+                bottle = new ThrowableObject(this.pepe.x + this.pepe.width / 2, this.pepe.y + 100, throwDirection);
             } else {
                 bottle = new ThrowableObject(this.pepe.x, this.pepe.y + 100, throwDirection);
             }               
@@ -123,16 +123,25 @@ class World {
                 this.pepe.isHurt();
                 this.statusIconPepe.setPercentage(this.pepe.energy);
             }
-
-            if (this.throwableObjects.length > 0 && enemy instanceof EndBoss) {
+ 
+            if (this.throwableObjects.length > 0) {
                 // console.log('Bottles in array:', this.throwableObjects.length);
                 this.throwableObjects.forEach((bottle, index) => {
                     if (bottle.isColliding(enemy)) {
-                        if (enemy instanceof EndBoss) {
-                            bottle.splash();
+                        bottle.splash();
+                        if (enemy instanceof EndBoss) {                
                             enemy.hit();
                             enemy.startRolling();
                             this.statusIconEndBoss.setPercentage(enemy.energy);
+                        } else {
+                            enemy.energy = 0;
+                            // Remove enemy after delay
+                            setTimeout(() => {
+                                let enemyIndex = this.level.enemies.indexOf(enemy);
+                                if (enemyIndex > -1) {
+                                    this.level.enemies.splice(enemyIndex, 1);
+                                }
+                            }, 1000);
                         }
                         // Remove bottle after splash animation completes
                         setTimeout(() => {
