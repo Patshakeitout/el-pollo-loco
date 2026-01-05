@@ -11,6 +11,7 @@ class EndBoss extends MovableObject {
     rotationAngle = 0;
     turnedAround = false;
     rollingStartX = null;
+    deadAnimationIndex = 0;
 
     IMAGES_ALERT = [
         'assets/images/4_enemie_boss_chicken/2_alert/G5.png',
@@ -66,12 +67,18 @@ class EndBoss extends MovableObject {
 
     animate() {
         let lastDistance;
-         let directionFlag = 1;
-        let rollingDirection = 1; // St o  re direction when rolling starts
+        let directionFlag = 1;
+        let rollingDirection = 1; // Store direction when rolling starts
         const MIN_ROLLING_DISTANCE = 800; // Minimum distance to roll through
 
         // INTERVAL 1: ANIMATION & STATE LOGIC (Slow)
         IntervalHub.startInterval(() => {
+            if (this.isDead()) {
+                this.isRolling = false;
+                this.playDeathAnimation();
+                return;
+            }
+
             // 1. If we are rolling (Ball Mode), we stop playing standard animations.
             //    (But we DO NOT return if we are walking, because we need to update walking frames!)
             if (this.isRolling) return;
@@ -114,18 +121,21 @@ class EndBoss extends MovableObject {
                 }
             }
 
-            if (this.isHurt()) {
+            if (this.isHurt()) { 
                 this.playAnimation(this.IMAGES_HURT);
-            }
+             }
 
-            if (this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD);
-            }
-
-        }, 200);
+        }, 300);
 
 
         IntervalHub.startInterval(() => {
+            if (this.isDead()) { 
+                if (this.deadAnimationIndex >= this.IMAGES_DEAD.length) {
+                    this.y += 2; // Fall down slowly
+                }
+                return;
+            }
+
             // Calculate current distance using centerX positions
             let endBossCenterX = this.x + this.width / 2;
             let pepeCenterX = world.pepe.x + world.pepe.width / 2;
@@ -170,6 +180,14 @@ class EndBoss extends MovableObject {
             lastDistance = currentDistance;
 
         }, this.FT);
+    }
+
+    playDeathAnimation() {
+        if (this.deadAnimationIndex < this.IMAGES_DEAD.length) {
+            let path = this.IMAGES_DEAD[this.deadAnimationIndex];
+            this.img = this.imgCache[path];
+            this.deadAnimationIndex++;
+        }
     }
 
 
@@ -223,6 +241,7 @@ class EndBoss extends MovableObject {
      * Rolling direction is towards Pepe (not away)
      */
     startRolling() {
+        if (this.isDead()) return;
         // Play attack animation to transition to ball
         this.playAnimation(this.IMAGES_ATTACK_B);
         

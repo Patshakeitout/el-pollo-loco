@@ -1,6 +1,7 @@
 class ThrowableObject extends MovableObject {
     speedY;
     speedX;
+    hasHitEnemy = false;
 
     IMAGES_BOTTLE_ROTATE = [
         'assets/images/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',
@@ -18,7 +19,7 @@ class ThrowableObject extends MovableObject {
         'assets/images/6_salsa_bottle/bottle_splash/6_bottle_splash.png'
     ];
 
-    constructor(x, y, speedX = 9) {
+    constructor(x, y, speedX = 8) {
         super();
         this.loadImage('assets/images/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png');
         this.loadImages(this.IMAGES_BOTTLE_ROTATE);
@@ -38,7 +39,7 @@ class ThrowableObject extends MovableObject {
  * The animation is played every 100ms and the bottle moves 10 pixels to the right every 25ms.
  */
     throw() {
-        this.speedY = 10;
+        this.speedY = 8;
         this.applyGravity();
         let splashTriggered = false;
 
@@ -58,11 +59,28 @@ class ThrowableObject extends MovableObject {
 
     }
 
-    splash() {
+    splash() {    
         IntervalHub.startInterval(() => this.playAnimation(this.IMAGES_SPLASH), 100);
+
+        setTimeout(() => {
+            if (this.world && this.world.thrownObjects) {
+                let bottleIndex = this.world.thrownObjects.indexOf(this);
+                if (bottleIndex > -1) {
+                    this.world.thrownObjects.splice(bottleIndex, 1);
+                }
+            }
+        }, 600);
     }
 
     
     isOnGround() { return this.y >= 360; }
+
+    isColliding(obj) {
+        // Don't collide with enemies after already hitting one
+        if (this.hasHitEnemy && !(obj instanceof Character)) {
+            return false;
+        }
+        return super.isColliding(obj);
+    }
 
 }   

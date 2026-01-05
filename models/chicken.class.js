@@ -2,7 +2,6 @@
  * Chicken class that extends MovableObject
  */
 class Chicken extends MovableObject {
-    y = 374;
     width = 50;
     height = 60;
 
@@ -14,14 +13,17 @@ class Chicken extends MovableObject {
     IMAGES_DEAD = ['assets/images/3_enemies_chicken/chicken_normal/2_dead/dead.png'];
     currentImage = 0;
 
-
-    constructor() {
+ 
+    constructor(size, levelEndX) {
         super().loadImage('assets/images/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
-        this.loadImages(this.IMAGES_DEAD); // Preload dead image into cache
+        this.loadImages(this.IMAGES_DEAD);
 
-        this.x = 180 + Math.random() * 400;
-        this.speed = 0.2 + Math.random() * 0.35;
+        this.x = 600 + Math.floor(Math.random () * levelEndX);
+        this.speed = 0.2 + Math.random() * 1;
+        this.width = size * this.width;
+        this.height = size * this.height;
+        this.y = 440 - this.height;
 
         this.animate();
     }

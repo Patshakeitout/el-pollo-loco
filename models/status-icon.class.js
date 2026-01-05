@@ -1,6 +1,8 @@
 class StatusIcon extends DrawableObject {
 
     iconName;
+    amount;
+
     IMAGES = {
         healthPepe: 'assets/images/7_statusbars/3_icons/icon_health.png',
         healthEndBoss: 'assets/images/7_statusbars/3_icons/icon_health_endboss.png',
@@ -8,7 +10,7 @@ class StatusIcon extends DrawableObject {
         bottle: 'assets/images/7_statusbars/3_icons/icon_salsa_bottle.png'
     }
 
-    constructor(icon, x, y, width, height, initialEnergy) {
+    constructor(icon, x, y, width, height, initialAmount) {
         super();
         this.iconName = icon;
         this.loadImage(this.IMAGES[icon]);
@@ -16,12 +18,11 @@ class StatusIcon extends DrawableObject {
         this.y = y;
         this.width = width
         this.height = height;
-        this.setPercentage(initialEnergy);
+        this.amount = initialAmount;
     }
 
-
-    setPercentage(percentage) {
-        this.percentage = percentage;
+    setAmount(amount) {
+        this.amount = amount;
     }
 
     draw(ctx) {
@@ -47,7 +48,7 @@ class StatusIcon extends DrawableObject {
             textY = this.y + this.height / 2 + 5;
         }
         
-        ctx.strokeText(this.percentage, textX, textY);
-        ctx.fillText(this.percentage, textX, textY);
+        ctx.strokeText(this.amount, textX, textY);
+        ctx.fillText(this.amount, textX, textY);
     }
 }

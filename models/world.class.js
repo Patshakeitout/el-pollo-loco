@@ -7,10 +7,10 @@ class World {
     cameraX = 0;
     turnAround = false;
     statusIconPepe = new StatusIcon('healthPepe', 20, 9, 50, 50, 100);
-    statusIconCoin = new StatusIcon('coin', 101, 12.5, 45, 45, 100);
-    statusIconBottle = new StatusIcon('bottle', 166, 15, 55, 40, 100);
-    statusIconEndBoss = new StatusIcon('healthEndBoss', 242, 17, 40, 40, 20);
-    throwableObjects = [];
+    statusIconCoin = new StatusIcon('coin', 101, 12.5, 45, 45, 0);
+    statusIconBottle = new StatusIcon('bottle', 166, 15, 55, 40, 10);
+    statusIconEndBoss = new StatusIcon('healthEndBoss', 242, 17, 40, 40, 100);
+    thrownObjects = [];
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -31,7 +31,7 @@ class World {
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.clouds);
         this.addToMap(this.pepe);
-        this.addObjectsToMap(this.throwableObjects);
+        this.addObjectsToMap(this.thrownObjects);
 
         this.ctx.translate(-this.cameraX, 0);
 
@@ -95,13 +95,23 @@ class World {
     run() {
         IntervalHub.startInterval(() => {
             this.checkCollisions();
+        }, this.FT);
+
+        IntervalHub.startInterval(() => {
             this.checkThrowObjects();
         }, 200);
+
     }
 
 
     checkThrowObjects() {
         if (this.keyboard.ENTER) {
+            
+            if (this.statusIconBottle.amount == 0) {
+                
+                return;
+            } 
+
             // Determine throw direction based on Pepe's facing direction
             let throwDirection = this.pepe.turnAround ? -9 : 9;
             let bottle;
@@ -109,30 +119,57 @@ class World {
                 bottle = new ThrowableObject(this.pepe.x + this.pepe.width / 2, this.pepe.y + 100, throwDirection);
             } else {
                 bottle = new ThrowableObject(this.pepe.x, this.pepe.y + 100, throwDirection);
-            }               
+            }
+            bottle.world = this;
+            this.thrownObjects.push(bottle);
+            console.log(this.thrownObjects.length);
+            this.statusIconBottle.amount -= 1;
 
-            this.throwableObjects.push(bottle);
+            
         }
     }
 
 
     checkCollisions() {
         this.level.enemies.forEach(enemy => {
+            if (enemy.isDead()) return;
+
             if (this.pepe.isColliding(enemy)) {
-                this.pepe.hit();
-                this.pepe.isHurt();
-                this.statusIconPepe.setPercentage(this.pepe.energy);
+                let pepeBottom = this.pepe.y + this.pepe.height;
+                if (this.pepe.hasOffsetBox) {
+                    pepeBottom = this.pepe.offsetBox.y + this.pepe.offsetBox.h;
+                }
+                let enemyCenterY = enemy.y + (enemy.height / 2);
+
+                if (this.pepe.isAboveGround() && this.pepe.speedY < 0 && !(enemy instanceof EndBoss) && pepeBottom < enemyCenterY) {
+                    enemy.energy = 0;
+                    this.pepe.speedY = 15; // Bounce
+                    setTimeout(() => {
+                        let enemyIndex = this.level.enemies.indexOf(enemy);
+                        if (enemyIndex > -1) {
+                            this.level.enemies.splice(enemyIndex, 1);
+                        }
+                    }, 1000);
+                } else {
+                    this.pepe.hit();
+                    this.pepe.isHurt();
+                    this.statusIconPepe.setAmount(this.pepe.energy);
+                }
             }
- 
-            if (this.throwableObjects.length > 0) {
-                // console.log('Bottles in array:', this.throwableObjects.length);
-                this.throwableObjects.forEach((bottle, index) => {
+
+            if (this.thrownObjects.length > 0) {
+                this.thrownObjects.forEach((bottle, index) => {
                     if (bottle.isColliding(enemy)) {
+                        console.log(this.thrownObjects.length);
+
+                        bottle.hasHitEnemy = true;
+                        bottle.speedY = 0;
+                        bottle.speedX = 0;
                         bottle.splash();
-                        if (enemy instanceof EndBoss) {                
+                        if (enemy instanceof EndBoss) {
                             enemy.hit();
                             enemy.startRolling();
-                            this.statusIconEndBoss.setPercentage(enemy.energy);
+                            this.statusIconEndBoss.setAmount(enemy.energy);
                         } else {
                             enemy.energy = 0;
                             // Remove enemy after delay
@@ -143,10 +180,8 @@ class World {
                                 }
                             }, 1000);
                         }
-                        // Remove bottle after splash animation completes
-                        setTimeout(() => {
-                            this.throwableObjects.splice(index, 1);
-                        }, 700);
+
+
                     }
                 });
             }
