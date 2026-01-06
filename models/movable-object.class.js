@@ -100,7 +100,8 @@ class MovableObject extends DrawableObject {
 
 
     hit() {
-        this.energy -= 1;
+        this.energy -= 5;
+        this.energy = Math.floor(this.energy);
         if (this.energy < 0) {
             this.energy = 0;
         } else {
@@ -127,8 +128,7 @@ class MovableObject extends DrawableObject {
         this.img = this.imgCache[path];
         this.currentImage++;
     }
-
-
+    
     moveLeft() {
         this.x -= this.speed;
     }

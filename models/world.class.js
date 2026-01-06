@@ -30,7 +30,7 @@ class World {
         this.addObjectsToMap(this.level.backgrounds);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.clouds);
-        this.addToMap(this.pepe);
+        if (this.pepe) this.addToMap(this.pepe);
         this.addObjectsToMap(this.thrownObjects);
 
         this.ctx.translate(-this.cameraX, 0);
@@ -89,6 +89,11 @@ class World {
 
     setWorld() {
         this.pepe.world = this;
+        this.level.enemies.forEach(enemy => {
+        if (enemy instanceof EndBoss) {
+            enemy.setWorld(this);
+        }
+    });
     }
 
 
@@ -100,6 +105,13 @@ class World {
         IntervalHub.startInterval(() => {
             this.checkThrowObjects();
         }, 200);
+
+        IntervalHub.startInterval(() => {
+            // Remove Pepe if dead and has fallen below the canvas
+            if (this.pepe && this.pepe.isDead() && this.pepe.y > this.canvas.height) {
+                this.pepe = null;
+            }
+        }, this.FT);
 
     }
 
@@ -134,14 +146,14 @@ class World {
         this.level.enemies.forEach(enemy => {
             if (enemy.isDead()) return;
 
-            if (this.pepe.isColliding(enemy)) {
+            if (this.pepe && this.pepe.isColliding(enemy)) {
                 let pepeBottom = this.pepe.y + this.pepe.height;
                 if (this.pepe.hasOffsetBox) {
                     pepeBottom = this.pepe.offsetBox.y + this.pepe.offsetBox.h;
                 }
                 let enemyCenterY = enemy.y + (enemy.height / 2);
 
-                if (this.pepe.isAboveGround() && this.pepe.speedY < 0 && !(enemy instanceof EndBoss) && pepeBottom < enemyCenterY) {
+                if (!this.pepe.isDead() && this.pepe.isAboveGround() && this.pepe.speedY < 0 && !(enemy instanceof EndBoss) && pepeBottom < enemyCenterY) {
                     enemy.energy = 0;
                     this.pepe.speedY = 15; // Bounce
                     setTimeout(() => {
@@ -150,18 +162,16 @@ class World {
                             this.level.enemies.splice(enemyIndex, 1);
                         }
                     }, 1000);
-                } else {
+                } else if (!this.pepe.isDead() && !this.pepe.isHurt()) {
                     this.pepe.hit();
                     this.pepe.isHurt();
                     this.statusIconPepe.setAmount(this.pepe.energy);
-                }
+                } 
             }
 
             if (this.thrownObjects.length > 0) {
-                this.thrownObjects.forEach((bottle, index) => {
+                this.thrownObjects.forEach((bottle) => {
                     if (bottle.isColliding(enemy)) {
-                        console.log(this.thrownObjects.length);
-
                         bottle.hasHitEnemy = true;
                         bottle.speedY = 0;
                         bottle.speedX = 0;

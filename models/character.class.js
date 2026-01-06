@@ -5,8 +5,11 @@ class Character extends MovableObject {
     speed = 5;
     currentImage = 0;
     hurtTime = 0;
-    hurtDuration = 1000;
-
+    hurtDuration = 500; // Duration for movement lock
+    deadAnimationPlayed = false;
+    deadAnimationStarted = false;
+    deadAnimationFinished = false;
+    
     IMAGES_WALKING = [
         'assets/images/2_character_pepe/2_walk/W-21.png',
         'assets/images/2_character_pepe/2_walk/W-22.png',
@@ -66,14 +69,13 @@ class Character extends MovableObject {
         'assets/images/2_character_pepe/5_dead/D-53.png',
         'assets/images/2_character_pepe/5_dead/D-54.png',
         'assets/images/2_character_pepe/5_dead/D-55.png',
-        'assets/images/2_character_pepe/5_dead/D-56.png',
-        'assets/images/2_character_pepe/5_dead/D-57.png'
+        'assets/images/2_character_pepe/5_dead/D-56.png'
     ];
 
 
     constructor() {
         super().loadImage('assets/images/2_character_pepe/2_walk/W-21.png');
-    
+
         this.lastMovedLeft = false; // Track if last movement was left
         this.lastDirection = null; // Track previous direction for smooth transitions
         this.hasOffsetBox = true;
@@ -99,79 +101,90 @@ class Character extends MovableObject {
 
     animate() {
         IntervalHub.startInterval(() => {
-            // Find the endBoss in the enemies array
-            let endBoss = this.world.level.enemies.find(enemy => enemy instanceof EndBoss);
-            
-            // Check if endBoss is to the left of Pepe (pepe is being hunted from the left)
-            let endBossIsToLeft = endBoss && endBoss.x < this.x;
+            // Freeze camera if character is dead or movement locked
+            if (!this.isDead() && !this.isMovementLocked()) {
+                // Find the endBoss in the enemies array
+                let endBoss = this.world.level.enemies.find(enemy => enemy instanceof EndBoss);
 
-            let targetCameraX;
-            
-            if (endBossIsToLeft) {
-                // Cinematic mode: position Pepe at the right edge of the canvas
-                targetCameraX = -this.x + (this.world.canvas.width - 150);
-            } else {
-                // Normal mode: directional camera based on movement direction
-                if (this.world.keyboard.RIGHT) { 
-                    // Moving right: Pepe at le ft edge of frame with lead ahead
-                    targetCameraX = -this.x - 110;
-                    this.lastMovedLeft = false;
-                } else if (this.world.keyboard.LEFT) {
-                    // Moving left: Pepe at right edge of frame (or idle camera if at x=0)
-                    if (this.x > 0) {
-                        targetCameraX = -this.x + (this.world.canvas.width);
-                    } else {
-                        targetCameraX = this.world.cameraX; // Camera stays still at left edge
-                    }
-                    this.lastMovedLeft = true;
+                // Check if endBoss is to the left of Pepe (pepe is being hunted from the left)
+                let endBossIsToLeft = endBoss && endBoss.x < this.x;
+
+                let targetCameraX;
+
+                if (endBossIsToLeft) {
+                    // Cinematic mode: position Pepe at the right edge of the canvas
+                    targetCameraX = -this.x + (this.world.canvas.width - 150);
                 } else {
-                    // Idle: keep camera position stable (prevents jumping on flip)
-                    targetCameraX = this.world.cameraX;
+                    // Normal mode: directional camera based on movement direction
+                    if (this.world.keyboard.RIGHT) {
+                        // Moving right: Pepe at le ft edge of frame with lead ahead
+                        targetCameraX = -this.x - 110;
+                        this.lastMovedLeft = false;
+                    } else if (this.world.keyboard.LEFT) {
+                        // Moving left: Pepe at right edge of frame (or idle camera if at x=0)
+                        if (this.x > 0) {
+                            targetCameraX = -this.x + (this.world.canvas.width);
+                        } else {
+                            targetCameraX = this.world.cameraX; // Camera stays still at left edge
+                        }
+                        this.lastMovedLeft = true;
+                    } else {
+                        // Idle: keep camera position stable (prevents jumping on flip)
+                        targetCameraX = this.world.cameraX;
+                    }
                 }
+
+
+                // Smooth camera transition with lerp + round to avoid visual artifacts
+                // Always use smooth transition to prevent jumping
+                let currentDirection = this.world.keyboard.RIGHT ? 'RIGHT' : (this.world.keyboard.LEFT ? 'LEFT' : 'IDLE');
+                let lerpFactor = 0.04; // Consistent smooth transition for all directions
+
+                this.lastDirection = currentDirection;
+                this.world.cameraX = Math.round(this.world.cameraX + (targetCameraX - this.world.cameraX) * lerpFactor);
+
+                // Constrain camera to valid boundaries
+                let minCameraX = -(this.world.level.levelEndX - this.world.canvas.width);
+                this.world.cameraX = Math.max(minCameraX, Math.min(0, this.world.cameraX));
             }
-            
-            
-            // Smooth camera transition with lerp + round to avoid visual artifacts
-            // Always use smooth transition to prevent jumping
-            let currentDirection = this.world.keyboard.RIGHT ? 'RIGHT' : (this.world.keyboard.LEFT ? 'LEFT' : 'IDLE');
-            let lerpFactor = 0.04; // Consistent smooth transition for all directions
-            
-            this.lastDirection = currentDirection;
-            this.world.cameraX = Math.round(this.world.cameraX + (targetCameraX - this.world.cameraX) * lerpFactor);
-            
-            // Constrain camera to valid boundaries
-            let minCameraX = -(this.world.level.levelEndX - this.world.canvas.width);
-            this.world.cameraX = Math.max(minCameraX, Math.min(0, this.world.cameraX));
 
             // Calculate movement boundaries
             let minLeft = 0;
             let maxRight = this.world.level.levelEndX - this.width;
 
-            if (this.world.keyboard.RIGHT && this.x < maxRight) {
-                this.moveRight();
-                this.turnAround = false;
-                //this.walking_sound.play();
-            }
+            // Freeze all user interactions if character is dead or movement locked
+            if (!this.isDead() && !this.isMovementLocked()) {
+                if (this.world.keyboard.RIGHT && this.x < maxRight) {
+                    this.moveRight();
+                    this.turnAround = false;
+                    //this.walking_sound.play();
+                }
 
-            if (this.world.keyboard.LEFT && this.x > minLeft) {
-                this.moveLeft();
-                this.turnAround = true;
-                //this.walking_sound.play();
-            }
+                if (this.world.keyboard.LEFT && this.x > minLeft) {
+                    this.moveLeft();
+                    this.turnAround = true;
+                    //this.walking_sound.play();
+                }
 
-            if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-                this.jump();
+                if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+                    this.jump();
+                }
             }
         }, this.FT);
 
 
         IntervalHub.startInterval(() => {
-
-            if (this.isHurt()) {
+            if (this.isDead()) {
+                if (!this.deadAnimationStarted) {
+                    this.playDeathAnimation(this.IMAGES_DEAD);
+                    this.deadAnimationStarted = true;
+                }
+                if (this.deadAnimationFinished) {
+                    this.isFallingDown();
+                }
+            } else if (this.isMovementLocked()) {
+                // Show hurt animation during movement lock
                 this.playAnimation(this.IMAGES_HURT);
-                return;
-            } else if (this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD);
                 return;
             } else if (this.isAboveGround()) {
                 this.playJumpAnimation();
@@ -181,7 +194,7 @@ class Character extends MovableObject {
                 this.playAnimation(this.IMAGES_IDLE);
             }
 
-        }, this.FT * 6.2);
+        }, 100); 
 
     }
 
@@ -196,6 +209,40 @@ class Character extends MovableObject {
             else if (this.speedY < -5) this.playAnimation(this.IMAGES_JUMPING.slice(6, 7));
             else this.playAnimation(this.IMAGES_JUMPING.slice(4, 5));
         }
+    }
+
+
+    playDeathAnimation(images) {  
+        let delay = 0;
+        images.forEach((path, index) => {
+            setTimeout(() => {
+                this.img = this.imgCache[path];
+                if (index === 3) {
+                    this.jump();
+                }
+            }, delay);
+            delay += 300;
+        });
+        
+        // Mark animation as finished after all frames have played
+        setTimeout(() => {
+            this.deadAnimationFinished = true;
+        }, delay);
+    }
+
+
+    isFallingDown() {
+        this.y += 5;
+    }
+
+
+    /**
+     * Check if movement is locked (500ms after being hit)
+     * isHurt() still provides 1 second invincibility for collision detection
+     */
+    isMovementLocked() {
+        let timePassed = new Date().getTime() - this.lastHit;
+        return timePassed < this.hurtDuration;
     }
 
 }

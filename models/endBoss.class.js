@@ -61,7 +61,12 @@ class EndBoss extends MovableObject {
         this.x = levelEndX - this.width;
 
         this.animate();
-        this.setEnergy(20);
+        this.setEnergy(100);
+    }
+
+
+    setWorld(world) {
+        this.world = world;
     }
 
 
@@ -73,6 +78,8 @@ class EndBoss extends MovableObject {
 
         // INTERVAL 1: ANIMATION & STATE LOGIC (Slow)
         IntervalHub.startInterval(() => {
+            if (!this.world || !this.world.pepe) return; // Safety check
+            
             if (this.isDead()) {
                 this.isRolling = false;
                 this.playDeathAnimation();
@@ -85,7 +92,7 @@ class EndBoss extends MovableObject {
 
             // Calculate distance using centerX of both characters
             let endBossCenterX = this.x + this.width / 2;
-            let pepeCenterX = world.pepe.x + world.pepe.width / 2;
+            let pepeCenterX = this.world.pepe.x + this.world.pepe.width / 2;
             let distance = Math.abs(endBossCenterX - pepeCenterX);
             
             directionFlag = pepeCenterX < endBossCenterX ? 1 : -1;
@@ -129,6 +136,8 @@ class EndBoss extends MovableObject {
 
 
         IntervalHub.startInterval(() => {
+            if (!this.world || !this.world.pepe) return; // Safety check
+            
             if (this.isDead()) { 
                 if (this.deadAnimationIndex >= this.IMAGES_DEAD.length) {
                     this.y += 2; // Fall down slowly
@@ -138,7 +147,7 @@ class EndBoss extends MovableObject {
 
             // Calculate current distance using centerX positions
             let endBossCenterX = this.x + this.width / 2;
-            let pepeCenterX = world.pepe.x + world.pepe.width / 2;
+            let pepeCenterX = this.world.pepe.x + this.world.pepe.width / 2;
             let currentDistance = Math.abs(endBossCenterX - pepeCenterX);
 
             if (this.isRolling) {
@@ -158,7 +167,7 @@ class EndBoss extends MovableObject {
                 let currentRollingDir = window.endBossRollingDirection || rollingDirection;
 
                 // Stop rolling if hitting world boundaries
-                if (this.x <= 0 || this.x >= world.level.levelEndX - this.width) {
+                if (this.x <= 0 || this.x >= this.world.level.levelEndX - this.width) {
                     this.isRolling = false;
                     this.rollingStartX = null;
                     window.endBossRollingDirection = undefined;
@@ -168,9 +177,9 @@ class EndBoss extends MovableObject {
                 }
 
             } else if (this.isWalking) {
-                let currentDistance = Math.abs(this.x - world.pepe.x);
+                let currentDistance = Math.abs(this.x - this.world.pepe.x);
                 // Update direction for walking
-                directionFlag = world.pepe.x < this.x ? 1 : -1;
+                directionFlag = this.world.pepe.x < this.x ? 1 : -1;
                 // Slow Walk Speed
                 this.speed = 0.5;
                 if (directionFlag > 0) this.moveLeft();
@@ -248,7 +257,7 @@ class EndBoss extends MovableObject {
         this.isWalking = false;
         this.rollingStartX = this.x; // Track starting position
         // Set rolling direction TOWARDS Pepe when hit by bottle
-        window.endBossRollingDirection = world.pepe.x < this.x ? 1 : -1;
+        window.endBossRollingDirection = this.world.pepe.x < this.x ? 1 : -1;
         
         // Delay rolling to let animation play (400ms for attack animation)
         setTimeout(() => {
