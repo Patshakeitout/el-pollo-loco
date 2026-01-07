@@ -59,10 +59,10 @@ class World {
         mo.draw(this.ctx);
 
         if (mo instanceof MovableObject) {
-            mo.drawCollisionBox(this.ctx, mo.x, mo.y, mo.width, mo.height);
-            mo.drawCollisionCenter(this.ctx, mo.x, mo.y, mo.width, mo.height);
+            //mo.drawCollisionBox(this.ctx, mo.x, mo.y, mo.width, mo.height);
+            //mo.drawCollisionCenter(this.ctx, mo.x, mo.y, mo.width, mo.height);
             mo.updateOffsetBox();
-            mo.drawOffsetBox(this.ctx);
+            //mo.drawOffsetBox(this.ctx);
         }
 
         if (mo.turnAround) {
@@ -165,9 +165,7 @@ class World {
             }
             bottle.world = this;
             this.thrownObjects.push(bottle);
-            console.log(this.thrownObjects.length);
             this.statusIconBottle.amount -= 1;
-
             
         }
     }

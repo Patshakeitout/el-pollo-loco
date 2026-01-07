@@ -6,6 +6,7 @@ class Chick extends MovableObject {
     height = 30;
     turnAround = false;
     levelEndX;
+    canJump;
 
     IMAGES_WALKING = [
         'assets/images/3_enemies_chicken/chicken_small/1_walk/1_w.png',
@@ -26,9 +27,12 @@ class Chick extends MovableObject {
         this.speed = 0.12 + Math.random() * 1;
         this.width = size * this.width;
         this.height = size * this.height;
-        this.y = 440 - this.height;
+        this.groundY = 440 - this.height;
+        this.y = this.groundY;
+        this.canJump = Math.random() < 0.33; 
         this.levelEndX = levelEndX;
-
+        
+        this.applyGravity();
         this.animate();
     }
 
@@ -41,6 +45,12 @@ class Chick extends MovableObject {
             if (this.x >= this.levelEndX) this.turnAround = false;
 
             this.turnAround ? this.moveRight() : this.moveLeft();
+
+            if (this.canJump && !this.isAboveGround()) {
+                this.jump(5 + Math.random()*10);
+            }
+                
+
         }, this.FT);
 
         IntervalHub.startInterval(() => {
@@ -54,15 +64,5 @@ class Chick extends MovableObject {
             }
         }, this.FT * 10);
     }
-
-
-
-
-    jump() {
-        console.log('Jumping');
-    }
-
-
-
 
 }

@@ -18,6 +18,7 @@ class MovableObject extends DrawableObject {
     accelerationY = 1;
     energy = 100;
     lastHit = 0;
+    groundY = 158; // Default ground level (Pepe's ground)
 
 
     drawCollisionBox(ctx, x, y, width, height, boxColor = 'blue') {
@@ -153,13 +154,13 @@ class MovableObject extends DrawableObject {
         if (this instanceof ThrowableObject) { // ThrowableObjects fall always
             return true;
         } else {
-            return this.y < 158;
+            return this.y < this.groundY;
         }
     }
 
 
-    jump() {
-        this.speedY = 20;
+    jump(speed = 20) {
+        this.speedY = speed;
     }
 
 
