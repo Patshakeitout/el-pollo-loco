@@ -2,12 +2,14 @@ class Level {
     enemies;
     clouds;
     backgrounds = [];
+    collectables = [];
     bgRepeat;
     levelEndX;
 
-    constructor(bgRepeat, levelEndX, enemies, clouds) {
+    constructor(bgRepeat, levelEndX, enemies, clouds, collectables) {
         this.enemies = enemies;
         this.clouds = clouds;
+        this.collectables = collectables || [];
         this.bgRepeat = bgRepeat;
         this.createBackgrounds(this.bgRepeat);
         this.levelEndX = levelEndX;

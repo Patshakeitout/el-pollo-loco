@@ -4,6 +4,7 @@
 class Chicken extends MovableObject {
     width = 50;
     height = 60;
+     turnAround = false;
 
     IMAGES_WALKING = [
         'assets/images/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
@@ -29,19 +30,22 @@ class Chicken extends MovableObject {
     }
 
 
-    animate() {
+    animate() { 
         IntervalHub.startInterval(() => {
-            if (!this.isDead()) {
-                this.moveLeft();
-            }
-        }, this.FT);
+            if (this.isDead()) return;
+
+            if (this.x <= 0) this.turnAround = true;
+            if (this.x >= this.levelEndX) this.turnAround = false;
+
+            this.turnAround ? this.moveRight() : this.moveLeft();
+         }, this.FT);
 
         IntervalHub.startInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
             } else {
                 let moduloIndex = this.currentImage % this.IMAGES_WALKING.length;
-                let path = this.IMAGES_WALKING[moduloIndex];
+                let path = this.IMAGES_WALKING[ moduloIndex];
                 this.img = this.imgCache[path];
                 this.currentImage++;
             }

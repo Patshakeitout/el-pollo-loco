@@ -30,6 +30,7 @@ class World {
         this.addObjectsToMap(this.level.backgrounds);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.clouds);
+        this.addObjectsToMap(this.level.collectables);
         if (this.pepe) this.addToMap(this.pepe);
         this.addObjectsToMap(this.thrownObjects);
 
@@ -100,6 +101,7 @@ class World {
     run() {
         IntervalHub.startInterval(() => {
             this.checkCollisions();
+            this.checkCollectableCollisions();
         }, this.FT);
 
         IntervalHub.startInterval(() => {
@@ -113,6 +115,35 @@ class World {
             }
         }, this.FT);
 
+    }
+
+
+    /**
+     * Check collisions between Pepe and collectables (coins and bottles)
+     */
+    checkCollectableCollisions() {
+        if (!this.pepe || this.pepe.isDead()) return;
+
+        this.level.collectables.forEach((collectable, index) => {
+            if (collectable.collected) return;
+
+            if (this.pepe.isColliding(collectable)) {
+                collectable.collect();
+
+                if (collectable.type === 'coin') {
+                    this.statusIconCoin.amount += 1;
+                    // Each coin refills 5 health points
+                    if (this.pepe.energy < 100) {
+                        this.pepe.energy = Math.min(100, this.pepe.energy + 2);
+                        this.statusIconPepe.setAmount(this.pepe.energy);
+                    }
+                } else if (collectable.type === 'bottle') {
+                    this.statusIconBottle.amount += 1;
+                }
+
+                this.level.collectables.splice(index, 1);
+            }
+        });
     }
 
 
