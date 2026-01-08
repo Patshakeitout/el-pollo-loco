@@ -75,6 +75,7 @@ class EndBoss extends MovableObject {
         let directionFlag = 1;
         let rollingDirection = 1; // Store direction when rolling starts
         const MIN_ROLLING_DISTANCE = 800; // Minimum distance to roll through
+        let hasPlayedApproachSound = false;
 
         // INTERVAL 1: ANIMATION & STATE LOGIC (Slow)
         IntervalHub.startInterval(() => {
@@ -103,6 +104,12 @@ class EndBoss extends MovableObject {
 
                 this.playAnimation(this.IMAGES_ALERT);
                 this.isWalking = false;
+                
+                // Play approach sound when player first enters detection range
+                if (!hasPlayedApproachSound && distance < EndBoss.secureAreaX + 200) {
+                    audioHub?.playEndbossApproachSound();
+                    hasPlayedApproachSound = true;
+                }
 
                 // ZONE 2: WALKING RANGE
             } else if (distance > EndBoss.secureAreaX - 100) {
@@ -193,6 +200,9 @@ class EndBoss extends MovableObject {
 
     playDeathAnimation() {
         if (this.deadAnimationIndex < this.IMAGES_DEAD.length) {
+            if (this.deadAnimationIndex === 0) {
+                audioHub?.playEndbossDeathSound();
+            }
             let path = this.IMAGES_DEAD[this.deadAnimationIndex];
             this.img = this.imgCache[path];
             this.deadAnimationIndex++;
@@ -262,6 +272,7 @@ class EndBoss extends MovableObject {
         // Delay rolling to let animation play (400ms for attack animation)
         setTimeout(() => {
             this.isRolling = true;
+            audioHub?.playEndbossRollingSound();
         }, 800);
     }
 

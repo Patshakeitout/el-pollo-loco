@@ -154,21 +154,33 @@ class Character extends MovableObject {
 
             // Freeze all user interactions if character is dead or movement locked
             if (!this.isDead() && !this.isMovementLocked()) {
+                let isMoving = false;
+                
                 if (this.world.keyboard.RIGHT && this.x < maxRight) {
                     this.moveRight();
                     this.turnAround = false;
-                    //this.walking_sound.play();
+                    isMoving = true;
                 }
 
                 if (this.world.keyboard.LEFT && this.x > minLeft) {
                     this.moveLeft();
                     this.turnAround = true;
-                    //this.walking_sound.play();
+                    isMoving = true;
+                }
+
+                // Handle walk sound
+                if (isMoving && !this.isAboveGround()) {
+                    audioHub?.playWalkSound();
+                } else {
+                    audioHub?.stopWalkSound();
                 }
 
                 if (this.world.keyboard.SPACE && !this.isAboveGround()) {
                     this.jump();
+                    audioHub?.playJumpSound();
                 }
+            } else {
+                audioHub?.stopWalkSound();
             }
         }, this.FT);
 
@@ -178,6 +190,7 @@ class Character extends MovableObject {
                 if (!this.deadAnimationStarted) {
                     this.playDeathAnimation(this.IMAGES_DEAD);
                     this.deadAnimationStarted = true;
+                    audioHub?.playDeathSound();
                 }
                 if (this.deadAnimationFinished) {
                     this.isFallingDown();

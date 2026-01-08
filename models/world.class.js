@@ -132,6 +132,7 @@ class World {
 
                 if (collectable.type === 'coin') {
                     this.statusIconCoin.amount += 1;
+                    audioHub?.playCoinSound();
                     // Each coin refills 5 health points
                     if (this.pepe.energy < 100) {
                         this.pepe.energy = Math.min(100, this.pepe.energy + 2);
@@ -139,6 +140,7 @@ class World {
                     }
                 } else if (collectable.type === 'bottle') {
                     this.statusIconBottle.amount += 1;
+                    audioHub?.playBottleCollectSound();
                 }
 
                 this.level.collectables.splice(index, 1);
@@ -184,6 +186,7 @@ class World {
 
                 if (!this.pepe.isDead() && this.pepe.isAboveGround() && this.pepe.speedY < 0 && !(enemy instanceof EndBoss) && pepeBottom < enemyCenterY) {
                     enemy.energy = 0;
+                    audioHub?.playChickenDeathSound();
                     this.pepe.speedY = 15; // Bounce
                     setTimeout(() => {
                         let enemyIndex = this.level.enemies.indexOf(enemy);
@@ -194,6 +197,7 @@ class World {
                 } else if (!this.pepe.isDead() && !this.pepe.isHurt()) {
                     this.pepe.hit();
                     this.pepe.isHurt();
+                    audioHub?.playHurtSound();
                     this.statusIconPepe.setAmount(this.pepe.energy);
                 } 
             }
@@ -205,12 +209,14 @@ class World {
                         bottle.speedY = 0;
                         bottle.speedX = 0;
                         bottle.splash();
+                        audioHub?.playBottleBreakSound();
                         if (enemy instanceof EndBoss) {
                             enemy.hit();
                             enemy.startRolling();
                             this.statusIconEndBoss.setAmount(enemy.energy);
                         } else {
                             enemy.energy = 0;
+                            audioHub?.playChickenDeathSound();
                             // Remove enemy after delay
                             setTimeout(() => {
                                 let enemyIndex = this.level.enemies.indexOf(enemy);

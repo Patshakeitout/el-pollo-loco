@@ -1,0 +1,32 @@
+{
+    "game": {
+        "backgroundMusic": "assets/audio/game/buffalo-girls.mp3",
+        "menuMusic": "assets/audio/game/a-calm-hellfire.mp3",
+        "battleMusic": "assets/audio/game/a-calm-hellfire.mp3",
+        "gameStart": "assets/audio/game/gameStart.mp3"
+    },
+    "character": {
+        "walk": "assets/audio/character/characterRun.mp3",
+        "jump": "assets/audio/character/characterJump.wav",
+        "hurt": "assets/audio/character/characterDamage.mp3",
+        "dead": "assets/audio/character/characterDead.wav",
+        "scream": "assets/audio/character/male-extreme-scream.mp3",
+        "snoring": "assets/audio/character/characterSnoring.mp3"
+    },
+    "chicken": {
+        "dead": "assets/audio/chicken/chickenDead.mp3",
+        "dead2": "assets/audio/chicken/chickenDead2.mp3"
+    },
+    "endboss": {
+        "approach": "assets/audio/endboss/endbossApproach.wav",
+        "dead": "assets/audio/endboss/chicken-noise.mp3",
+        "rolling": "assets/audio/endboss/rolling-a-huge-rock.mp3"
+    },
+    "collectibles": {
+        "coin": "assets/audio/collectibles/collectSound.wav",
+        "bottle": "assets/audio/collectibles/bottleCollectSound.wav"
+    },
+    "throwable": {
+        "bottleBreak": "assets/audio/throwable/bottleBreak.mp3"
+    }
+}

@@ -43,6 +43,12 @@ h1 {
     text-align: center;
     font-size: 60px;
     color: #000;
+    margin-bottom: 0;
+}
+
+h3 {
+    text-align: center;
+    font-size: 26px;
 }
 
 /* --- CANVAS / GAME CONTAINER --- */
@@ -54,19 +60,51 @@ canvas {
 
 /* --- SCREENS (Start & End) --- */
 /* Requirement: Start button and clear explanations [cite: 117] */
-.start-screen {
-    position: absolute;
+#start-screen {
+    position: relative;
     width: 720px;
-    /* Match your canvas size */
     height: 480px;
-    /* Mapping to your specific file path: */
-    background-image: url('../img/9_intro_outro_screens/start/startscreen_1.png');
-    background-size: cover;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-end;
     align-items: center;
-    z-index: 10;
     border-radius: 10px;
+    overflow: hidden;
+}
+
+#start-screen .start-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;
+}
+
+#start-screen #start-btn {
+    position: absolute;
+    top: 4%; 
+    left: 50%;
+    transform: translateX(-50%);    
+    margin-bottom: 40px;
+    font-size: 24px;
+    padding: 12px 20px;
+    background-color: #FFC107;
+    border: 3px solid #DA5F00;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+#start-screen #start-btn:hover {
+    transform: translateX(-50%) scale(1.15);
+    background-color: #FFD54F;
+}
+
+.d-none {
+    display: none !important;
 }
 
 .game-over-screen {
@@ -119,6 +157,10 @@ button:hover {
     background-color: rgba(255, 255, 255, 0.4);
     border-radius: 50%;
     border: 2px solid white;
+}
+
+footer {
+    text-align: center;
 }
 
 /* --- RESPONSIVENESS --- */
