@@ -8,7 +8,7 @@
     <title>El Pollo Loco</title>
 
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
-    <link rel="stylesheet" href="styles/global.css">    
+    <link rel="stylesheet" href="styles/global.css">
 
 
     <script src="models/intervalHub.class.js"></script>
@@ -17,52 +17,63 @@
     <script src="models/movable-object.class.js"></script>
     <script src="models/collectable-object.class.js"></script>
     <script src="models/character.class.js"></script>
-    <script src="models/chicken.class.js"></script>  
-    <script src="models/chick.class.js"></script>   
-    <script src="models/cloud.class.js"></script> 
+    <script src="models/chicken.class.js"></script>
+    <script src="models/chick.class.js"></script>
+    <script src="models/cloud.class.js"></script>
     <script src="models/status-icon.class.js"></script>
     <script src="models/world.class.js"></script>
     <script src="models/background.class.js"></script>
     <script src="models/keyboard.class.js"></script>
-    <script src="models/endBoss.class.js"></script> 
+    <script src="models/endBoss.class.js"></script>
     <script src="models/level.class.js"></script>
     <script src="models/throwable-object.class.js"></script>
     <script src="levels/level1.js"></script>
     <script src="js/game.js"></script>
-    
+
 </head>
 
 <body onload="init()">
 
-    <div id="rotate-device-overlay" class="d-none" aria-hidden="true">
-        <p>Please turn your device to play!</p>
+    <div id="rotate-device-overlay" aria-hidden="true">
+        <p>Please rotate your device to landscape mode!</p>
     </div>
 
-    <h1>El Pollo Loco</h1>
-    <h3>Welcome To The Desert Planet</h3>
+    <header>
+        <h1>El Pollo Loco</h1>
+        <span>by Patrick Schauer</span>
+        <h3>Welcome To The Western Planet</h3>
+    </header>
 
     <main>
+
         <section id="game-container" aria-label="Game Screen">
+            <canvas id="canvas" width="720" height="480" aria-label="Game Area" class="game-frame d-none"></canvas>
 
-            <canvas id="canvas" width="720" height="480" aria-label="Game Area" class="d-none"></canvas>
+            <section id="start-screen" class="game-frame overlay">
+                <img src="assets/images/9_intro_outro_screens/start/startscreen_2.png" alt="Start Screen"
+                    class="start-bg">
+                <button id="start-btn" class="btn-primary" aria-label="Start Game">Enter World</button>
+                <nav id="start-screen-controls">
+                    <button id="tutorial-btn" aria-label="Show Tutorial" title="Tutorial">❓</button>
+                    <button id="mute-btn" aria-label="Mute Audio" title="Mute Sound">🔇</button>
+                    <button id="fullscreen-btn" aria-label="Enter Fullscreen" title="Fullscreen">⛶</button>
+                </nav>
 
-            <section id="start-screen" class="overlay">
-                <img src="assets/images/9_intro_outro_screens/start/startscreen_2.png" alt="Start Screen" class="start-bg">
-                <button id="start-btn" class="btn-primary" aria-label="Start Game">Start Game</button>
+                <footer>
+                    <a href="impressum.html" target="_blank" aria-label="Legal Notice">Imprint</a>
+                    <a href="impressum.html" target="_blank" aria-label="Legal Notice">Privacy Policy</a>
+                </footer>
             </section>
 
-            <section id="end-screen" class="overlay d-none" aria-hidden="true">
-                <h2 id="game-result-text">Game Over</h2>
-                <button id="restart-btn" class="btn-primary" aria-label="Restart Game">Try Again</button>
-                <button id="home-btn" class="btn-secondary" aria-label="Back to Home">Home</button>
+            <section class="game-over-frame d-none" aria-label="Game Over Screen">
+                <figure>
+                    <img src="assets/images/9_intro_outro_screens/game_over/game-over.png" alt="Game Over">
+                </figure>
+                <nav class="game-over-btns" aria-label="Game Over Actions">
+                    <button id="try-again-btn" type="button" aria-label="Try Again">Try Again</button>
+                    <button id="home-btn" type="button" aria-label="Return to Home">Home</button>
+                </nav>
             </section>
-
-            <nav id="ui-controls" aria-label="Game Controls">
-                <button id="tutorial-btn" aria-label="Show Tutorial" title="Tutorial">❓</button>
-                <button id="mute-btn" aria-label="Mute Audio" title="Mute Sound">🔇</button>
-                <button id="fullscreen-btn" aria-label="Enter Fullscreen" title="Fullscreen">⛶</button>
-            </nav>
-
         </section>
 
         <nav id="mobile-controls" class="d-none" aria-label="Mobile Game Controls">
@@ -76,14 +87,6 @@
             </div>
         </nav>
     </main>
-
-    <footer>
-        <nav>
-            <a href="impressum.html" target="_blank" aria-label="Legal Notice">Imprint</a>
-            <a href="impressum.html" target="_blank" aria-label="Legal Notice">Privacy Policy</a>
-        </nav>
-    </footer>
-    
 </body>
 
 </html>

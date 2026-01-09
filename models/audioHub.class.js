@@ -32,7 +32,6 @@ class AudioHub {
             const config = await response.json();
             this.initializeSounds(config);
             this.isLoaded = true;
-            console.log('AudioHub: All sounds loaded successfully');
         } catch (error) {
             console.error('AudioHub: Failed to load audio config:', error);
         }

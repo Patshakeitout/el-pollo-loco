@@ -194,6 +194,10 @@ class Character extends MovableObject {
                 }
                 if (this.deadAnimationFinished) {
                     this.isFallingDown();
+                        // Show game over overlay after Pepe sinks
+                        if (typeof showGameOverOverlay === 'function') {
+                            showGameOverOverlay();
+                        }
                 }
             } else if (this.isMovementLocked()) {
                 // Show hurt animation during movement lock

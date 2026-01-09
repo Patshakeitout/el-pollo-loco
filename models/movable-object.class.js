@@ -16,7 +16,7 @@ class MovableObject extends DrawableObject {
     turnedAround = false;
     speedY = 0;
     accelerationY = 1;
-    energy = 100;
+    energy = 5;
     lastHit = 0;
     groundY = 158; // Default ground level (Pepe's ground)
 

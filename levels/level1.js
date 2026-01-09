@@ -1,20 +1,29 @@
   
-const bgRepeat = Math.floor(Math.random() * 6) + 5;
-const levelEndX =  bgRepeat * 720;
+let bgRepeat;
+let levelEndX;
 let enemies = [];
 let collectables = [];
+let level1;
 
-createEnemies(20);
-createEndBoss();
-createCollectables();
 
-const level1 = new Level(
-    bgRepeat,
-    levelEndX,  
-    enemies,
-    [new Cloud()],
-    collectables
-);
+function initLevel1() {
+    bgRepeat = Math.floor(Math.random() * 6) + 5;
+    levelEndX = bgRepeat * 720;
+    enemies = [];
+    collectables = [];
+    
+    createEnemies(20);
+    createEndBoss();
+    createCollectables();
+
+    level1 = new Level(
+        bgRepeat,
+        levelEndX,  
+        enemies,
+        [new Cloud()],
+        collectables
+    );
+}
 
 
 function createEnemies(number) {
