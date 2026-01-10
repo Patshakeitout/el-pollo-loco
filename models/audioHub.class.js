@@ -4,20 +4,20 @@
  */
 class AudioHub {
     static instance = null;
-    
+
     constructor() {
         if (AudioHub.instance) {
             return AudioHub.instance;
         }
-        
+
         this.sounds = {};
         this.music = {};
         this.currentMusic = null;
         this.isMuted = false;
-        this.musicVolume = 0.2; 
-        this.sfxVolume = 0.3; 
+        this.musicVolume = 0.2;
+        this.sfxVolume = 0.3;
         this.isLoaded = false;
-        
+
         AudioHub.instance = this;
     }
 
@@ -109,7 +109,9 @@ class AudioHub {
     }
 
     playWinSound() {
-        this.play(this.music.youWonMusic, 0.5);
+        if (this.music.youWonMusic) {
+            this.playMusic(this.music.youWonMusic, 0.5);
+        }
     }
 
 
@@ -119,13 +121,15 @@ class AudioHub {
      * @param {number} volume - Target volume
      */
     playMusic(music, volume) {
-        if (this.isMuted) return;
+        if (this.currentMusic && this.currentMusic !== music) {
+            this.currentMusic.pause();
+            this.currentMusic.currentTime = 0;
+        }
         
-        this.stopCurrentMusic();
         this.currentMusic = music;
         music.volume = volume;
         music.currentTime = 0;
-        music.play().catch(e => console.warn('AudioHub: Music play blocked:', e));
+        music.play();
     }
 
 
@@ -284,7 +288,7 @@ class AudioHub {
      */
     play(sound, volume = this.sfxVolume) {
         if (this.isMuted || !sound) return;
-        
+
         sound.volume = volume;
         sound.currentTime = 0;
         sound.play().catch(e => console.warn('AudioHub: Sound play blocked:', e));
@@ -327,11 +331,11 @@ class AudioHub {
      */
     toggleMute() {
         this.isMuted = !this.isMuted;
-        
+
         if (this.isMuted) {
             this.stopAll();
         }
-        
+
         return this.isMuted;
     }
 

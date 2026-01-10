@@ -165,6 +165,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const tryAgainBtn = document.getElementById('try-again-btn');
     if (tryAgainBtn) {
         tryAgainBtn.onclick = function() {
+            audioHub?.stopAll();
+
             IntervalHub.stopAllIntervals();
             restartGame();
             document.getElementById('end-screen').classList.add('d-none');
@@ -173,8 +175,9 @@ window.addEventListener('DOMContentLoaded', () => {
     const homeBtn = document.getElementById('home-btn');
     if (homeBtn) {
         homeBtn.onclick = function() {
+            audioHub?.stopAll();
+
             IntervalHub.stopAllIntervals();
-            audioHub.stopAll();
             showStartScreen();
             document.getElementById('end-screen').classList.add('d-none');
         };
@@ -198,6 +201,9 @@ function toggleMute() {
  * Restarts the game by resetting world, level, and UI states.
  */
 function restartGame() {
+
+    if (audioHub) audioHub.stopCurrentMusic();
+
     IntervalHub.stopAllIntervals();
     if (audioHub) {
         audioHub.stopAll();

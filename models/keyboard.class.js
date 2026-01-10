@@ -61,11 +61,10 @@ class Keyboard {
      * You will need to assign IDs to your HTML buttons (e.g., 'btnLeft').
      */
     bindMobileTouchEvents() {
-        // Example for Left Button
-        // this.bindTouch('btnLeft', 'LEFT');
-        // this.bindTouch('btnRight', 'RIGHT');
-        // this.bindTouch('btnJump', 'SPACE');
-        // this.bindTouch('btnThrow', 'ENTER');
+        this.bindTouch('btn-left', 'LEFT');
+        this.bindTouch('btn-right', 'RIGHT');
+        this.bindTouch('btn-jump', 'SPACE');
+        this.bindTouch('btn-throw', 'ENTER');
     }
 
     /**

@@ -173,4 +173,31 @@ class MovableObject extends DrawableObject {
         this.energy = energy;
     }
 
+
+/**
+ * Sets the energy of this object to 0 and removes it from the world after a delay.
+ * If audioHub is defined, it will play a chicken death sound.
+ * If this.world is defined and this.world.pepe is colliding with this, it will bounce Pepe.
+ * @see {MovableObject#setEnergy}
+ * @see {MovableObject#isColliding}
+ */
+    die() {
+        this.energy = 0;
+        if (typeof audioHub !== 'undefined') {
+            audioHub.playChickenDeathSound();
+        }
+        
+        if (this.world && this.world.pepe && this.world.pepe.isColliding(this)) {
+            this.world.pepe.speedY = 15; // Bounce
+        }
+        setTimeout(() => {
+            if (this.world) {
+                let enemyIndex = this.world.level.enemies.indexOf(this);
+                if (enemyIndex > -1) {
+                    this.world.level.enemies.splice(enemyIndex, 1);
+                }
+            }
+        }, 1000);
+    }
+
 }

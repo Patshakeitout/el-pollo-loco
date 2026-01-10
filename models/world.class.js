@@ -91,10 +91,10 @@ class World {
     setWorld() {
         this.pepe.world = this;
         this.level.enemies.forEach(enemy => {
-        if (enemy instanceof EndBoss) {
-            enemy.setWorld(this);
-        }
-    });
+            if (enemy instanceof EndBoss) {
+                enemy.setWorld(this);
+            }
+        });
     }
 
 
@@ -151,11 +151,11 @@ class World {
 
     checkThrowObjects() {
         if (this.keyboard.ENTER) {
-            
+
             if (this.statusIconBottle.amount == 0) {
-                
+
                 return;
-            } 
+            }
 
             // Determine throw direction based on Pepe's facing direction
             let throwDirection = this.pepe.turnAround ? -9 : 9;
@@ -168,7 +168,7 @@ class World {
             bottle.world = this;
             this.thrownObjects.push(bottle);
             this.statusIconBottle.amount -= 1;
-            
+
         }
     }
 
@@ -185,21 +185,13 @@ class World {
                 let enemyCenterY = enemy.y + (enemy.height / 2);
 
                 if (!this.pepe.isDead() && this.pepe.isAboveGround() && this.pepe.speedY < 0 && !(enemy instanceof EndBoss) && pepeBottom < enemyCenterY) {
-                    enemy.energy = 0;
-                    audioHub?.playChickenDeathSound();
-                    this.pepe.speedY = 15; // Bounce
-                    setTimeout(() => {
-                        let enemyIndex = this.level.enemies.indexOf(enemy);
-                        if (enemyIndex > -1) {
-                            this.level.enemies.splice(enemyIndex, 1);
-                        }
-                    }, 1000);
+                    enemy.die();
                 } else if (!this.pepe.isDead() && !this.pepe.isHurt()) {
                     this.pepe.hit();
                     this.pepe.isHurt();
                     audioHub?.playHurtSound();
                     this.statusIconPepe.setAmount(this.pepe.energy);
-                } 
+                }
             }
 
             if (this.thrownObjects.length > 0) {
@@ -240,23 +232,37 @@ class World {
      * Call this in your game loop or after relevant events.
      */
     checkGameEnd() {
-        if (this.gameEnded) return; // Prevent multiple triggers
+        if (this.gameEnded) return;
 
-        const endBoss = this.level.enemies.find(e => e instanceof EndBoss);
-        if (this.pepe && !this.pepe.isDead() && endBoss && endBoss.isDead()) {
-            // Pepe alive, EndBoss dead: WIN
-            if (typeof showEndOverlay === 'function') {
-                audioHub?.stopCurrentMusic();
-                audioHub?.playWinSound();
-                showEndOverlay(true);
-                this.gameEnded = true; // Set flag
-            }
+        const endBoss = this.level.enemies.find(enemy => enemy instanceof EndBoss);
+        const enemies = this.level.enemies.filter(enemy => !(enemy instanceof EndBoss));
+         if (this.pepe && !this.pepe.isDead() && endBoss && endBoss.isDead()) {
+            enemies.forEach((enemy) => {
+                enemy.die();
+            })
+
+            audioHub?.playWinSound();
+            showEndOverlay(true);
+            this.startDisco();
+
+            this.gameEnded = true;
         } else if (!this.pepe || (this.pepe && this.pepe.isDead())) {
-            // Pepe dead: LOSE
-            if (typeof showEndOverlay === 'function') {
-                showEndOverlay(false);
-                this.gameEnded = true; // Set flag
-            }
+            showEndOverlay(false);
+            this.gameEnded = true;
         }
     }
+
+
+    startDisco() {
+        const img = document.getElementById('end-screen-img');
+        if (!img) return;
+        let discoColors = ['#fff', '#ff0', '#0ff', '#f0f', '#0f0', '#f00', '#00f'];
+        let i = 0;
+        this.discoInterval = IntervalHub.startInterval(() => {
+            img.style.filter = `drop-shadow(0 0 32px ${discoColors[i % discoColors.length]}) brightness(${1 + Math.random()})`;
+            img.style.opacity = (i % 2 === 0) ? '1' : '0.5';
+            i++;
+        }, 120);
+    }
+
 }
