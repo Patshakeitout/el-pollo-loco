@@ -47,6 +47,7 @@ class AudioHub {
         this.music.menu = this.createAudio(config.game.menuMusic, true);
         this.music.battle = this.createAudio(config.game.battleMusic, true);
         this.music.gameStart = this.createAudio(config.game.gameStart, false);
+        this.music.youWonMusic = this.createAudio(config.game.youWonMusic, false);
 
         this.sounds.characterWalk = this.createAudio(config.character.walk, true);
         this.sounds.characterJump = this.createAudio(config.character.jump, false);
@@ -96,7 +97,7 @@ class AudioHub {
      * Plays menu music.
      */
     playMenuMusic() {
-        this.playMusic(this.music.menu, this.musicVolume);
+        this.play(this.music.menu, this.musicVolume);
     }
 
 
@@ -105,6 +106,10 @@ class AudioHub {
      */
     playGameStartSound() {
         this.play(this.music.gameStart, this.sfxVolume);
+    }
+
+    playWinSound() {
+        this.play(this.music.youWonMusic, 0.5);
     }
 
 

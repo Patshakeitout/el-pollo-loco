@@ -21,22 +21,9 @@ async function init() {
 
 
 function showStartOverlay() {
-    const overlay = document.createElement('div');
-    overlay.id = 'start-overlay';
-    overlay.style.position = 'fixed';
-    overlay.style.top = 0;
-    overlay.style.left = 0;
-    overlay.style.width = '100vw';
-    overlay.style.height = '100vh';
-    overlay.style.background = 'rgba(0,0,0,0.45)';
-    overlay.style.display = 'flex';
-    overlay.style.alignItems = 'center';
-    overlay.style.justifyContent = 'center';
-    overlay.style.zIndex = 9999;
-    overlay.innerHTML = `<button id="start-btn-overlay" style="font-size:2rem;padding:1rem 2rem;">Start</button>`;
-    document.body.appendChild(overlay);
-
+    const startOverlay = document.getElementById('start-overlay');
     const startBtnOverlay = document.getElementById('start-btn-overlay');
+
     startBtnOverlay.addEventListener('click', () => {
         playDesertWindsWhispering();
         const startScreen = document.getElementById('start-screen');
@@ -48,7 +35,7 @@ function showStartOverlay() {
             // Allow browser to render with opacity 0 and blur before animating
             setTimeout(() => pixelBuildStartScreen(), 30);
         }
-        overlay.remove();
+        startOverlay.remove();
     });
 }
 
@@ -153,17 +140,20 @@ function startGame() {
 
 
 /**
- * Shows the game over overlay, which is hidden by default.
- * This function can be called when Pepe dies to display the game over screen.
- * @example
- * function onPepeDeath() {
- *   // ...existing death logic...
- *   showGameOverOverlay();
- * }
+ * Shows the end overlay (win or lose) with the correct image.
+ * @param {boolean} isWin - true for win, false for lose
  */
-function showGameOverOverlay() {
-    const overlay = document.querySelector('.game-over-frame');
-    if (overlay) {
+function showEndOverlay(isWin) {
+    const overlay = document.getElementById('end-screen');
+    const img = document.getElementById('end-screen-img');
+    if (overlay && img) {
+        if (isWin) {
+            img.src = 'assets/images/You won, you lost/You Win A.png';
+            img.alt = 'You Win';
+        } else {
+            img.src = 'assets/images/9_intro_outro_screens/game_over/game-over.png';
+            img.alt = 'Game Over';
+        }
         overlay.classList.remove('d-none');
         overlay.style.display = 'flex';
     }
@@ -177,7 +167,7 @@ window.addEventListener('DOMContentLoaded', () => {
         tryAgainBtn.onclick = function() {
             IntervalHub.stopAllIntervals();
             restartGame();
-            document.querySelector('.game-over-frame').classList.add('d-none');
+            document.getElementById('end-screen').classList.add('d-none');
         };
     }
     const homeBtn = document.getElementById('home-btn');
@@ -186,7 +176,7 @@ window.addEventListener('DOMContentLoaded', () => {
             IntervalHub.stopAllIntervals();
             audioHub.stopAll();
             showStartScreen();
-            document.querySelector('.game-over-frame').classList.add('d-none');
+            document.getElementById('end-screen').classList.add('d-none');
         };
     }
 });
@@ -212,7 +202,7 @@ function restartGame() {
     if (audioHub) {
         audioHub.stopAll();
     }
-    document.querySelector('.game-over-frame').classList.add('d-none');
+    document.querySelector('.end-frame').classList.add('d-none');
     initLevel1();
     world = new World(canvas, keyboard);
     document.getElementById('canvas').classList.remove('d-none');
@@ -242,7 +232,7 @@ function showStartScreen() {
     }
     // Hide canvas and overlays
     document.getElementById('canvas').classList.add('d-none');
-    document.querySelector('.game-over-frame').classList.add('d-none');
+    document.querySelector('.end-frame').classList.add('d-none');
     // Remove any start overlay if present
     const overlay = document.getElementById('start-overlay');
     if (overlay) overlay.remove();

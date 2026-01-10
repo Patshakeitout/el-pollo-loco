@@ -1,8 +1,9 @@
 {
     "game": {
         "backgroundMusic": "assets/audio/game/buffalo-girls.mp3",
-        "menuMusic": "assets/audio/game/deset-winds-whispering.mp3",
+        "menuMusic": "assets/audio/game/desert-winds-whispering.mp3",
         "battleMusic": "assets/audio/game/a-calm-hellfire.mp3",
+        "youWonMusic": "assets/audio/game/latina-chic-airstream-main-version.mp3",
         "gameStart": "assets/audio/game/gameStart.mp3"
     },
     "character": {

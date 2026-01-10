@@ -48,7 +48,11 @@
         <section id="game-container" aria-label="Game Screen">
             <canvas id="canvas" width="720" height="480" aria-label="Game Area" class="game-frame d-none"></canvas>
 
-            <section id="start-screen" class="game-frame overlay">
+            <section id="start-overlay" class="overlay" aria-label="Start Screen Overlay">
+                <button id="start-btn-overlay">Start</button>
+            </section>
+
+            <section id="start-screen" class="overlay game-frame">
                 <img src="assets/images/9_intro_outro_screens/start/startscreen_2.png" alt="Start Screen"
                     class="start-bg">
                 <button id="start-btn" class="btn-primary" aria-label="Start Game">Enter World</button>
@@ -64,21 +68,11 @@
                 </footer>
             </section>
 
-            <section class="you-won-frame d-none" aria-label="You Won Screen">
+            <section id="end-screen" class="end-frame d-none" aria-label="End Screen">
                 <figure>
-                    <img src="assets/images/You won, you lost/You Won B.png" alt="You Won">
+                    <img id="end-screen-img" src="assets/images/You won, you lost/You Win B.png" alt="End Screen">
                 </figure>
-                <nav class="game-over-btns" aria-label="You Won Actions">
-                    <button id="try-again-btn" type="button" aria-label="Try Again">Try Again</button>
-                    <button id="home-btn" type="button" aria-label="Return to Home">Home</button>
-                </nav>
-            </section>
-
-            <section class="game-over-frame d-none" aria-label="Game Over Screen">
-                <figure>
-                    <img src="assets/images/9_intro_outro_screens/game_over/game-over.png" alt="Game Over">
-                </figure>
-                <nav class="game-over-btns" aria-label="Game Over Actions">
+                <nav class="game-over-btns" aria-label="End Screen Actions">
                     <button id="try-again-btn" type="button" aria-label="Try Again">Try Again</button>
                     <button id="home-btn" type="button" aria-label="Return to Home">Home</button>
                 </nav>

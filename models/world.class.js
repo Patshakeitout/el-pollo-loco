@@ -235,4 +235,28 @@ class World {
 
     }
 
+    /**
+     * Checks for win/lose state and shows overlay accordingly.
+     * Call this in your game loop or after relevant events.
+     */
+    checkGameEnd() {
+        if (this.gameEnded) return; // Prevent multiple triggers
+
+        const endBoss = this.level.enemies.find(e => e instanceof EndBoss);
+        if (this.pepe && !this.pepe.isDead() && endBoss && endBoss.isDead()) {
+            // Pepe alive, EndBoss dead: WIN
+            if (typeof showEndOverlay === 'function') {
+                audioHub?.stopCurrentMusic();
+                audioHub?.playWinSound();
+                showEndOverlay(true);
+                this.gameEnded = true; // Set flag
+            }
+        } else if (!this.pepe || (this.pepe && this.pepe.isDead())) {
+            // Pepe dead: LOSE
+            if (typeof showEndOverlay === 'function') {
+                showEndOverlay(false);
+                this.gameEnded = true; // Set flag
+            }
+        }
+    }
 }

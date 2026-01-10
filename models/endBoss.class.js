@@ -61,7 +61,7 @@ class EndBoss extends MovableObject {
         this.x = levelEndX - this.width;
 
         this.animate();
-        this.setEnergy(100);
+        this.setEnergy(5);
     }
 
 
@@ -84,6 +84,10 @@ class EndBoss extends MovableObject {
             if (this.isDead()) {
                 this.isRolling = false;
                 this.playDeathAnimation();
+                // Show win overlay if Pepe is alive
+                if (this.world && this.world.pepe && !this.world.pepe.isDead() && typeof this.world.checkGameEnd === 'function') {
+                    this.world.checkGameEnd();
+                }
                 return;
             }
 
