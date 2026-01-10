@@ -1,7 +1,7 @@
 {
     "game": {
         "backgroundMusic": "assets/audio/game/buffalo-girls.mp3",
-        "menuMusic": "assets/audio/game/a-calm-hellfire.mp3",
+        "menuMusic": "assets/audio/game/deset-winds-whispering.mp3",
         "battleMusic": "assets/audio/game/a-calm-hellfire.mp3",
         "gameStart": "assets/audio/game/gameStart.mp3"
     },

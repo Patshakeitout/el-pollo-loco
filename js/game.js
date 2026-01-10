@@ -118,7 +118,7 @@ function pixelBuildStartScreen() {
         if (step >= steps) {
             startScreen.style.opacity = '1';
             startScreen.style.filter = 'none';
-            IntervalHub.stopAllIntervals(interval);
+            IntervalHub.stopAllIntervals();
         }
     }, 30);
 }
