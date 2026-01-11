@@ -51,7 +51,7 @@ main {
 header {
     /* Neu: Absolute Positionierung */
     position: absolute;
-    top: 0; /* Abstand von oben */
+    top: 4vh; 
     left: 0;
     width: 100%; /* Volle Breite für Zentrierung */
     
@@ -322,7 +322,7 @@ footer a {
 
 /* --- RESPONSIVENESS --- */
 /* Nur auf Screens, die hoch genug sind (also kein Handy im Querformat) */
-@media only screen and (min-height: 666px) { 
+@media only screen and (min-height: 703px) { 
     #aspect-ratio-wrapper {
         /* Hier kommt der Abstand wieder rein, aber NUR für Desktop */
         margin-top: 16vh; 
@@ -353,7 +353,7 @@ footer a {
 
 
 /* Center #game-container vertically when header elements are hidden */
-@media only screen and (max-height: 666px) {
+@media only screen and (max-height: 703px) {
     h1, h3, span {
         display: none;
     }
@@ -365,7 +365,7 @@ footer a {
 }
 
 /* Nur auf Screens, die hoch genug sind (Desktop/Tablet) */
-@media only screen and (min-height: 666px) { 
+@media only screen and (min-height: 703px) { 
     #aspect-ratio-wrapper {
         margin-top: 16vh; /* Schiebt das Spiel etwas runter, damit die Überschrift Platz hat */
     }
