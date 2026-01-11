@@ -77,18 +77,33 @@
                     <button id="home-btn" type="button" aria-label="Return to Home">Home</button>
                 </nav>
             </section>
-        </section>
 
-        <nav id="mobile-controls" class="d-none" aria-label="Mobile Game Controls">
-            <div id="movement-controls">
-                <button id="btn-left" aria-label="Move Left">⬅️</button>
-                <button id="btn-right" aria-label="Move Right">➡️</button>
-            </div>
-            <div id="action-controls">
-                <button id="btn-jump" aria-label="Jump">⬆️</button>
-                <button id="btn-throw" aria-label="Throw Bottle">🍾</button>
-            </div>
-        </nav>
+        <!-- Mobile controls are now overlayed inside the canvas area -->
+        <!-- Mobile controls are now overlayed inside the game container area -->
+        <section id="mobile-controls" class="d-none" aria-label="Mobile Game Controls" style="position: absolute; left: 0; bottom: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2;">
+            <section id="movement-controls" style="position: absolute; left: 20px; bottom: 20px; display: flex; gap: 16px; pointer-events: auto;">
+                <button id="btn-left" aria-label="Move Left" class="mobile-btn" style="pointer-events: auto;">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 8L12 16L20 24" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <button id="btn-right" aria-label="Move Right" class="mobile-btn" style="pointer-events: auto;">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 8L20 16L12 24" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </section>
+            <section id="action-controls" style="position: absolute; right: 20px; bottom: 20px; display: flex; gap: 16px; pointer-events: auto;">
+                <button id="btn-jump" aria-label="Jump" class="mobile-btn" style="pointer-events: auto;">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 20L16 12L24 20" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <button id="btn-throw" aria-label="Throw Bottle" class="mobile-btn" style="pointer-events: auto;">
+                    <img src="assets/images/6_salsa_bottle/salsa_bottle.png" alt="Throw Bottle" style="height: 32px; width: auto; vertical-align: middle;" />
+                </button>
+            </section>
+        </section>
     </main>
 </body>
 
