@@ -46,49 +46,62 @@
         </header>
 
         <section id="game-container" aria-label="Game Screen">
-            <canvas id="canvas" width="720" height="480" aria-label="Game Area" class="game-frame d-none"></canvas>
+            <div class="game-frame-wrapper">
+                <canvas id="canvas" width="720" height="480" aria-label="Game Area" class="game-frame d-none"></canvas>
 
-            <section id="start-overlay" class="overlay" aria-label="Start Screen Overlay">
-                <button id="start-btn-overlay">Start</button>
-            </section>
+                <section id="start-overlay" class="overlay" aria-label="Start Screen Overlay">
+                    <button id="start-btn-overlay">Start</button>
+                </section>
 
-            <section id="start-screen" class="overlay game-frame">
-                <img src="assets/images/9_intro_outro_screens/start/startscreen_2.png" alt="Start Screen"
-                    class="start-bg">
-                <button id="start-btn" class="btn-primary" aria-label="Start Game">Enter World</button>
-                <nav id="start-screen-controls">
-                    <button id="tutorial-btn" aria-label="Show Tutorial" title="Tutorial">❓</button>
-                    <button id="mute-btn" aria-label="Mute Audio" title="Mute Sound">🔇</button>
-                    <button id="fullscreen-btn" aria-label="Enter Fullscreen" title="Fullscreen">⛶</button>
-                </nav>
+                <section id="start-screen" class="overlay game-frame">
+                    <img src="assets/images/9_intro_outro_screens/start/startscreen_2.png" alt="Start Screen" class="start-bg">
+                    <button id="start-btn" class="btn-primary" aria-label="Start Game">Enter World</button>
+                    <nav id="start-screen-controls">
+                        <button id="tutorial-btn" aria-label="Show Tutorial" title="Tutorial">❓</button>
+                        <button id="mute-btn" aria-label="Mute Audio" title="Mute Sound">🔇</button>
+                        <button id="fullscreen-btn" aria-label="Enter Fullscreen" title="Fullscreen">⛶</button>
+                    </nav>
+                    <footer>
+                        <a href="impressum.html" target="_blank" aria-label="Legal Notice">Imprint</a>
+                        <a href="impressum.html" target="_blank" aria-label="Legal Notice">Privacy Policy</a>
+                    </footer>
+                </section>
 
-                <footer>
-                    <a href="impressum.html" target="_blank" aria-label="Legal Notice">Imprint</a>
-                    <a href="impressum.html" target="_blank" aria-label="Legal Notice">Privacy Policy</a>
-                </footer>
-            </section>
+                <section id="end-screen" class="end-frame d-none" aria-label="End Screen">
+                    <figure>
+                        <img id="end-screen-img" src="assets/images/You won, you lost/You Win B.png" alt="End Screen">
+                    </figure>
+                    <nav class="game-over-btns" aria-label="End Screen Actions">
+                        <button id="try-again-btn" type="button" aria-label="Try Again">Try Again</button>
+                        <button id="home-btn" type="button" aria-label="Return to Home">Home</button>
+                    </nav>
+                </section>
 
-            <section id="end-screen" class="end-frame d-none" aria-label="End Screen">
-                <figure>
-                    <img id="end-screen-img" src="assets/images/You won, you lost/You Win B.png" alt="End Screen">
-                </figure>
-                <nav class="game-over-btns" aria-label="End Screen Actions">
-                    <button id="try-again-btn" type="button" aria-label="Try Again">Try Again</button>
-                    <button id="home-btn" type="button" aria-label="Return to Home">Home</button>
-                </nav>
-            </section>
-        </section>
-
-        <nav id="mobile-controls" class="d-none" aria-label="Mobile Game Controls">
-            <div id="movement-controls">
-                <button id="btn-left" aria-label="Move Left">⬅️</button>
-                <button id="btn-right" aria-label="Move Right">➡️</button>
+                <section id="mobile-controls" class="d-none" aria-label="Mobile Game Controls">
+                    <section id="movement-controls" class="mobile-controls-group">
+                        <button id="btn-left" aria-label="Move Left" class="mobile-btn">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20 8L12 16L20 24" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                        <button id="btn-right" aria-label="Move Right" class="mobile-btn">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 8L20 16L12 24" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </section>
+                    <section id="action-controls" class="mobile-controls-group">
+                        <button id="btn-jump" aria-label="Jump" class="mobile-btn">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 20L16 12L24 20" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                        <button id="btn-throw" aria-label="Throw Bottle" class="mobile-btn">
+                            <img src="assets/images/6_salsa_bottle/salsa_bottle.png" alt="Throw Bottle" class="bottle-icon" />
+                        </button>
+                    </section>
+                </section>
             </div>
-            <div id="action-controls">
-                <button id="btn-jump" aria-label="Jump">⬆️</button>
-                <button id="btn-throw" aria-label="Throw Bottle">🍾</button>
-            </div>
-        </nav>
     </main>
 </body>
 
