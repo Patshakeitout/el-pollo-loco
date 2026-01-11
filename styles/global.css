@@ -91,6 +91,7 @@ h1, h3, span {
 
     /* Maximale Größe (Desktop Cap), damit es nicht riesig wird */
     max-width: 720px; 
+    margin-top: 0;
 
     border-radius: 10px;
     overflow: hidden;
@@ -321,7 +322,7 @@ footer a {
 
 /* --- RESPONSIVENESS --- */
 /* Nur auf Screens, die hoch genug sind (also kein Handy im Querformat) */
-@media only screen and (min-height: 480px) { 
+@media only screen and (min-height: 666px) { 
     #aspect-ratio-wrapper {
         /* Hier kommt der Abstand wieder rein, aber NUR für Desktop */
         margin-top: 16vh; 
@@ -352,7 +353,7 @@ footer a {
 
 
 /* Center #game-container vertically when header elements are hidden */
-@media only screen and (max-height: 710px) {
+@media only screen and (max-height: 666px) {
     h1, h3, span {
         display: none;
     }
@@ -360,10 +361,13 @@ footer a {
     main {
         justify-content: center;
     }
+    
+}
 
+/* Nur auf Screens, die hoch genug sind (Desktop/Tablet) */
+@media only screen and (min-height: 666px) { 
     #aspect-ratio-wrapper {
-        /* Hier kommt der Abstand wieder rein, aber NUR für Desktop */
-        margin-top: 16vh; 
+        margin-top: 16vh; /* Schiebt das Spiel etwas runter, damit die Überschrift Platz hat */
     }
 }
 
