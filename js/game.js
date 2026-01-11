@@ -9,6 +9,8 @@ let audioHub;
  */
 async function init() {
     canvas = document.getElementById('canvas');
+    canvas.classList.add('d-none');
+
     await initAudio();
     setupStartButton();
     // Hide start screen initially
@@ -93,15 +95,18 @@ function playDesertWindsWhispering() {
 function pixelBuildStartScreen() {
     const startScreen = document.getElementById('start-screen');
     if (!startScreen) return;
-    startScreen.style.transition = 'opacity 0.9s linear, filter 0.9s linear';
+
+    startScreen.style.transition = 'none';
     startScreen.style.opacity = '0';
     startScreen.style.filter = 'blur(8px)';
+
     let step = 0;
     const steps = 60;
-    const interval = IntervalHub.startInterval(() => {
+    IntervalHub.startInterval(() => {
         step++;
         startScreen.style.opacity = (step / steps).toString();
         startScreen.style.filter = `blur(${8 - (step / steps) * 8}px)`;
+        
         if (step >= steps) {
             startScreen.style.opacity = '1';
             startScreen.style.filter = 'none';

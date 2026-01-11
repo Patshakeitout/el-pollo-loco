@@ -46,37 +46,39 @@
         </header>
 
         <section id="game-container" aria-label="Game Screen">
-            <canvas id="canvas" width="720" height="480" aria-label="Game Area" class="game-frame d-none"></canvas>
+            <div id="aspect-ratio-wrapper">
+                <canvas id="canvas" width="720" height="480" aria-label="Game Area" class="game-frame d-none"></canvas>
 
-            <section id="start-overlay" class="overlay" aria-label="Start Screen Overlay">
-                <button id="start-btn-overlay">Start</button>
-            </section>
+                <section id="start-overlay" aria-label="Start Screen Overlay">
+                    <button id="start-btn-overlay">Start</button>
+                </section>
 
-            <section id="start-screen" class="overlay game-frame">
-                <img src="assets/images/9_intro_outro_screens/start/startscreen_2.png" alt="Start Screen"
-                    class="start-bg">
-                <button id="start-btn" class="btn-primary" aria-label="Start Game">Enter World</button>
-                <nav id="start-screen-controls">
-                    <button id="tutorial-btn" aria-label="Show Tutorial" title="Tutorial">❓</button>
-                    <button id="mute-btn" aria-label="Mute Audio" title="Mute Sound">🔇</button>
-                    <button id="fullscreen-btn" aria-label="Enter Fullscreen" title="Fullscreen">⛶</button>
-                </nav>
+                <section id="start-screen">
+                    <img src="assets/images/9_intro_outro_screens/start/startscreen_2.png" alt="Start Screen"
+                        class="start-bg">
+                    <button id="start-btn" class="btn-primary" aria-label="Start Game">Enter World</button>
+                    <nav id="start-screen-controls">
+                        <button id="tutorial-btn" aria-label="Show Tutorial" title="Tutorial">❓</button>
+                        <button id="mute-btn" aria-label="Mute Audio" title="Mute Sound">🔇</button>
+                        <button id="fullscreen-btn" aria-label="Enter Fullscreen" title="Fullscreen">⛶</button>
+                    </nav>
 
-                <footer>
-                    <a href="impressum.html" target="_blank" aria-label="Legal Notice">Imprint</a>
-                    <a href="impressum.html" target="_blank" aria-label="Legal Notice">Privacy Policy</a>
-                </footer>
-            </section>
+                    <footer>
+                        <a href="impressum.html" target="_blank" aria-label="Legal Notice">Imprint</a>
+                        <a href="impressum.html" target="_blank" aria-label="Legal Notice">Privacy Policy</a>
+                    </footer>
+                </section>
 
-            <section id="end-screen" class="end-frame d-none" aria-label="End Screen">
-                <figure>
-                    <img id="end-screen-img" src="assets/images/You won, you lost/You Win B.png" alt="End Screen">
-                </figure>
-                <nav class="game-over-btns" aria-label="End Screen Actions">
-                    <button id="try-again-btn" type="button" aria-label="Try Again">Try Again</button>
-                    <button id="home-btn" type="button" aria-label="Return to Home">Home</button>
-                </nav>
-            </section>
+                <section id="end-screen" class="d-none" aria-label="End Screen">
+                    <figure>
+                        <img id="end-screen-img" src="assets/images/You won, you lost/You Win B.png" alt="End Screen">
+                    </figure>
+                    <nav class="game-over-btns" aria-label="End Screen Actions">
+                        <button id="try-again-btn" type="button" aria-label="Try Again">Try Again</button>
+                        <button id="home-btn" type="button" aria-label="Return to Home">Home</button>
+                    </nav>
+                </section>
+            </div>
         </section>
 
         <nav id="mobile-controls" class="d-none" aria-label="Mobile Game Controls">
