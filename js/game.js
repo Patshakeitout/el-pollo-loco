@@ -130,6 +130,12 @@ function startGame() {
     // Hide start screen, show canvas
     document.getElementById('start-screen').classList.add('d-none');
     document.getElementById('canvas').classList.remove('d-none');
+    // Show mobile controls
+    const mobileControls = document.getElementById('mobile-controls');
+    if (mobileControls) {
+        mobileControls.classList.remove('d-none');
+        mobileControls.style.display = 'flex';
+    }
     // Create level when starting the game
     initLevel1();
     // Initialize the game world
@@ -151,6 +157,12 @@ function startGame() {
 function showEndOverlay(isWin) {
     const overlay = document.getElementById('end-screen');
     const img = document.getElementById('end-screen-img');
+    // Hide mobile controls when game ends
+    const mobileControls = document.getElementById('mobile-controls');
+    if (mobileControls) {
+        mobileControls.classList.add('d-none');
+        mobileControls.style.display = 'none';
+    }
     if (overlay && img) {
         if (isWin) {
             img.src = 'assets/images/You won, you lost/You Win A.png';
@@ -244,6 +256,12 @@ function showStartScreen() {
     // Hide canvas and overlays
     document.getElementById('canvas').classList.add('d-none');
     document.querySelector('.end-frame').classList.add('d-none');
+    // Hide mobile controls when returning to start screen
+    const mobileControls = document.getElementById('mobile-controls');
+    if (mobileControls) {
+        mobileControls.classList.add('d-none');
+        mobileControls.style.display = 'none';
+    }
     // Remove any start overlay if present
     const overlay = document.getElementById('start-overlay');
     if (overlay) overlay.remove();
