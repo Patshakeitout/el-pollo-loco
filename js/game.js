@@ -165,9 +165,11 @@ function showEndOverlay(isWin) {
     }
     if (overlay && img) {
         if (isWin) {
+            img.classList.remove('game-over');
             img.src = 'assets/images/You won, you lost/You Win A.png';
             img.alt = 'You Win';
         } else {
+            img.classList.add('game-over');
             img.src = 'assets/images/9_intro_outro_screens/game_over/game-over.png';
             img.alt = 'Game Over';
         }
@@ -187,6 +189,7 @@ window.addEventListener('DOMContentLoaded', () => {
             IntervalHub.stopAllIntervals();
             restartGame();
             document.getElementById('end-screen').classList.add('d-none');
+            document.getElementById('end-screen').style.display = 'none';
         };
     }
     const homeBtn = document.getElementById('home-btn');
@@ -197,6 +200,7 @@ window.addEventListener('DOMContentLoaded', () => {
             IntervalHub.stopAllIntervals();
             showStartScreen();
             document.getElementById('end-screen').classList.add('d-none');
+            //document.getElementById('end-screen').style.display = 'none';
         };
     }
 });
@@ -225,11 +229,11 @@ function restartGame() {
     if (audioHub) {
         audioHub.stopAll();
     }
-    document.querySelector('.end-frame').classList.add('d-none');
+    document.getElementById('end-screen').classList.add('d-none');
     initLevel1();
     world = new World(canvas, keyboard);
     document.getElementById('canvas').classList.remove('d-none');
-    document.getElementById('start-screen').classList.add('d-none');
+    //document.getElementById('start-screen').classList.add('d-none');
     if (audioHub && audioHub.isLoaded) {
         audioHub.playGameStartSound();
         setTimeout(() => {
@@ -255,7 +259,7 @@ function showStartScreen() {
     }
     // Hide canvas and overlays
     document.getElementById('canvas').classList.add('d-none');
-    document.querySelector('.end-frame').classList.add('d-none');
+    document.getElementById('end-screen').classList.add('d-none');
     // Hide mobile controls when returning to start screen
     const mobileControls = document.getElementById('mobile-controls');
     if (mobileControls) {

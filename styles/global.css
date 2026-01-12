@@ -238,12 +238,15 @@ canvas {
 }
 
 #end-screen-img {
-    width: 60%;
-    height: auto;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
-    object-position: center;
     margin-bottom: 0;
     border-radius: 10px;
+}
+
+#end-screen-img.game-over {
+    object-fit: cover;   /* for game over */
 }
 
 
@@ -256,6 +259,14 @@ canvas {
     padding: 0 24px;
     box-sizing: border-box;
     bottom: 30px;
+}
+
+#end-screen .game-over-btns button {
+    font-size: clamp(14px, min(3vw, 4vh), 24px);
+    padding: clamp(6px, min(1.5vw, 2vh), 12px) clamp(10px, min(3vw, 4vh), 20px);
+    border-width: clamp(1.5px, min(0.4vw, 0.6vh), 3px);
+    min-width: clamp(80px, min(18vw, 20vh), 180px);
+    min-height: clamp(32px, min(5vw, 7vh), 56px);
 }
 
 /* --- HIDDEN --- */
