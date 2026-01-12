@@ -185,7 +185,20 @@ class World {
                 let enemyCenterY = enemy.y + (enemy.height / 2);
 
                 if (!this.pepe.isDead() && this.pepe.isAboveGround() && this.pepe.speedY < 0 && !(enemy instanceof EndBoss) && pepeBottom < enemyCenterY) {
-                    enemy.die();
+                    enemy.energy = 0;
+                    this.pepe.speedY = 15; // Bounce
+                    audioHub?.playJumpSound();
+                    if (enemy instanceof Chicken) {                      
+                        audioHub?.playChickenDeathSound?.(); // Play chickenDead.mp3
+                    } else if (enemy instanceof Chick) {
+                        audioHub?.playChickDeathSound?.(); // Play chickDead.mp3
+                    }
+                    setTimeout(() => {
+                        let enemyIndex = this.level.enemies.indexOf(enemy);
+                        if (enemyIndex > -1) {
+                            this.level.enemies.splice(enemyIndex, 1);
+                        }
+                    }, 1000);
                 } else if (!this.pepe.isDead() && !this.pepe.isHurt()) {
                     this.pepe.hit();
                     this.pepe.isHurt();
@@ -227,6 +240,7 @@ class World {
 
     }
 
+
     /**
      * Checks for win/lose state and shows overlay accordingly.
      * Call this in your game loop or after relevant events.
@@ -236,7 +250,7 @@ class World {
 
         const endBoss = this.level.enemies.find(enemy => enemy instanceof EndBoss);
         const enemies = this.level.enemies.filter(enemy => !(enemy instanceof EndBoss));
-         if (this.pepe && !this.pepe.isDead() && endBoss && endBoss.isDead()) {
+        if (this.pepe && !this.pepe.isDead() && endBoss && endBoss.isDead()) {
             enemies.forEach((enemy) => {
                 enemy.die();
             })

@@ -15,8 +15,10 @@
         "snoring": "assets/audio/character/characterSnoring.mp3"
     },
     "chicken": {
-        "dead": "assets/audio/chicken/chickenDead.mp3",
-        "dead2": "assets/audio/chicken/chickenDead2.mp3"
+        "dead": "assets/audio/chicken/chickenDead.mp3"
+    },
+    "chick": {
+        "dead": "assets/audio/chicken/chickDead.mp3"
     },
     "endboss": {
         "approach": "assets/audio/endboss/endbossApproach.wav",

@@ -57,7 +57,7 @@ class AudioHub {
         this.sounds.characterSnoring = this.createAudio(config.character.snoring, true);
 
         this.sounds.chickenDead = this.createAudio(config.chicken.dead, false);
-        this.sounds.chickenDead2 = this.createAudio(config.chicken.dead2, false);
+        this.sounds.chickDead = this.createAudio(config.chick.dead, false);
 
         this.sounds.endbossApproach = this.createAudio(config.endboss.approach, false);
         this.sounds.endbossDead = this.createAudio(config.endboss.dead, false);
@@ -125,7 +125,7 @@ class AudioHub {
             this.currentMusic.pause();
             this.currentMusic.currentTime = 0;
         }
-        
+
         this.currentMusic = music;
         music.volume = volume;
         music.currentTime = 0;
@@ -212,10 +212,14 @@ class AudioHub {
      * Plays chicken death sound (randomizes between two variants).
      */
     playChickenDeathSound() {
-        const sound = Math.random() > 0.5 ? this.sounds.chickenDead : this.sounds.chickenDead2;
-        this.play(sound, this.sfxVolume * 0.8);
+        const sound = this.sounds.chickenDead;
+        this.play(sound, 0.8);
     }
 
+    playChickDeathSound() {
+        const sound = this.sounds.chickDead;
+        this.play(sound, 0.8);
+    }
 
     /**
      * Plays endboss approach/alert sound and switches to battle music.
