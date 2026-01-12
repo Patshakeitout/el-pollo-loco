@@ -262,7 +262,7 @@ canvas {
 }
 
 #end-screen .game-over-btns button {
-    font-size: clamp(14px, min(3vw, 4vh), 24px);
+    font-size: clamp(16px, min(3vw, 4vh), 24px);
     padding: clamp(6px, min(1.5vw, 2vh), 12px) clamp(10px, min(3vw, 4vh), 20px);
     border-width: clamp(1.5px, min(0.4vw, 0.6vh), 3px);
     min-width: clamp(80px, min(18vw, 20vh), 180px);
@@ -294,24 +294,49 @@ button:hover {
 
 /* --- MOBILE CONTROLS --- */
 #mobile-controls {
-    position: fixed;
+    display: none;
+    position: absolute;
     left: 0;
     bottom: 0;
-    width: 100vw;
+    width: 100%;
     z-index: 50;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 20px 10px 20px;
+    gap: 6px;
+    justify-content: center;
+    padding-bottom: 4px;
     box-sizing: border-box;
     background: none;
+    pointer-events: none; /* Let clicks pass through except for buttons */
 }
 
-.mobile-btn {
-    width: 60px;
-    height: 60px;
-    background-color: rgba(255, 255, 255, 0.4);
-    border-radius: 50%;
-    border: 2px solid white;
+#mobile-controls > div {
+    display: flex;
+    pointer-events: auto;
+}
+
+#mobile-controls button {
+    font-size: clamp(16px, min(3vw, 4vh), 20px);
+    min-width: clamp(16px, min(18vw, 20vh), 48px);
+    min-height: clamp(4px, min(5vw, 7vh), 16px);
+    padding: 2px 2px;
+    border-width: clamp(1px, min(0.4vw, 0.6vh), 2px);
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#btn-throw {
+    padding: 0;
+}
+
+#btn-throw img {
+    width: 1.5rem;
+    height: 1.5rem;
+    object-fit: contain;
+    display: block;
+    margin: 0;
+    pointer-events: none;
+    transform: rotate(30deg);
 }
 
 footer {
@@ -403,7 +428,7 @@ footer a {
 }
 
 /* Mobile controls visible on small screens */
-@media only screen and (max-width: 960px) {
+@media only screen and (max-width: 1024px) and (orientation: landscape) {
     #mobile-controls {
         display: flex;
     }
@@ -435,7 +460,7 @@ footer a {
 /* Portrait Mode Warning - show rotate overlay */
 @media only screen and (orientation: portrait) {
     #rotate-device-overlay {
-        display: flex !important;
+        display: flex;
     }
 
     /* Hide all game content in portrait */

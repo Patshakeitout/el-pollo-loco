@@ -1,6 +1,6 @@
 let canvas;
 let world;
-let keyboard = new Keyboard();
+let keyboard;
 let audioHub;
 
 
@@ -10,6 +10,8 @@ let audioHub;
 async function init() {
     canvas = document.getElementById('canvas');
     canvas.classList.add('d-none');
+
+    keyboard = new Keyboard();
 
     await initAudio();
     setupStartButton();
@@ -134,7 +136,6 @@ function startGame() {
     const mobileControls = document.getElementById('mobile-controls');
     if (mobileControls) {
         mobileControls.classList.remove('d-none');
-        mobileControls.style.display = 'flex';
     }
     // Create level when starting the game
     initLevel1();
@@ -161,7 +162,6 @@ function showEndOverlay(isWin) {
     const mobileControls = document.getElementById('mobile-controls');
     if (mobileControls) {
         mobileControls.classList.add('d-none');
-        mobileControls.style.display = 'none';
     }
     if (overlay && img) {
         if (isWin) {
@@ -232,8 +232,14 @@ function restartGame() {
     document.getElementById('end-screen').classList.add('d-none');
     initLevel1();
     world = new World(canvas, keyboard);
+
+    // Show mobile controls
+    const mobileControls = document.getElementById('mobile-controls');
+    if (mobileControls) {
+        mobileControls.classList.remove('d-none');
+    }
+
     document.getElementById('canvas').classList.remove('d-none');
-    //document.getElementById('start-screen').classList.add('d-none');
     if (audioHub && audioHub.isLoaded) {
         audioHub.playGameStartSound();
         setTimeout(() => {
@@ -264,7 +270,6 @@ function showStartScreen() {
     const mobileControls = document.getElementById('mobile-controls');
     if (mobileControls) {
         mobileControls.classList.add('d-none');
-        mobileControls.style.display = 'none';
     }
     // Remove any start overlay if present
     const overlay = document.getElementById('start-overlay');
