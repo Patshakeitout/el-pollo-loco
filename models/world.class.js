@@ -16,6 +16,7 @@ class World {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
+        this.paused = false;
 
         this.draw();
         this.setWorld();
@@ -24,29 +25,44 @@ class World {
 
 
     draw() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.translate(this.cameraX, 0);
+        if (!this.paused) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.translate(this.cameraX, 0);
 
-        this.addObjectsToMap(this.level.backgrounds);
-        this.addObjectsToMap(this.level.enemies);
-        this.addObjectsToMap(this.level.clouds);
-        this.addObjectsToMap(this.level.collectables);
-        if (this.pepe) this.addToMap(this.pepe);
-        this.addObjectsToMap(this.thrownObjects);
+            this.addObjectsToMap(this.level.backgrounds);
+            this.addObjectsToMap(this.level.enemies);
+            this.addObjectsToMap(this.level.clouds);
+            this.addObjectsToMap(this.level.collectables);
+            if (this.pepe) this.addToMap(this.pepe);
+            this.addObjectsToMap(this.thrownObjects);
 
-        this.ctx.translate(-this.cameraX, 0);
+            this.ctx.translate(-this.cameraX, 0);
 
-        // --- Space for fixed objects in canvas ---
-        this.addToMap(this.statusIconPepe);
-        this.addToMap(this.statusIconCoin);
-        this.addToMap(this.statusIconBottle);
-        this.addToMap(this.statusIconEndBoss);
+            // --- Space for fixed objects in canvas ---
+            this.addToMap(this.statusIconPepe);
+            this.addToMap(this.statusIconCoin);
+            this.addToMap(this.statusIconBottle);
+            this.addToMap(this.statusIconEndBoss);
 
-        this.ctx.translate(this.cameraX, 0);
+            this.ctx.translate(this.cameraX, 0);
 
-        this.ctx.translate(-this.cameraX, 0);
+            this.ctx.translate(-this.cameraX, 0);
 
-        requestAnimationFrame(() => this.draw());
+            let self = this;
+            requestAnimationFrame(() => self.draw());
+        }
+    }
+
+
+    /**
+     * Toggles the pause state of the game. If the game is unpaused,
+     * the draw loop is restarted.
+     */
+    togglePause() {
+        this.paused = !this.paused;
+        if (!this.paused) {
+            this.draw();
+        }
     }
 
 
@@ -188,7 +204,7 @@ class World {
                     enemy.energy = 0;
                     this.pepe.speedY = 15; // Bounce
                     audioHub?.playJumpSound();
-                    if (enemy instanceof Chicken) {                      
+                    if (enemy instanceof Chicken) {
                         audioHub?.playChickenDeathSound?.(); // Play chickenDead.mp3
                     } else if (enemy instanceof Chick) {
                         audioHub?.playChickDeathSound?.(); // Play chickDead.mp3

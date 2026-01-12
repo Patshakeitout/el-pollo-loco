@@ -151,6 +151,25 @@ function startGame() {
 }
 
 
+function togglePauseGame() {
+    // Check if the game is actually running
+    if (!world) return;
+
+    // 1. Toggle the "Eyes" (Rendering)
+    world.togglePause(); // Calls the method we discussed earlier
+
+    // 2. Toggle the "Brain" (Logic / Intervals)
+    // We sync the IntervalHub state with the World state
+    IntervalHub.isPaused = world.paused;
+
+    // 3. Update the Button Text/Icon
+    const btn = document.getElementById('btn-pause');
+    if (btn) {
+        btn.innerText = world.paused ? "▶" : "❚❚";
+    }
+}
+
+
 /**
  * Shows the end overlay (win or lose) with the correct image.
  * @param {boolean} isWin - true for win, false for lose

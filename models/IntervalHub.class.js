@@ -1,20 +1,31 @@
 class IntervalHub {
-    // Speichert alle registrierten Interval-IDs
     static allIntervals = [];
+    static isPaused = false;
 
     // Startet ein neues Intervall und
     // fügt es dem Array allIntervals hinzu
     static startInterval(func, timer) {
-        const newInterval = setInterval(func, timer);
-        // console.log(
-        //     `Neues Intervall gestartet mit ID: ${newInterval}`
-        // );
+        // const newInterval = setInterval(func, timer);
+        // IntervalHub.allIntervals.push(newInterval);
+
+        const pausableFunc = () => {
+            if (!IntervalHub.isPaused) {
+                func();
+            }
+        };
+
+        // 3. Register the WRAPPER, not the original function
+        const newInterval = setInterval(pausableFunc, timer);
         IntervalHub.allIntervals.push(newInterval);
     }
 
-    //Stoppt alle registrierten Intervalle und leert die Registry.
+    
+    /**
+     * Stops all currently running intervals and empties the registry.
+     */
     static stopAllIntervals() {
         IntervalHub.allIntervals.forEach(clearInterval);
         IntervalHub.allIntervals = [];
+        IntervalHub.isPaused = false;
     }
 }
