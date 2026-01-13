@@ -61,7 +61,7 @@ class EndBoss extends MovableObject {
         this.x = levelEndX - this.width;
 
         this.animate();
-        this.setEnergy(5);
+        this.setEnergy(100);
     }
 
 

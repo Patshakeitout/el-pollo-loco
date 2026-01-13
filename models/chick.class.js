@@ -19,7 +19,7 @@ class Chick extends MovableObject {
 
     constructor(size, levelEndX) {
         super();
-        this.loadImage('../../assets/images/3_enemies_chicken/chicken_small/1_walk/1_w.png');
+        this.loadImage('assets/images/3_enemies_chicken/chicken_small/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD); // Preload dead image into cache
 

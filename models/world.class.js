@@ -48,8 +48,8 @@ class World {
 
             this.ctx.translate(-this.cameraX, 0);
 
-            let self = this;
-            requestAnimationFrame(() => self.draw());
+            //let self = this;
+            requestAnimationFrame(() => this.draw());
         }
     }
 

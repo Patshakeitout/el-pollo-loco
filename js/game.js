@@ -14,7 +14,9 @@ async function init() {
     keyboard = new Keyboard();
 
     await initAudio();
+
     setupStartButton();
+    setupMuteButton();
     // Hide start screen initially
     const startScreen = document.getElementById('start-screen');
     if (startScreen) {
@@ -24,12 +26,51 @@ async function init() {
 }
 
 
+/**
+ * Sets up the Mute Button state and event listener.
+ */
+/**
+ * Sets up the Mute Button state and event listener.
+ */
+function setupMuteButton() {
+    const muteBtn = document.getElementById('mute-btn');
+    if (!muteBtn) return;
+
+    // 1. Load saved state (Strings 'true'/'false' need conversion)
+    let isMuted = localStorage.getItem('elPolloMute') === 'true';
+
+    // 2. Sync AudioHub with saved state
+    if (audioHub) {
+        audioHub.isMuted = isMuted; // Set the internal flag
+        if (isMuted) {
+            audioHub.stopAll(); // Ensure silence if we started muted
+        }
+    }
+
+    // 3. Set correct icon
+    muteBtn.textContent = isMuted ? '🔇' : '🔈';
+
+    // 4. Attach Listener
+    muteBtn.onclick = function () {
+        if (!audioHub) return;
+
+        const newMutedState = audioHub.toggleMute();
+        // Save as string 'true' or 'false'
+        localStorage.setItem('elPolloMute', newMutedState);
+        
+        muteBtn.textContent = newMutedState ? '🔇' : '🔈';
+    };
+}
+
+
 function showStartOverlay() {
     const startOverlay = document.getElementById('start-overlay');
     const startBtnOverlay = document.getElementById('start-btn-overlay');
 
     startBtnOverlay.addEventListener('click', () => {
-        playDesertWindsWhispering();
+        if (audioHub) {
+            audioHub.playMenuMusic();
+        }
         const startScreen = document.getElementById('start-screen');
         if (startScreen) {
             startScreen.style.opacity = '0';
@@ -63,35 +104,6 @@ async function initAudio() {
 
 
 /**
- * Plays desert-winds-whispering.mp3 on page load.
- */
-function playDesertWindsWhispering() {
-    let audio = document.getElementById('desert-winds-audio');
-    if (!audio) {
-        audio = document.createElement('audio');
-        audio.id = 'desert-winds-audio';
-        audio.src = 'assets/audio/game/desert-winds-whispering.mp3';
-        audio.loop = true;
-        audio.volume = 0.2;
-        audio.autoplay = true;
-        document.body.appendChild(audio);
-    }
-    audio.play().catch((err) => {
-        audio.muted = true;
-        audio.play().then(() => {
-            setTimeout(() => {
-                audio.muted = false;
-            }, 500);
-        }).catch((err2) => {
-            document.body.addEventListener('click', () => audio.play(), { once: true });
-            console.warn('Autoplay blocked. Will play on user interaction.', err2);
-        });
-        console.warn('Autoplay blocked. Trying muted play.', err);
-    });
-}
-
-
-/**
  * Pixel build effect for start screen.
  */
 function pixelBuildStartScreen() {
@@ -108,7 +120,7 @@ function pixelBuildStartScreen() {
         step++;
         startScreen.style.opacity = (step / steps).toString();
         startScreen.style.filter = `blur(${8 - (step / steps) * 8}px)`;
-        
+
         if (step >= steps) {
             startScreen.style.opacity = '1';
             startScreen.style.filter = 'none';
@@ -185,7 +197,7 @@ function showEndOverlay(isWin) {
     if (overlay && img) {
         if (isWin) {
             img.classList.remove('game-over');
-            img.src = 'assets/images/You won, you lost/You Win A.png';
+            img.src = 'assets/images/9_intro_outro_screens/end_screens/You Win A.png';
             img.alt = 'You Win';
         } else {
             img.classList.add('game-over');
@@ -202,7 +214,7 @@ function showEndOverlay(isWin) {
 window.addEventListener('DOMContentLoaded', () => {
     const tryAgainBtn = document.getElementById('try-again-btn');
     if (tryAgainBtn) {
-        tryAgainBtn.onclick = function() {
+        tryAgainBtn.onclick = function () {
             audioHub?.stopAll();
 
             IntervalHub.stopAllIntervals();
@@ -213,7 +225,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     const homeBtn = document.getElementById('home-btn');
     if (homeBtn) {
-        homeBtn.onclick = function() {
+        homeBtn.onclick = function () {
             audioHub?.stopAll();
 
             IntervalHub.stopAllIntervals();
@@ -223,18 +235,6 @@ window.addEventListener('DOMContentLoaded', () => {
         };
     }
 });
-
-
-/**
- * Toggles audio mute state (can be connected to mute button).
- * @returns {boolean} Current mute state
- */
-function toggleMute() {
-    if (audioHub) {
-        return audioHub.toggleMute();
-    }
-    return false;
-}
 
 
 /**
@@ -273,7 +273,7 @@ function restartGame() {
  * Used on page load and when clicking Home.
  */
 function showStartScreen() {
-    playDesertWindsWhispering();
+    audioHub.playMenuMusic();
     const startScreen = document.getElementById('start-screen');
     if (startScreen) {
         startScreen.style.opacity = '0';

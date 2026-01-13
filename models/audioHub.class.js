@@ -89,15 +89,49 @@ class AudioHub {
      * Plays background music for gameplay.
      */
     playBackgroundMusic() {
-        this.playMusic(this.music.background, this.musicVolume);
+        const bgMusic = this.music.background;
+        if (!bgMusic) return;
+
+        // 1. Stop the Menu Music (or whatever was playing before)
+        if (this.currentMusic && this.currentMusic !== bgMusic) {
+            this.currentMusic.pause();
+            this.currentMusic.currentTime = 0;
+        }
+
+        // 2. Set new Current
+        this.currentMusic = bgMusic;
+
+        // 3. Play if not muted
+        if (this.isMuted) return;
+        
+        bgMusic.loop = true;
+        this.play(bgMusic, this.musicVolume);
     }
 
 
     /**
-     * Plays menu music.
-     */
+       * Plays the menu loop (Desert Winds) and tracks it.
+       */
     playMenuMusic() {
-        this.play(this.music.menu, this.musicVolume);
+        const menuMusic = this.music.menu;
+        if (!menuMusic) return;
+
+        // 1. Stop any OTHER music that might be playing
+        if (this.currentMusic && this.currentMusic !== menuMusic) {
+            this.currentMusic.pause();
+            this.currentMusic.currentTime = 0;
+        }
+
+        // 2. CRITICAL: Register this as the "Current Music"
+        // This allows stopAll() and playBackgroundMusic() to control it.
+        this.currentMusic = menuMusic;
+
+        // 3. Check Mute State
+        if (this.isMuted) return;
+
+        // 4. Play
+        menuMusic.loop = true;
+        this.play(menuMusic, this.musicVolume);
     }
 
 
@@ -335,11 +369,7 @@ class AudioHub {
      */
     toggleMute() {
         this.isMuted = !this.isMuted;
-
-        if (this.isMuted) {
-            this.stopAll();
-        }
-
+        if (this.isMuted) this.stopAll();
         return this.isMuted;
     }
 
