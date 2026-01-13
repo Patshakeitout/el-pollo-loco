@@ -3,6 +3,7 @@
         "backgroundMusic": "assets/audio/game/buffalo-girls.mp3",
         "menuMusic": "assets/audio/game/desert-winds-whispering.mp3",
         "battleMusic": "assets/audio/game/a-calm-hellfire.mp3",
+        "gameOver": "assets/audio/game/game-over.wav",
         "youWonMusic": "assets/audio/game/latina-chic-airstream-main-version.mp3",
         "gameStart": "assets/audio/game/gameStart.mp3"
     },

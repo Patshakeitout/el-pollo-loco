@@ -271,12 +271,13 @@ class World {
                 enemy.die();
             })
 
-            audioHub?.playWinSound();
+            audioHub?.playLostSound();
             showEndOverlay(true);
             this.startDisco();
 
             this.gameEnded = true;
         } else if (!this.pepe || (this.pepe && this.pepe.isDead())) {
+            audioHub?.playLostSound();
             showEndOverlay(false);
             this.gameEnded = true;
         }

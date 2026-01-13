@@ -46,7 +46,7 @@ class AudioHub {
         this.music.background = this.createAudio(config.game.backgroundMusic, true);
         this.music.menu = this.createAudio(config.game.menuMusic, true);
         this.music.battle = this.createAudio(config.game.battleMusic, true);
-        this.music.gameStart = this.createAudio(config.game.gameStart, false);
+        this.music.gameOver = this.createAudio(config.game.gameOver, false);
         this.music.youWonMusic = this.createAudio(config.game.youWonMusic, false);
 
         this.sounds.characterWalk = this.createAudio(config.character.walk, true);
@@ -140,6 +140,12 @@ class AudioHub {
      */
     playGameStartSound() {
         this.play(this.music.gameStart, this.sfxVolume);
+    }
+
+    playLostSound() {
+        if (this.music.gameOver) {
+            this.play(this.music.gameOver, 0.5);
+        }
     }
 
     playWinSound() {
