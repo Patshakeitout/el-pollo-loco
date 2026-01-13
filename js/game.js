@@ -36,30 +36,50 @@ function setupMuteButton() {
     const muteBtn = document.getElementById('mute-btn');
     if (!muteBtn) return;
 
-    // 1. Load saved state (Strings 'true'/'false' need conversion)
     let isMuted = localStorage.getItem('elPolloMute') === 'true';
-
-    // 2. Sync AudioHub with saved state
     if (audioHub) {
-        audioHub.isMuted = isMuted; // Set the internal flag
+        audioHub.isMuted = isMuted;
         if (isMuted) {
-            audioHub.stopAll(); // Ensure silence if we started muted
+            audioHub.stopAll();
         }
     }
 
-    // 3. Set correct icon
     muteBtn.textContent = isMuted ? '🔇' : '🔈';
 
-    // 4. Attach Listener
+    /**
+     * Toggles the mute state of the game and updates the button text.
+     * Saves the current mute state to local storage.
+     */
     muteBtn.onclick = function () {
         if (!audioHub) return;
 
         const newMutedState = audioHub.toggleMute();
-        // Save as string 'true' or 'false'
         localStorage.setItem('elPolloMute', newMutedState);
-        
+
+        // Update Icon
         muteBtn.textContent = newMutedState ? '🔇' : '🔈';
-    };
+
+        if (!newMutedState) {
+            const startScreen = document.getElementById('start-screen');
+            const startOverlay = document.getElementById('start-overlay');
+            const canvas = document.getElementById('canvas');
+
+            // A: If the generic "Start Overlay" (Click to Play) is still there, do nothing.
+            // The user hasn't started the interaction yet.
+            if (startOverlay) return;
+
+            // B: If Start Screen is visible, play Menu Music
+            if (startScreen && !startScreen.classList.contains('d-none')) {
+                audioHub.playMenuMusic();
+            }
+            // C: If Canvas is visible (Game is running), play Background Music
+            else if (canvas && !canvas.classList.contains('d-none')) {
+                // Determine if we should play standard or battle music? 
+                // For simplicity, playBackgroundMusic() usually handles the main loop.
+                audioHub.playBackgroundMusic();
+            }
+        };
+    }
 }
 
 
