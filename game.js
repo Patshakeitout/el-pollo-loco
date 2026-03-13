@@ -17,9 +17,6 @@ async function init() {
 
     setupStartButton();
     setupMuteButton();
-    setupTutorialButton();
-    setupFullscreenButton();
-    setupStoryButton();
     // Hide start screen initially
     const startScreen = document.getElementById('start-screen');
     if (startScreen) {
@@ -29,9 +26,6 @@ async function init() {
 }
 
 
-/**
- * Sets up the Mute Button state and event listener.
- */
 /**
  * Sets up the Mute Button state and event listener.
  */
@@ -94,164 +88,17 @@ function showStartOverlay() {
         if (audioHub) {
             audioHub.playMenuMusic();
         }
-        startOverlay.remove();
-        showStoryIntro();
-    });
-}
-
-
-/**
- * Sets up the story replay button on the start screen.
- */
-function setupStoryButton() {
-    const storyBtn = document.getElementById('story-btn');
-    if (!storyBtn) return;
-
-    storyBtn.addEventListener('click', () => {
         const startScreen = document.getElementById('start-screen');
         if (startScreen) {
-            startScreen.classList.add('d-none');
-            startScreen.style.display = 'none';
+            startScreen.style.opacity = '0';
+            startScreen.style.filter = 'blur(8px)';
+            startScreen.classList.remove('d-none');
+            startScreen.style.display = 'flex';
+            // Allow browser to render with opacity 0 and blur before animating
+            setTimeout(() => pixelBuildStartScreen(), 30);
         }
-        showStoryIntro();
+        startOverlay.remove();
     });
-}
-
-
-/**
- * Shows the typewriter story intro, then transitions to the start screen.
- */
-function showStoryIntro() {
-    const storyScreen = document.getElementById('story-screen');
-    const storyText = document.getElementById('story-text');
-    const skipBtn = document.getElementById('skip-story-btn');
-
-    storyScreen.classList.remove('d-none');
-    storyScreen.style.display = 'flex';
-
-    const storyLines = [
-        "The desert sun burns without mercy...\n\n",
-        "In 2126, humanity began colonizing Mars.\n",
-        "By 2300, the atmosphere was restored\nand a new frontier was born.\n\n",
-        "Pepe's father built a chicken farm\nto feed the colonists with the finest\npoultry and eggs on the red planet.\n\n",
-        "When he passed, Pepe inherited the ranch.\n",
-        "Driven by ambition, he turned to\ngenetic engineering — breeding bigger,\ntastier, and stronger chickens.\n\n",
-        "One morning, Pepe woke to silence.\n",
-        "The lab was destroyed.\nCages ripped open. Equipment shattered.\n\n",
-        "His creations had escaped.\n",
-        "And among them... one had grown\nbeyond control.\n\n",
-        "They call it El Pollo Loco.\n\n",
-        "Now Pepe must cross the Martian wasteland,\nreclaim what he created,\nand face the monster he unleashed.\n\n",
-        "Collect. Fight. Survive."
-    ];
-
-    const fullText = storyLines.join('');
-    let charIndex = 0;
-    let skipped = false;
-
-    storyText.innerHTML = '<span class="cursor"></span>';
-
-    setTimeout(() => {
-        if (!skipped) skipBtn.classList.remove('d-none');
-    }, 1500);
-
-    function typeNextChar() {
-        if (skipped) return;
-        if (charIndex < fullText.length) {
-            const char = fullText[charIndex];
-            const cursor = storyText.querySelector('.cursor');
-            const textNode = document.createTextNode(char);
-            storyText.insertBefore(textNode, cursor);
-            charIndex++;
-            // Auto-scroll to keep cursor visible
-            storyScreen.scrollTop = storyScreen.scrollHeight;
-            const delay = char === '\n' ? 120 : char === '.' ? 80 : 35;
-            setTimeout(typeNextChar, delay);
-        } else {
-            const cursor = storyText.querySelector('.cursor');
-            if (cursor) cursor.remove();
-        }
-    }
-
-    function finishStory() {
-        storyScreen.classList.add('d-none');
-        storyScreen.style.display = 'none';
-        skipBtn.classList.add('d-none');
-        transitionToStartScreen();
-    }
-
-    skipBtn.onclick = () => {
-        skipped = true;
-        skipBtn.classList.add('d-none');
-        finishStory();
-    };
-
-    setTimeout(typeNextChar, 600);
-}
-
-
-/**
- * Transitions from story to the start screen with pixel build effect.
- */
-function transitionToStartScreen() {
-    const startScreen = document.getElementById('start-screen');
-    if (startScreen) {
-        startScreen.style.opacity = '0';
-        startScreen.style.filter = 'blur(8px)';
-        startScreen.classList.remove('d-none');
-        startScreen.style.display = 'flex';
-        setTimeout(() => pixelBuildStartScreen(), 30);
-    }
-}
-
-
-/**
- * Sets up the tutorial button to show/hide the controls overlay.
- */
-function setupTutorialButton() {
-    const tutorialBtn = document.getElementById('tutorial-btn');
-    const overlay = document.getElementById('controls-overlay');
-    const closeBtn = document.getElementById('close-controls-btn');
-    if (!tutorialBtn || !overlay || !closeBtn) return;
-
-    tutorialBtn.addEventListener('click', () => {
-        overlay.classList.remove('d-none');
-        overlay.style.display = 'flex';
-    });
-
-    closeBtn.addEventListener('click', () => {
-        overlay.classList.add('d-none');
-        overlay.style.display = 'none';
-    });
-}
-
-
-/**
- * Sets up the fullscreen toggle button.
- */
-function setupFullscreenButton() {
-    const fullscreenBtn = document.getElementById('fullscreen-btn');
-    if (!fullscreenBtn) return;
-
-    fullscreenBtn.addEventListener('click', toggleFullscreen);
-
-    document.addEventListener('fullscreenchange', () => {
-        fullscreenBtn.textContent = document.fullscreenElement ? '⛶' : '⛶';
-        fullscreenBtn.title = document.fullscreenElement ? 'Exit Fullscreen' : 'Fullscreen';
-    });
-}
-
-
-/**
- * Toggles fullscreen on the game container.
- */
-function toggleFullscreen() {
-    const container = document.getElementById('game-container');
-    if (!document.fullscreenElement) {
-        container.requestFullscreen().catch(() => {});
-    } else {
-        document.exitFullscreen();
-    }
 }
 
 
@@ -260,7 +107,6 @@ function toggleFullscreen() {
  */
 function setupStartButton() {
     const startBtn = document.getElementById('start-btn');
-    startBtn.classList.add('d-none');
     startBtn.addEventListener('click', startGame);
 }
 
@@ -296,8 +142,6 @@ function pixelBuildStartScreen() {
             startScreen.style.opacity = '1';
             startScreen.style.filter = 'none';
             IntervalHub.stopAllIntervals();
-            const startBtn = document.getElementById('start-btn');
-            if (startBtn) startBtn.classList.remove('d-none');
         }
     }, 30);
 }
@@ -314,42 +158,25 @@ function startGame() {
         winds.currentTime = 0;
         winds.remove();
     }
-
-    const curtain = document.getElementById('curtain-overlay');
-
-    // Show curtain closed over start screen
-    curtain.classList.remove('d-none', 'open');
-    curtain.style.display = 'flex';
-
-    // After curtain covers the screen, swap to canvas behind it
-    setTimeout(() => {
-        document.getElementById('start-screen').classList.add('d-none');
-        document.getElementById('canvas').classList.remove('d-none');
-
-        const mobileControls = document.getElementById('mobile-controls');
-        if (mobileControls) mobileControls.classList.remove('d-none');
-
-        initLevel1();
-        world = new World(canvas, keyboard);
-
-        // Show home button
-        const homeBtn = document.getElementById('btn-home');
-        if (homeBtn) homeBtn.classList.remove('d-none');
-
-        // Open the curtain to reveal the game
-        curtain.classList.add('open');
-
-        if (audioHub && audioHub.isLoaded) {
-            audioHub.playGameStartSound();
-            setTimeout(() => audioHub.playBackgroundMusic(), 500);
-        }
-
-        // Remove curtain after animation
+    // Hide start screen, show canvas
+    document.getElementById('start-screen').classList.add('d-none');
+    document.getElementById('canvas').classList.remove('d-none');
+    // Show mobile controls
+    const mobileControls = document.getElementById('mobile-controls');
+    if (mobileControls) {
+        mobileControls.classList.remove('d-none');
+    }
+    // Create level when starting the game
+    initLevel1();
+    // Initialize the game world
+    world = new World(canvas, keyboard);
+    // Play sounds
+    if (audioHub && audioHub.isLoaded) {
+        audioHub.playGameStartSound();
         setTimeout(() => {
-            curtain.classList.add('d-none');
-            curtain.classList.remove('open');
-        }, 1500);
-    }, 400);
+            audioHub.playBackgroundMusic();
+        }, 500);
+    }
 }
 
 
@@ -431,41 +258,30 @@ window.addEventListener('DOMContentLoaded', () => {
  * Restarts the game by resetting world, level, and UI states.
  */
 function restartGame() {
+
     if (audioHub) audioHub.stopCurrentMusic();
 
     IntervalHub.stopAllIntervals();
     if (audioHub) {
         audioHub.stopAll();
     }
+    document.getElementById('end-screen').classList.add('d-none');
+    initLevel1();
+    world = new World(canvas, keyboard);
 
-    const curtain = document.getElementById('curtain-overlay');
-    curtain.classList.remove('d-none', 'open');
-    curtain.style.display = 'flex';
+    // Show mobile controls
+    const mobileControls = document.getElementById('mobile-controls');
+    if (mobileControls) {
+        mobileControls.classList.remove('d-none');
+    }
 
-    setTimeout(() => {
-        document.getElementById('end-screen').classList.add('d-none');
-        initLevel1();
-        world = new World(canvas, keyboard);
-
-        const mobileControls = document.getElementById('mobile-controls');
-        if (mobileControls) {
-            mobileControls.classList.remove('d-none');
-        }
-
-        document.getElementById('canvas').classList.remove('d-none');
-
-        curtain.classList.add('open');
-
-        if (audioHub && audioHub.isLoaded) {
-            audioHub.playGameStartSound();
-            setTimeout(() => audioHub.playBackgroundMusic(), 500);
-        }
-
+    document.getElementById('canvas').classList.remove('d-none');
+    if (audioHub && audioHub.isLoaded) {
+        audioHub.playGameStartSound();
         setTimeout(() => {
-            curtain.classList.add('d-none');
-            curtain.classList.remove('open');
-        }, 1500);
-    }, 400);
+            audioHub.playBackgroundMusic();
+        }, 500);
+    }
 }
 
 
@@ -474,8 +290,6 @@ function restartGame() {
  * Used on page load and when clicking Home.
  */
 function showStartScreen() {
-    const startBtn = document.getElementById('start-btn');
-    if (startBtn) startBtn.classList.add('d-none');
     audioHub.playMenuMusic();
     const startScreen = document.getElementById('start-screen');
     if (startScreen) {
@@ -493,21 +307,7 @@ function showStartScreen() {
     if (mobileControls) {
         mobileControls.classList.add('d-none');
     }
-    // Hide home button
-    const homeBtn = document.getElementById('btn-home');
-    if (homeBtn) homeBtn.classList.add('d-none');
     // Remove any start overlay if present
     const overlay = document.getElementById('start-overlay');
     if (overlay) overlay.remove();
-}
-
-
-/**
- * In-game home button handler — stops the game and returns to start screen.
- */
-function goHome() {
-    if (!world) return;
-    audioHub?.stopAll();
-    IntervalHub.stopAllIntervals();
-    showStartScreen();
 }

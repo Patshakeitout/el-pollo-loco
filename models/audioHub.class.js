@@ -46,6 +46,7 @@ class AudioHub {
         this.music.background = this.createAudio(config.game.backgroundMusic, true);
         this.music.menu = this.createAudio(config.game.menuMusic, true);
         this.music.battle = this.createAudio(config.game.battleMusic, true);
+        this.music.gameStart = this.createAudio(config.game.gameStart, false);
         this.music.gameOver = this.createAudio(config.game.gameOver, false);
         this.music.youWonMusic = this.createAudio(config.game.youWonMusic, false);
 

@@ -97,7 +97,18 @@ h1, h3, span {
     overflow: hidden;
 }
 
-/* Header texts */ 
+/* Fullscreen: remove cap and fill screen */
+#game-container:fullscreen {
+    background: #000;
+}
+
+#game-container:fullscreen #aspect-ratio-wrapper {
+    max-width: none;
+    width: min(100vw, 150vh);
+    margin-top: 0;
+}
+
+/* Header texts */
 h1 {
     font-size: 60px;
     margin: 0;
@@ -209,12 +220,219 @@ canvas {
     bottom: 2.5%;
     left: 50%;
     transform: translateX(-50%);
+    z-index: 2;
 }
 
 #start-screen-controls button {
     padding: 4px 8px;
     font-size: 1.4em;
     margin-right: 12px;
+    z-index: 1;
+}
+
+/* --- IN-GAME HOME BUTTON --- */
+#btn-home {
+    position: absolute;
+    top: 2.5%;
+    right: 8px;
+    z-index: 50;
+    font-size: clamp(0.7em, 1.8vw, 1em);
+    padding: 1px 4px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 193, 7, 0.4);
+    color: #FFC107;
+    border-radius: 6px;
+    opacity: 0.6;
+    line-height: 1;
+}
+
+#btn-home:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* --- CURTAIN OVERLAY --- */
+#curtain-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 80;
+    display: flex;
+    pointer-events: none;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.curtain-left,
+.curtain-right {
+    width: 50%;
+    height: 100%;
+    background: #1a0e00;
+    transition: transform 1.4s ease-in-out;
+}
+
+.curtain-left {
+    transform-origin: left;
+}
+
+.curtain-right {
+    transform-origin: right;
+}
+
+#curtain-overlay.open .curtain-left {
+    transform: translateX(-100%);
+}
+
+#curtain-overlay.open .curtain-right {
+    transform: translateX(100%);
+}
+
+/* --- STORY SCREEN --- */
+#story-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    background:
+        radial-gradient(ellipse at 50% 120%, rgba(218, 119, 26, 0.3) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(139, 69, 19, 0.2) 0%, transparent 40%),
+        radial-gradient(ellipse at 20% 30%, rgba(139, 69, 19, 0.15) 0%, transparent 40%),
+        linear-gradient(180deg, #0d0805 0%, #1f1008 40%, #2a1507 70%, #1a0e00 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    z-index: 90;
+    padding: 8% 10%;
+    box-sizing: border-box;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+#story-screen::-webkit-scrollbar {
+    display: none;
+}
+
+#story-text {
+    font-family: 'Boogaloo-Regular', sans-serif;
+    color: #f5c842;
+    font-size: clamp(18px, 3.5vw, 28px);
+    line-height: 1.8;
+    text-align: center;
+    text-shadow: 0 0 8px rgba(245, 200, 66, 0.4);
+    white-space: pre-wrap;
+    max-width: 100%;
+}
+
+#story-text .cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: #f5c842;
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: blink 0.7s step-end infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+#skip-story-btn {
+    position: absolute;
+    bottom: 5%;
+    right: 5%;
+    z-index: 91;
+    font-size: clamp(14px, 2.2vw, 20px);
+    padding: 6px 16px;
+    background: transparent;
+    border: 2px solid #f5c842;
+    color: #f5c842;
+    opacity: 0.7;
+}
+
+#skip-story-btn:hover {
+    opacity: 1;
+    background: rgba(245, 200, 66, 0.15);
+}
+
+/* --- CONTROLS OVERLAY --- */
+#controls-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    background: rgba(13, 8, 5, 0.95);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 95;
+    box-sizing: border-box;
+    padding: 5% 8%;
+}
+
+#controls-overlay h2 {
+    font-family: var(--main-font);
+    color: #f5c842;
+    font-size: clamp(22px, 4vw, 36px);
+    margin: 0 0 6% 0;
+    text-shadow: 0 0 10px rgba(245, 200, 66, 0.4);
+}
+
+.controls-grid {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 2vh, 16px);
+    width: 100%;
+    max-width: 320px;
+}
+
+.control-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.control-row kbd {
+    font-family: 'Boogaloo-Regular', sans-serif;
+    background: linear-gradient(180deg, #3a2510, #1f1008);
+    color: #f5c842;
+    border: 2px solid #DA5F00;
+    border-radius: 6px;
+    padding: clamp(4px, 1vh, 8px) clamp(10px, 2vw, 20px);
+    font-size: clamp(14px, 2.5vw, 20px);
+    min-width: clamp(60px, 12vw, 90px);
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.control-row span {
+    font-family: 'Boogaloo-Regular', sans-serif;
+    color: #e0c8a0;
+    font-size: clamp(14px, 2.5vw, 20px);
+    flex: 1;
+    text-align: right;
+}
+
+#close-controls-btn {
+    margin-top: 6%;
+    font-size: clamp(16px, 2.5vw, 22px);
+    padding: 8px 24px;
+    background: transparent;
+    border: 2px solid #f5c842;
+    color: #f5c842;
+}
+
+#close-controls-btn:hover {
+    background: rgba(245, 200, 66, 0.15);
 }
 
 /* --- END SCREEN --- */
