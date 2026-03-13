@@ -271,7 +271,7 @@ class World {
                 enemy.die();
             })
 
-            audioHub?.playLostSound();
+            audioHub?.playWinSound();
             showEndOverlay(true);
             this.startDisco();
 
