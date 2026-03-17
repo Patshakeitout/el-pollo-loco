@@ -183,6 +183,8 @@ function showStoryIntro() {
     skipBtn.onclick = () => {
         skipped = true;
         skipBtn.classList.add('d-none');
+        const startBtn = document.getElementById('start-btn');
+        if (startBtn) startBtn.classList.add('d-none');
         finishStory();
     };
 
@@ -332,9 +334,9 @@ function startGame() {
         initLevel1();
         world = new World(canvas, keyboard);
 
-        // Show home button
-        const homeBtn = document.getElementById('btn-home');
-        if (homeBtn) homeBtn.classList.remove('d-none');
+        // Show game controls container
+        const gameControlsTop = document.getElementById('game-controls-top');
+        if (gameControlsTop) gameControlsTop.classList.remove('d-none');
 
         // Open the curtain to reveal the game
         curtain.classList.add('open');
@@ -365,9 +367,42 @@ function togglePauseGame() {
     IntervalHub.isPaused = world.paused;
 
     // 3. Update the Button Text/Icon
-    const btn = document.getElementById('btn-pause');
+    const btn = document.getElementById('btn-pause-top');
     if (btn) {
         btn.innerText = world.paused ? "▶" : "❚❚";
+    }
+}
+
+
+/**
+ * Toggles music on/off during gameplay.
+ */
+function toggleMusic() {
+    if (!audioHub) return;
+    audioHub.musicMuted = !audioHub.musicMuted;
+    const musicBtn = document.getElementById('btn-music-top');
+    if (musicBtn) {
+        musicBtn.style.opacity = audioHub.musicMuted ? '0.3' : '1';
+    }
+    if (audioHub.musicMuted) {
+        audioHub.stopCurrentMusic();
+    } else {
+        audioHub.playBackgroundMusic();
+    }
+}
+
+
+/**
+ * Toggles mobile controls visibility on desktop.
+ */
+function toggleMobileControls() {
+    const mobileControls = document.getElementById('mobile-controls');
+    const toggleBtn = document.getElementById('btn-controls-toggle');
+    if (!mobileControls) return;
+
+    mobileControls.classList.toggle('show-controls');
+    if (toggleBtn) {
+        toggleBtn.style.opacity = mobileControls.classList.contains('show-controls') ? '1' : '0.6';
     }
 }
 
@@ -383,6 +418,7 @@ function showEndOverlay(isWin) {
     const mobileControls = document.getElementById('mobile-controls');
     if (mobileControls) {
         mobileControls.classList.add('d-none');
+        mobileControls.classList.remove('show-controls');
     }
     if (overlay && img) {
         if (isWin) {
@@ -454,6 +490,9 @@ function restartGame() {
 
         document.getElementById('canvas').classList.remove('d-none');
 
+        const gameControlsTop = document.getElementById('game-controls-top');
+        if (gameControlsTop) gameControlsTop.classList.remove('d-none');
+
         curtain.classList.add('open');
 
         if (audioHub && audioHub.isLoaded) {
@@ -492,10 +531,11 @@ function showStartScreen() {
     const mobileControls = document.getElementById('mobile-controls');
     if (mobileControls) {
         mobileControls.classList.add('d-none');
+        mobileControls.classList.remove('show-controls');
     }
-    // Hide home button
-    const homeBtn = document.getElementById('btn-home');
-    if (homeBtn) homeBtn.classList.add('d-none');
+    // Hide game controls container
+    const gameControlsTop = document.getElementById('game-controls-top');
+    if (gameControlsTop) gameControlsTop.classList.add('d-none');
     // Remove any start overlay if present
     const overlay = document.getElementById('start-overlay');
     if (overlay) overlay.remove();

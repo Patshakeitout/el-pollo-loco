@@ -263,6 +263,19 @@ class AudioHub {
     }
 
     /**
+     * Plays chicken cackle as a monster roar (lowered pitch).
+     */
+    playEndbossCackleSound() {
+        const sound = this.sounds.chickenDead;
+        if (this.isMuted || !sound) return;
+
+        sound.volume = 1.0;
+        sound.currentTime = 0;
+        sound.playbackRate = 0.6; // Lower pitch/frequency for monster effect
+        sound.play().catch(e => console.warn('AudioHub: Cackle play blocked:', e));
+    }
+
+    /**
      * Plays endboss approach/alert sound and switches to battle music.
      */
     playEndbossApproachSound() {
@@ -280,10 +293,17 @@ class AudioHub {
 
 
     /**
-     * Plays endboss rolling sound.
+     * Plays endboss rolling sound (loud attack sound).
      */
     playEndbossRollingSound() {
-        this.play(this.sounds.endbossRolling, this.sfxVolume * 0.8);
+        this.play(this.sounds.endbossRolling, this.sfxVolume * 2.0);
+    }
+
+    /**
+     * Stops endboss rolling sound.
+     */
+    stopEndbossRollingSound() {
+        this.stop(this.sounds.endbossRolling);
     }
 
 

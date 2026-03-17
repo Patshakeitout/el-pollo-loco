@@ -230,23 +230,56 @@ canvas {
     z-index: 1;
 }
 
-/* --- IN-GAME HOME BUTTON --- */
-#btn-home {
+/* --- IN-GAME CONTROLS CONTAINER --- */
+#game-controls-top {
     position: absolute;
     top: 2.5%;
     right: 8px;
     z-index: 50;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+#game-controls-top button {
     font-size: clamp(0.7em, 1.8vw, 1em);
     padding: 1px 4px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 193, 7, 0.4);
-    color: #FFC107;
     border-radius: 6px;
     opacity: 0.6;
     line-height: 1;
+    min-width: 30px;
+    text-align: center;
+    border-width: 1px;
+    margin: 0;
 }
 
-#btn-home:hover {
+#game-controls-top #btn-pause-top,
+#game-controls-top #btn-fullscreen-desktop,
+#game-controls-top #btn-home {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 193, 7, 0.4);
+    color: #FFC107;
+}
+
+#game-controls-top #btn-pause-top:hover,
+#game-controls-top #btn-fullscreen-desktop:hover,
+#game-controls-top #btn-home:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+#game-controls-top #btn-music-top,
+#game-controls-top #btn-controls-toggle {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 193, 7, 0.4);
+    color: #FFC107;
+}
+
+#game-controls-top #btn-music-top:hover,
+#game-controls-top #btn-controls-toggle:hover {
     opacity: 1;
     background: rgba(0, 0, 0, 0.6);
 }
@@ -537,7 +570,7 @@ button:hover {
 
 /* --- MOBILE CONTROLS --- */
 #mobile-controls {
-    display: none;
+    display: flex;
     position: absolute;
     left: 0;
     bottom: 0;
@@ -548,12 +581,12 @@ button:hover {
     padding-bottom: 4px;
     box-sizing: border-box;
     background: none;
-    pointer-events: none; /* Let clicks pass through except for buttons */
+    pointer-events: auto;
 }
 
-#mobile-controls > div {
-    display: flex;
-    pointer-events: auto;
+
+#mobile-controls.show-controls {
+    display: flex !important;
 }
 
 #mobile-controls button {
@@ -670,10 +703,10 @@ footer a {
     }
 }
 
-/* Mobile controls visible on small screens */
-@media only screen and (max-width: 1024px) and (orientation: landscape) {
-    #mobile-controls {
-        display: flex;
+/* Mobile controls hidden by default on desktop */
+@media only screen and (min-width: 1025px) {
+    #mobile-controls:not(.show-controls) {
+        display: none !important;
     }
 }
 

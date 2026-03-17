@@ -11,6 +11,7 @@ class World {
     statusIconBottle = new StatusIcon('bottle', 166, 15, 55, 40, 10);
     statusIconEndBoss = new StatusIcon('healthEndBoss', 242, 17, 40, 40, 100);
     thrownObjects = [];
+    endBossRevealed = false;
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -42,7 +43,15 @@ class World {
             this.addToMap(this.statusIconPepe);
             this.addToMap(this.statusIconCoin);
             this.addToMap(this.statusIconBottle);
-            this.addToMap(this.statusIconEndBoss);
+
+            // Only show endboss health icon if endboss is visible or has been revealed
+            const endBoss = this.level.enemies.find(enemy => enemy instanceof EndBoss);
+            if (endBoss && endBoss.x > -this.cameraX - 100 && endBoss.x < -this.cameraX + this.canvas.width + 100) {
+                this.endBossRevealed = true;
+            }
+            if (this.endBossRevealed) {
+                this.addToMap(this.statusIconEndBoss);
+            }
 
             this.ctx.translate(this.cameraX, 0);
 

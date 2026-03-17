@@ -132,10 +132,20 @@ class EndBoss extends MovableObject {
                 let path = this.IMAGES_ATTACK_B[frameIndex];
 
                 if (path.includes('angry-ball.png')) {
+                    // Play cackle sound BEFORE transforming to ball
+                    audioHub?.playEndbossCackleSound();
+
                     this.isRolling = true;
                     this.rollingStartX = this.x; // Track starting position
                     rollingDirection = directionFlag; // Capture direction when roll starts
                     lastDistance = undefined; // Reset for the rolling check
+
+                    // Delay roar sound to let cackle play first
+                    setTimeout(() => {
+                        if (this.isRolling) {
+                            audioHub?.playEndbossRollingSound();
+                        }
+                    }, 200);
                 }
             }
 
@@ -165,12 +175,13 @@ class EndBoss extends MovableObject {
                 // Calculate distance rolled using center positions
                 let rollingStartCenterX = this.rollingStartX + this.width / 2;
                 let distanceRolled = Math.abs((this.x + this.width / 2) - rollingStartCenterX);
-                
+
                 // Stop rolling when minimum rolling distance is covered
                 if (distanceRolled >= MIN_ROLLING_DISTANCE) {
                     this.isRolling = false;
                     this.rollingStartX = null;
                     window.endBossRollingDirection = undefined;
+                    audioHub?.stopEndbossRollingSound();
                 }
 
                 // Fast Roll Speed - use rolling direction (towards Pepe when hit by bottle)
@@ -182,6 +193,7 @@ class EndBoss extends MovableObject {
                     this.isRolling = false;
                     this.rollingStartX = null;
                     window.endBossRollingDirection = undefined;
+                    audioHub?.stopEndbossRollingSound();
                 } else {
                     if (currentRollingDir > 0) this.moveLeft();
                     else this.moveRight();
@@ -267,16 +279,25 @@ class EndBoss extends MovableObject {
         if (this.isDead()) return;
         // Play attack animation to transition to ball
         this.playAnimation(this.IMAGES_ATTACK_B);
-        
+
         this.isWalking = false;
         this.rollingStartX = this.x; // Track starting position
         // Set rolling direction TOWARDS Pepe when hit by bottle
         window.endBossRollingDirection = this.world.pepe.x < this.x ? 1 : -1;
-        
+
         // Delay rolling to let animation play (400ms for attack animation)
         setTimeout(() => {
+            // Play cackle sound BEFORE transforming to ball
+            audioHub?.playEndbossCackleSound();
+
             this.isRolling = true;
-            audioHub?.playEndbossRollingSound();
+
+            // Delay roar sound to let cackle play first
+            setTimeout(() => {
+                if (this.isRolling) {
+                    audioHub?.playEndbossRollingSound();
+                }
+            }, 200);
         }, 800);
     }
 

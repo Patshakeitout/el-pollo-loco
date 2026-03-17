@@ -111,11 +111,16 @@
                         <button id="home-btn" type="button" aria-label="Return to Home">Home</button>
                     </nav>
                 </section>
-                <button id="btn-home" class="d-none" aria-label="Back to Home" onclick="goHome()">&#127968;</button>
+                <nav id="game-controls-top" class="d-none" aria-label="Game Controls">
+                    <button id="btn-pause-top" aria-label="Pause" title="Pause" onclick="togglePauseGame()">❚❚</button>
+                    <button id="btn-music-top" aria-label="Toggle Music" title="Music" onclick="toggleMusic()">🔊</button>
+                    <button id="btn-controls-toggle" aria-label="Toggle Mobile Controls" title="Mobile Controls" onclick="toggleMobileControls()">🕹️</button>
+                    <button id="btn-fullscreen-desktop" aria-label="Enter Fullscreen" title="Fullscreen" onclick="toggleFullscreen()">⛶</button>
+                    <button id="btn-home" aria-label="Back to Home" onclick="goHome()">&#127968;</button>
+                </nav>
                 <nav id="mobile-controls" class="d-none" aria-label="Mobile Game Controls">
                     <button id="btn-left" aria-label="Move Left">&#8592;</button>
                     <button id="btn-right" aria-label="Move Right">&#8594;</button>
-                    <button id="btn-pause" onclick="togglePauseGame()">❚❚</button>
                     <button id="btn-jump" aria-label="Jump">&#8593;</button>
                     <button id="btn-throw" aria-label="Throw Bottle">
                         <img src="assets/images/6_salsa_bottle/salsa_bottle.png" alt="Throw Bottle">

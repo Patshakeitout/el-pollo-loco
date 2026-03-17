@@ -68,7 +68,7 @@ class Keyboard {
     }
 
     /**
-     * Helper to bind touchstart/touchend to class variables.
+     * Helper to bind touch and mouse events to class variables.
      * @param {string} elementId - The HTML ID of the button.
      * @param {string} command - The property to toggle (e.g., 'LEFT').
      */
@@ -76,6 +76,7 @@ class Keyboard {
         const element = document.getElementById(elementId);
         if (!element) return;
 
+        // Touch events
         element.addEventListener('touchstart', (e) => {
             e.preventDefault();
             this[command] = true;
@@ -83,6 +84,22 @@ class Keyboard {
 
         element.addEventListener('touchend', (e) => {
             e.preventDefault();
+            this[command] = false;
+        });
+
+        // Mouse events for testing/desktop
+        element.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            this[command] = true;
+        });
+
+        element.addEventListener('mouseup', (e) => {
+            e.preventDefault();
+            this[command] = false;
+        });
+
+        // Handle mouse leaving the button while pressed
+        element.addEventListener('mouseleave', (e) => {
             this[command] = false;
         });
     }

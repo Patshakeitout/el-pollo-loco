@@ -11,16 +11,16 @@ function initLevel1() {
     levelEndX = bgRepeat * 720;
     enemies = [];
     collectables = [];
-    
+
     createEnemies(20);
     createEndBoss();
     createCollectables();
 
     level1 = new Level(
         bgRepeat,
-        levelEndX,  
+        levelEndX,
         enemies,
-        [new Cloud()],
+        createClouds(),
         collectables
     );
 }
@@ -78,15 +78,33 @@ function createCoins(count, levelEndX) {
 function createBottleStacks(levelEndX) {
     let bottles = [];
     let numberOfStacks = 4 + Math.floor(Math.random() * 2);
-    
+
     for (let stack = 0; stack < numberOfStacks; stack++) {
         let stackSize = Math.random() < 0.5 ? 5 : 10;
         let stackStartX = 400 + (stack * (levelEndX / numberOfStacks)) + Math.random() * 200;
-        
+
         for (let i = 0; i < stackSize; i++) {
             let x = stackStartX + (i * 40); // Bottles spread horizontally - adapt
             bottles.push(new CollectableObject('bottle', x, 350));
         }
     }
     return bottles;
+}
+
+
+/**
+ * Create clouds scattered throughout the entire level
+ * @returns {Cloud[]} Array of cloud objects
+ */
+function createClouds() {
+    let clouds = [];
+    let numberOfClouds = 25;
+
+    for (let i = 0; i < numberOfClouds; i++) {
+        let cloud = new Cloud();
+        // Randomly distribute clouds across 7100
+        cloud.x = Math.random() * 7100 - 550;
+        clouds.push(cloud);
+    }
+    return clouds;
 }

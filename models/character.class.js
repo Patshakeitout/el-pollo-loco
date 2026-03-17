@@ -78,14 +78,16 @@ class Character extends MovableObject {
 
         this.lastMovedLeft = false; // Track if last movement was left
         this.lastDirection = null; // Track previous direction for smooth transitions
+        this.lastActionTime = new Date().getTime(); // Track when Pepe last moved/acted
+        this.idleThreshold = 10000; // 10 seconds before sleep animation
         this.hasOffsetBox = true;
         this.offsetBox = {
             x: 0,
             y: 0,
-            offsetX: 10,
-            offsetY: 105,
-            w: this.width - 25,
-            h: this.height - 115
+            offsetX: 30,
+            offsetY: 60,
+            w: this.width - 65,
+            h: this.height - 70
         };
 
         this.loadImages(this.IMAGES_WALKING);
@@ -155,17 +157,19 @@ class Character extends MovableObject {
             // Freeze all user interactions if character is dead or movement locked
             if (!this.isDead() && !this.isMovementLocked()) {
                 let isMoving = false;
-                
+
                 if (this.world.keyboard.RIGHT && this.x < maxRight) {
                     this.moveRight();
                     this.turnAround = false;
                     isMoving = true;
+                    this.lastActionTime = new Date().getTime();
                 }
 
                 if (this.world.keyboard.LEFT && this.x > minLeft) {
                     this.moveLeft();
                     this.turnAround = true;
                     isMoving = true;
+                    this.lastActionTime = new Date().getTime();
                 }
 
                 // Handle walk sound
@@ -178,6 +182,7 @@ class Character extends MovableObject {
                 if (this.world.keyboard.SPACE && !this.isAboveGround()) {
                     this.jump();
                     audioHub?.playJumpSound();
+                    this.lastActionTime = new Date().getTime();
                 }
             } else {
                 audioHub?.stopWalkSound();
@@ -208,7 +213,13 @@ class Character extends MovableObject {
             } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
                 this.playAnimation(this.IMAGES_WALKING);
             } else {
-                this.playAnimation(this.IMAGES_IDLE);
+                // Check if Pepe has been idle for 10 seconds
+                let timeSinceLastAction = new Date().getTime() - this.lastActionTime;
+                if (timeSinceLastAction >= this.idleThreshold) {
+                    this.playAnimation(this.IMAGES_LONG_IDLE);
+                } else {
+                    this.playAnimation(this.IMAGES_IDLE);
+                }
             }
 
         }, 100); 
