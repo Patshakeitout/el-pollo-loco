@@ -480,8 +480,13 @@ function restartGame() {
 
     setTimeout(() => {
         document.getElementById('end-screen').classList.add('d-none');
+        if (world) world.paused = true; // Stop old world's draw loop
         initLevel1();
         world = new World(canvas, keyboard);
+
+        // Reset pause button to default state
+        const pauseBtn = document.getElementById('btn-pause-top');
+        if (pauseBtn) pauseBtn.innerText = '❚❚';
 
         const mobileControls = document.getElementById('mobile-controls');
         if (mobileControls) {
@@ -547,6 +552,7 @@ function showStartScreen() {
  */
 function goHome() {
     if (!world) return;
+    world.paused = true; // Stop old world's draw loop
     audioHub?.stopAll();
     IntervalHub.stopAllIntervals();
     showStartScreen();
