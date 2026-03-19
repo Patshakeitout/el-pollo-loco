@@ -7,10 +7,9 @@ let audioHub;
 /**
  * Initializes the landing page and audio (does NOT start the game yet).
  */
-async function init() {
+ async function init() {
     canvas = document.getElementById('canvas');
     canvas.classList.add('d-none');
-
     keyboard = new Keyboard();
 
     await initAudio();
@@ -20,22 +19,20 @@ async function init() {
     setupTutorialButton();
     setupFullscreenButton();
     setupStoryButton();
-    // Hide start screen initially
+
     const startScreen = document.getElementById('start-screen');
     if (startScreen) {
         startScreen.classList.add('d-none');
     }
     showStartOverlay();
+    printConsoleCredits();
 }
 
 
 /**
  * Sets up the Mute Button state and event listener.
  */
-/**
- * Sets up the Mute Button state and event listener.
- */
-function setupMuteButton() {
+ function setupMuteButton() {
     const muteBtn = document.getElementById('mute-btn');
     if (!muteBtn) return;
 
@@ -49,36 +46,19 @@ function setupMuteButton() {
 
     muteBtn.textContent = isMuted ? '🔇' : '🔈';
 
-    /**
-     * Toggles the mute state of the game and updates the button text.
-     * Saves the current mute state to local storage.
-     */
     muteBtn.onclick = function () {
         if (!audioHub) return;
-
         const newMutedState = audioHub.toggleMute();
         localStorage.setItem('elPolloMute', newMutedState);
-
-        // Update Icon
         muteBtn.textContent = newMutedState ? '🔇' : '🔈';
-
         if (!newMutedState) {
             const startScreen = document.getElementById('start-screen');
             const startOverlay = document.getElementById('start-overlay');
             const canvas = document.getElementById('canvas');
-
-            // A: If the generic "Start Overlay" (Click to Play) is still there, do nothing.
-            // The user hasn't started the interaction yet.
             if (startOverlay) return;
-
-            // B: If Start Screen is visible, play Menu Music
             if (startScreen && !startScreen.classList.contains('d-none')) {
                 audioHub.playMenuMusic();
-            }
-            // C: If Canvas is visible (Game is running), play Background Music
-            else if (canvas && !canvas.classList.contains('d-none')) {
-                // Determine if we should play standard or battle music? 
-                // For simplicity, playBackgroundMusic() usually handles the main loop.
+            } else if (canvas && !canvas.classList.contains('d-none')) {
                 audioHub.playBackgroundMusic();
             }
         };
@@ -86,6 +66,9 @@ function setupMuteButton() {
 }
 
 
+/**
+ * Displays the initial start overlay and transitions to the start screen on click.
+ */
 function showStartOverlay() {
     const startOverlay = document.getElementById('start-overlay');
     const startBtnOverlay = document.getElementById('start-btn-overlay');
@@ -94,8 +77,15 @@ function showStartOverlay() {
         if (audioHub) {
             audioHub.playMenuMusic();
         }
+        const startScreen = document.getElementById('start-screen');
+        if (startScreen) {
+            startScreen.style.opacity = '0';
+            startScreen.style.filter = 'blur(8px)';
+            startScreen.classList.remove('d-none');
+            startScreen.style.display = 'flex';
+            setTimeout(() => pixelBuildStartScreen(), 30);
+        }
         startOverlay.remove();
-        showStoryIntro();
     });
 }
 
@@ -317,13 +307,14 @@ function startGame() {
         winds.remove();
     }
 
+    if (audioHub) audioHub.stopCurrentMusic();
+
     const curtain = document.getElementById('curtain-overlay');
 
-    // Show curtain closed over start screen
     curtain.classList.remove('d-none', 'open');
     curtain.style.display = 'flex';
+    animateCurtainText(curtain);
 
-    // After curtain covers the screen, swap to canvas behind it
     setTimeout(() => {
         document.getElementById('start-screen').classList.add('d-none');
         document.getElementById('canvas').classList.remove('d-none');
@@ -334,11 +325,9 @@ function startGame() {
         initLevel1();
         world = new World(canvas, keyboard);
 
-        // Show game controls container
         const gameControlsTop = document.getElementById('game-controls-top');
         if (gameControlsTop) gameControlsTop.classList.remove('d-none');
 
-        // Open the curtain to reveal the game
         curtain.classList.add('open');
 
         if (audioHub && audioHub.isLoaded) {
@@ -346,27 +335,21 @@ function startGame() {
             setTimeout(() => audioHub.playBackgroundMusic(), 500);
         }
 
-        // Remove curtain after animation
         setTimeout(() => {
             curtain.classList.add('d-none');
             curtain.classList.remove('open');
         }, 1500);
-    }, 400);
+    }, 3000);
 }
 
 
+/**
+ * Toggles the game between paused and running, syncing rendering, intervals, and UI.
+ */
 function togglePauseGame() {
-    // Check if the game is actually running
     if (!world) return;
-
-    // 1. Toggle the "Eyes" (Rendering)
-    world.togglePause(); // Calls the method we discussed earlier
-
-    // 2. Toggle the "Brain" (Logic / Intervals)
-    // We sync the IntervalHub state with the World state
+    world.togglePause();
     IntervalHub.isPaused = world.paused;
-
-    // 3. Update the Button Text/Icon
     const btn = document.getElementById('btn-pause-top');
     if (btn) {
         btn.innerText = world.paused ? "▶" : "❚❚";
@@ -477,21 +460,19 @@ function restartGame() {
     const curtain = document.getElementById('curtain-overlay');
     curtain.classList.remove('d-none', 'open');
     curtain.style.display = 'flex';
+    animateCurtainText(curtain);
 
     setTimeout(() => {
         document.getElementById('end-screen').classList.add('d-none');
-        if (world) world.paused = true; // Stop old world's draw loop
+        if (world) world.paused = true;
         initLevel1();
         world = new World(canvas, keyboard);
 
-        // Reset pause button to default state
         const pauseBtn = document.getElementById('btn-pause-top');
         if (pauseBtn) pauseBtn.innerText = '❚❚';
 
         const mobileControls = document.getElementById('mobile-controls');
-        if (mobileControls) {
-            mobileControls.classList.remove('d-none');
-        }
+        if (mobileControls) mobileControls.classList.remove('d-none');
 
         document.getElementById('canvas').classList.remove('d-none');
 
@@ -509,7 +490,7 @@ function restartGame() {
             curtain.classList.add('d-none');
             curtain.classList.remove('open');
         }, 1500);
-    }, 400);
+    }, 3000);
 }
 
 
@@ -552,8 +533,67 @@ function showStartScreen() {
  */
 function goHome() {
     if (!world) return;
-    world.paused = true; // Stop old world's draw loop
+    world.paused = true;
     audioHub?.stopAll();
     IntervalHub.stopAllIntervals();
     showStartScreen();
+}
+
+
+/**
+ * Animates "READY?" then "FIGHT!" text on the curtain overlay.
+ */
+function animateCurtainText() {
+    const text = document.getElementById('curtain-text');
+    if (!text) return;
+    text.textContent = 'READY?';
+    text.classList.remove('show');
+    void text.offsetWidth;
+    text.classList.add('show');
+    setTimeout(() => {
+        text.classList.remove('show');
+        void text.offsetWidth;
+        text.textContent = 'FIGHT!';
+        text.classList.add('show');
+    }, 1200);
+}
+
+
+/**
+ * Opens a legal overlay (imprint or privacy policy) inside the game container.
+ * @param {string} id - The overlay element ID.
+ */
+function openLegalOverlay(id) {
+    const overlay = document.getElementById(id);
+    if (!overlay) return;
+    overlay.classList.remove('d-none');
+    overlay.scrollTop = 0;
+}
+
+
+/**
+ * Closes a legal overlay and returns to the start screen.
+ * @param {string} id - The overlay element ID.
+ */
+function closeLegalOverlay(id) {
+    const overlay = document.getElementById(id);
+    if (overlay) overlay.classList.add('d-none');
+}
+
+
+
+/**
+ * Prints a styled credits message to the browser developer console.
+ */
+function printConsoleCredits() {
+    console.log(
+        '\n%c  \u2764  %c  </>  %c\n\n' +
+        'This game is made with creativity and passion.\n\n' +
+        '%c \u{1F310} Portfolio %c https://patrickschauer.de/',
+        'background:#e74c3c; color:#fff; font-size: 16px; padding: 6px 2px; border-radius: 4px 0 0 4px;',
+        'background:#2c3e50; color:#3498db; font-size: 16px; font-weight:bold; padding: 6px 2px; border-radius: 0 4px 4px 0;',
+        'color:#f0c040; font-size: 14px; font-weight:bold; line-height: 1.6;',
+        'color:#aaa; font-weight:bold; font-size:12px;',
+        'color:#ccc; font-size:12px;'
+    );
 }

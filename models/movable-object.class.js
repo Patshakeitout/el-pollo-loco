@@ -101,7 +101,7 @@ class MovableObject extends DrawableObject {
 
 
     hit() {
-        this.energy -= 10;
+        this.energy -= 15;
         this.energy = Math.floor(this.energy);
         if (this.energy < 0) {
             this.energy = 0;

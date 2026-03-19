@@ -6,8 +6,8 @@ let audioHub;
 /**
  * Initializes the landing page and audio (does NOT start the game yet).
  */
-async function init() {
-  canvas = document.getElementById("canvas");
+ async function init() {
+   canvas = document.getElementById("canvas");
   canvas.classList.add("d-none");
 
   keyboard = new Keyboard();
@@ -15,8 +15,9 @@ async function init() {
   await initAudio();
 
   setupStartButton();
-  setupMuteButton();
-  // Hide start screen initially
+  const muteBtn = setupMuteButton();
+  toggleMuteBtn(muteBtn);
+
   const startScreen = document.getElementById("start-screen");
   if (startScreen) {
     startScreen.classList.add("d-none");
@@ -24,10 +25,11 @@ async function init() {
   showStartOverlay();
 }
 
+
 /**
  * Sets up the Mute Button state and event listener.
  */
-function setupMuteButton() {
+ function setupMuteButton() {
   const muteBtn = document.getElementById("mute-btn");
   if (!muteBtn) return;
 
@@ -40,18 +42,21 @@ function setupMuteButton() {
   }
 
   muteBtn.textContent = isMuted ? "🔇" : "🔈";
+  return muteBtn;
+}
 
-  /**
-   * Toggles the mute state of the game and updates the button text.
-   * Saves the current mute state to local storage.
-   */
+
+/**
+ * Toggles the mute state of the game and updates the button text.
+ * @param {HTMLElement} muteBtn - The mute button element.
+ */
+function toggleMuteBtn(muteBtn) {
   muteBtn.onclick = function () {
     if (!audioHub) return;
 
     const newMutedState = audioHub.toggleMute();
     localStorage.setItem("elPolloMute", newMutedState);
 
-    // Update Icon
     muteBtn.textContent = newMutedState ? "🔇" : "🔈";
 
     if (!newMutedState) {
@@ -59,25 +64,22 @@ function setupMuteButton() {
       const startOverlay = document.getElementById("start-overlay");
       const canvas = document.getElementById("canvas");
 
-      // A: If the generic "Start Overlay" (Click to Play) is still there, do nothing.
-      // The user hasn't started the interaction yet.
       if (startOverlay) return;
 
-      // B: If Start Screen is visible, play Menu Music
       if (startScreen && !startScreen.classList.contains("d-none")) {
         audioHub.playMenuMusic();
-      }
-      // C: If Canvas is visible (Game is running), play Background Music
-      else if (canvas && !canvas.classList.contains("d-none")) {
-        // Determine if we should play standard or battle music?
-        // For simplicity, playBackgroundMusic() usually handles the main loop.
+      } else if (canvas && !canvas.classList.contains("d-none")) {
         audioHub.playBackgroundMusic();
       }
     }
   };
 }
 
-function showStartOverlay() {
+
+/**
+ * Shows start overlay
+ */
+ function showStartOverlay() {
   const startOverlay = document.getElementById("start-overlay");
   const startBtnOverlay = document.getElementById("start-btn-overlay");
 
@@ -91,33 +93,35 @@ function showStartOverlay() {
       startScreen.style.filter = "blur(8px)";
       startScreen.classList.remove("d-none");
       startScreen.style.display = "flex";
-      // Allow browser to render with opacity 0 and blur before animating
       setTimeout(() => pixelBuildStartScreen(), 30);
     }
     startOverlay.remove();
   });
 }
 
+
 /**
  * Sets up the start button to begin the game.
  */
-function setupStartButton() {
+ function setupStartButton() {
   const startBtn = document.getElementById("start-btn");
   startBtn.addEventListener("click", startGame);
 }
 
+
 /**
  * Initializes the AudioHub singleton and loads all sounds.
  */
-async function initAudio() {
+ async function initAudio() {
   audioHub = AudioHub.getInstance();
   await audioHub.loadConfig();
 }
 
+
 /**
  * Pixel build effect for start screen.
  */
-function pixelBuildStartScreen() {
+ function pixelBuildStartScreen() {
   const startScreen = document.getElementById("start-screen");
   if (!startScreen) return;
 
@@ -140,30 +144,29 @@ function pixelBuildStartScreen() {
   }, 30);
 }
 
+
 /**
  * Starts the game - hides start screen, shows canvas, initializes world.
  */
-function startGame() {
-  // Stop desert-winds-whispering if playing
+ function startGame() {
   const winds = document.getElementById("desert-winds-audio");
   if (winds) {
     winds.pause();
     winds.currentTime = 0;
     winds.remove();
   }
-  // Hide start screen, show canvas
+  
   document.getElementById("start-screen").classList.add("d-none");
   document.getElementById("canvas").classList.remove("d-none");
-  // Show mobile controls
+
   const mobileControls = document.getElementById("mobile-controls");
   if (mobileControls) {
     mobileControls.classList.remove("d-none");
   }
-  // Create level when starting the game
+  
   initLevel1();
-  // Initialize the game world
   world = new World(canvas, keyboard);
-  // Play sounds
+  
   if (audioHub && audioHub.isLoaded) {
     audioHub.playGameStartSound();
     setTimeout(() => {
@@ -172,7 +175,11 @@ function startGame() {
   }
 }
 
-function togglePauseGame() {
+
+/**
+ * Toggles pause for game
+ */
+ function togglePauseGame() {
   if (!world) return;
 
   world.togglePause();
@@ -190,14 +197,14 @@ function togglePauseGame() {
     IntervalHub.isPaused = false;
     world = new World(canvas, keyboard);
   });
-
 }
+
 
 /**
  * Shows the end overlay (win or lose) with the correct image.
  * @param {boolean} isWin - true for win, false for lose
  */
-function showEndOverlay(isWin) {
+ function showEndOverlay(isWin) {
   const overlay = document.getElementById("end-screen");
   const img = document.getElementById("end-screen-img");
   // Hide mobile controls when game ends
@@ -220,9 +227,13 @@ function showEndOverlay(isWin) {
   }
 }
 
-// Attach event listeners for try-again and home buttons if present
-window.addEventListener("DOMContentLoaded", () => {
+
+/**
+ * Attach event listeners for try-again and home buttons if present
+ */
+ window.addEventListener("DOMContentLoaded", () => {
   const tryAgainBtn = document.getElementById("try-again-btn");
+
   if (tryAgainBtn) {
     tryAgainBtn.onclick = function () {
       audioHub?.stopAll();
@@ -234,6 +245,7 @@ window.addEventListener("DOMContentLoaded", () => {
     };
   }
   const homeBtn = document.getElementById("home-btn");
+
   if (homeBtn) {
     homeBtn.onclick = function () {
       audioHub?.stopAll();
@@ -241,15 +253,15 @@ window.addEventListener("DOMContentLoaded", () => {
       IntervalHub.stopAllIntervals();
       showStartScreen();
       document.getElementById("end-screen").classList.add("d-none");
-      //document.getElementById('end-screen').style.display = 'none';
     };
   }
 });
 
+
 /**
  * Restarts the game by resetting world, level, and UI states.
  */
-function restartGame() {
+ function restartGame() {
   if (audioHub) audioHub.stopCurrentMusic();
 
   IntervalHub.stopAllIntervals();
@@ -275,11 +287,12 @@ function restartGame() {
   }
 }
 
+
 /**
  * Shows the pixelized start screen and hides game canvas and overlays.
  * Used on page load and when clicking Home.
  */
-function showStartScreen() {
+ function showStartScreen() {
   audioHub.playMenuMusic();
   const startScreen = document.getElementById("start-screen");
   if (startScreen) {
@@ -289,15 +302,15 @@ function showStartScreen() {
     startScreen.style.display = "flex";
     setTimeout(() => pixelBuildStartScreen(), 30);
   }
-  // Hide canvas and overlays
+  
   document.getElementById("canvas").classList.add("d-none");
   document.getElementById("end-screen").classList.add("d-none");
-  // Hide mobile controls when returning to start screen
+
   const mobileControls = document.getElementById("mobile-controls");
   if (mobileControls) {
     mobileControls.classList.add("d-none");
   }
-  // Remove any start overlay if present
+  
   const overlay = document.getElementById("start-overlay");
   if (overlay) overlay.remove();
 }

@@ -80,12 +80,12 @@ class Keyboard {
 
         // Touch events
         element.addEventListener('touchstart', (e) => {
-            e.preventDefault();
+            if (e.cancelable) e.preventDefault();
             this[command] = true;
         }, { passive: false });
 
         element.addEventListener('touchend', (e) => {
-            e.preventDefault();
+            if (e.cancelable) e.preventDefault();
             this[command] = false;
         }, { passive: false });
 

@@ -283,6 +283,7 @@ class World {
             audioHub?.playWinSound();
             showEndOverlay(true);
             this.startDisco();
+            this.startVictoryJump();
 
             this.gameEnded = true;
         } else if (!this.pepe || (this.pepe && this.pepe.isDead())) {
@@ -290,6 +291,19 @@ class World {
             showEndOverlay(false);
             this.gameEnded = true;
         }
+    }
+
+
+    /**
+     * Makes Pepe jump repeatedly after winning the game.
+     */
+    startVictoryJump() {
+        this.pepe.victoryMode = true;
+        IntervalHub.startInterval(() => {
+            if (this.pepe && !this.pepe.isAboveGround()) {
+                this.pepe.jump();
+            }
+        }, 600);
     }
 
 

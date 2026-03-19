@@ -65,6 +65,20 @@ class EndBoss extends MovableObject {
     }
 
 
+    /**
+     * Reduces the EndBoss energy by 5 per hit.
+     */
+    hit() {
+        this.energy -= 3.5;
+        this.energy = Math.floor(this.energy);
+        if (this.energy < 0) {
+            this.energy = 0;
+        } else {
+            this.lastHit = new Date().getTime();
+        }
+    }
+
+
     setWorld(world) {
         this.world = world;
     }
