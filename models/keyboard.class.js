@@ -26,10 +26,12 @@ class Keyboard {
      */
     bindKeyPressEvents() {
         window.addEventListener('keydown', (e) => {
+            if (e.key === Keyboard.KEY_SPACE) e.preventDefault();
             this.handleKeyEvent(e.key, true);
         });
 
         window.addEventListener('keyup', (e) => {
+            if (e.key === Keyboard.KEY_SPACE) e.preventDefault();
             this.handleKeyEvent(e.key, false);
         });
     }
