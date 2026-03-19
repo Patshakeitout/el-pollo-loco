@@ -26,12 +26,12 @@ class Keyboard {
      */
     bindKeyPressEvents() {
         window.addEventListener('keydown', (e) => {
-            if (e.key === Keyboard.KEY_SPACE) e.preventDefault();
+            if (e.key === Keyboard.KEY_SPACE || e.key === Keyboard.KEY_ENTER) e.preventDefault();
             this.handleKeyEvent(e.key, true);
         });
 
         window.addEventListener('keyup', (e) => {
-            if (e.key === Keyboard.KEY_SPACE) e.preventDefault();
+            if (e.key === Keyboard.KEY_SPACE || e.key === Keyboard.KEY_ENTER) e.preventDefault();
             this.handleKeyEvent(e.key, false);
         });
     }
@@ -82,12 +82,12 @@ class Keyboard {
         element.addEventListener('touchstart', (e) => {
             e.preventDefault();
             this[command] = true;
-        });
+        }, { passive: false });
 
         element.addEventListener('touchend', (e) => {
             e.preventDefault();
             this[command] = false;
-        });
+        }, { passive: false });
 
         // Mouse events for testing/desktop
         element.addEventListener('mousedown', (e) => {
