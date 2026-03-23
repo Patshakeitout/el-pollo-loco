@@ -9,9 +9,12 @@ class World {
     statusIconPepe = new StatusIcon('healthPepe', 20, 9, 50, 50, 100);
     statusIconCoin = new StatusIcon('coin', 101, 12.5, 45, 45, 0);
     statusIconBottle = new StatusIcon('bottle', 166, 15, 55, 40, 10);
-    statusIconEndBoss = new StatusIcon('healthEndBoss', 242, 17, 40, 40, 100);
+    statusIconKill = new StatusIcon('kill', 232, 12, 40, 40, 0);
+    statusIconEndBoss = new StatusIcon('healthEndBoss', 312, 17, 40, 40, 100);
     thrownObjects = [];
     endBossRevealed = false;
+    enemiesKilled = 0;
+    supplyPilesSpawned = 0;
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -43,6 +46,7 @@ class World {
             this.addToMap(this.statusIconPepe);
             this.addToMap(this.statusIconCoin);
             this.addToMap(this.statusIconBottle);
+            this.addToMap(this.statusIconKill);
 
             // Only show endboss health icon if endboss is visible or has been revealed
             const endBoss = this.level.enemies.find(enemy => enemy instanceof EndBoss);
@@ -159,10 +163,8 @@ class World {
                     this.statusIconCoin.amount += 1;
                     audioHub?.playCoinSound();
                     // Each coin refills 5 health points
-                    if (this.pepe.energy < 100) {
-                        this.pepe.energy = Math.min(100, this.pepe.energy + 2);
-                        this.statusIconPepe.setAmount(this.pepe.energy);
-                    }
+                    this.pepe.energy += 2;
+                    this.statusIconPepe.setAmount(this.pepe.energy);
                 } else if (collectable.type === 'bottle') {
                     this.statusIconBottle.amount += 1;
                     audioHub?.playBottleCollectSound();
@@ -212,6 +214,7 @@ class World {
                 if (!this.pepe.isDead() && this.pepe.isAboveGround() && this.pepe.speedY < 0 && !(enemy instanceof EndBoss) && pepeBottom < enemyCenterY) {
                     enemy.energy = 0;
                     this.pepe.speedY = 15; // Bounce
+                    this.trackKill();
                     audioHub?.playJumpSound();
                     if (enemy instanceof Chicken) {
                         audioHub?.playChickenDeathSound?.(); // Play chickenDead.mp3
@@ -242,10 +245,12 @@ class World {
                         audioHub?.playBottleBreakSound();
                         if (enemy instanceof EndBoss) {
                             enemy.hit();
+                            this.spawnBossMinions(enemy);
                             enemy.startRolling();
                             this.statusIconEndBoss.setAmount(enemy.energy);
                         } else {
                             enemy.energy = 0;
+                            this.trackKill();
                             audioHub?.playChickenDeathSound();
                             // Remove enemy after delay
                             setTimeout(() => {
@@ -304,6 +309,72 @@ class World {
                 this.pepe.jump();
             }
         }, 600);
+    }
+
+
+    /**
+     * Tracks enemy kills and spawns a supply pile of coins and bottles
+     * in the sky near the EndBoss after 30 kills.
+     */
+    trackKill() {
+        this.enemiesKilled++;
+        this.statusIconKill.setAmount(this.enemiesKilled);
+        let thresholds = [20, 40, 60, 80];
+        if (thresholds[this.supplyPilesSpawned] && this.enemiesKilled >= thresholds[this.supplyPilesSpawned]) {
+            this.supplyPilesSpawned++;
+            this.spawnSupplyPile();
+        }
+    }
+
+
+    /**
+     * Spawns coins randomly across the level in the sky
+     * and a pile of bottles near the EndBoss.
+     */
+    spawnSupplyPile() {
+        let levelEnd = this.level.levelEndX;
+
+        for (let i = 0; i < 15; i++) {
+            let coinX = 300 + Math.random() * (levelEnd - 600);
+            let coinY = 50 + Math.random() * 150;
+            this.level.collectables.push(new CollectableObject('coin', coinX, coinY));
+        }
+
+        let pileX = 300 + Math.random() * (levelEnd - 800);
+        for (let i = 0; i < 8; i++) {
+            let bottleX = pileX + i * 45;
+            this.level.collectables.push(new CollectableObject('bottle', bottleX, 350));
+        }
+    }
+
+
+    /**
+     * Spawns 3 fast, aggressive minions (chicks/chickens) at the EndBoss position
+     * that jump toward Pepe to attack.
+     */
+    spawnBossMinions(endBoss) {
+        if (endBoss.isDead()) return;
+        let pepeX = this.pepe ? this.pepe.x : 0;
+        let towardPepe = pepeX < endBoss.x;
+
+        for (let i = 0; i < 3; i++) {
+            let isChick = Math.random() < 0.5;
+            let size = isChick ? 1.5 + Math.random() * 1.5 : 0.8 + Math.random() * 0.8;
+            let minion = isChick
+                ? new Chick(size, this.level.levelEndX)
+                : new Chicken(size, this.level.levelEndX);
+
+            minion.x = endBoss.x + endBoss.width / 2 + (i - 1) * 40;
+            minion.y = minion.groundY;
+            minion.speed = 3 + Math.random() * 2;
+            minion.canJump = true;
+            minion.turnAround = !towardPepe;
+
+            // Make them jump immediately on spawn
+            minion.jump(15 + Math.random() * 5);
+
+            this.level.enemies.push(minion);
+        }
     }
 
 

@@ -47,6 +47,7 @@ class AudioHub {
         this.music.menu = this.createAudio(config.game.menuMusic, true);
         this.music.battle = this.createAudio(config.game.battleMusic, true);
         this.music.gameStart = this.createAudio(config.game.gameStart, false);
+        this.music.countdown = this.createAudio(config.game.countdown, false);
         this.music.gameOver = this.createAudio(config.game.gameOver, false);
         this.music.youWonMusic = this.createAudio(config.game.youWonMusic, false);
 
@@ -141,6 +142,14 @@ class AudioHub {
      */
     playGameStartSound() {
         this.play(this.music.gameStart, this.sfxVolume);
+    }
+
+
+    /**
+     * Plays the 3-2-1 fight countdown sound.
+     */
+    playCountdownSound() {
+        this.play(this.music.countdown, this.sfxVolume * 2.0);
     }
 
     playLostSound() {

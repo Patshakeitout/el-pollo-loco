@@ -339,7 +339,7 @@ function startGame() {
             curtain.classList.add('d-none');
             curtain.classList.remove('open');
         }, 1500);
-    }, 3000);
+    }, 4000);
 }
 
 
@@ -490,7 +490,7 @@ function restartGame() {
             curtain.classList.add('d-none');
             curtain.classList.remove('open');
         }, 1500);
-    }, 3000);
+    }, 4000);
 }
 
 
@@ -541,21 +541,30 @@ function goHome() {
 
 
 /**
- * Animates "READY?" then "FIGHT!" text on the curtain overlay.
+ * Animates "1" → "2" → "3" → "FIGHT!" text on the curtain overlay
+ * and plays the countdown sound.
  */
 function animateCurtainText() {
     const text = document.getElementById('curtain-text');
     if (!text) return;
-    text.textContent = 'READY?';
-    text.classList.remove('show');
-    void text.offsetWidth;
-    text.classList.add('show');
-    setTimeout(() => {
+
+    audioHub?.playCountdownSound();
+
+    const steps = ['3', '2', '1', 'FIGHT!'];
+    let i = 0;
+
+    function showNext() {
         text.classList.remove('show');
         void text.offsetWidth;
-        text.textContent = 'FIGHT!';
+        text.textContent = steps[i];
         text.classList.add('show');
-    }, 1200);
+        i++;
+        if (i < steps.length) {
+            setTimeout(showNext, 1000);
+        }
+    }
+
+    showNext();
 }
 
 

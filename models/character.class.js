@@ -103,23 +103,27 @@ class Character extends MovableObject {
 
     animate() {
         IntervalHub.startInterval(() => {
-            // Freeze camera if character is dead or movement locked
-            if (!this.isDead() && !this.isMovementLocked()) {
+            // Freeze camera if character is dead
+            if (!this.isDead()) {
                 // Find the endBoss in the enemies array
                 let endBoss = this.world.level.enemies.find(enemy => enemy instanceof EndBoss);
 
-                // Check if endBoss is to the left of Pepe (pepe is being hunted from the left)
+                let endBossIsClose = endBoss && !endBoss.isDead() &&
+                    Math.abs((endBoss.x + endBoss.width / 2) - (this.x + this.width / 2)) < EndBoss.secureAreaX + 200;
                 let endBossIsToLeft = endBoss && endBoss.x < this.x;
 
                 let targetCameraX;
 
-                if (endBossIsToLeft) {
-                    // Cinematic mode: position Pepe at the right edge of the canvas
+                if (endBossIsClose && endBossIsToLeft) {
+                    // Cinematic mode: boss is left, position Pepe at the right edge
                     targetCameraX = -this.x + (this.world.canvas.width - 150);
+                } else if (endBossIsClose && !endBossIsToLeft) {
+                    // Cinematic mode: boss is right, position Pepe at the left edge
+                    targetCameraX = -this.x + 150;
                 } else {
                     // Normal mode: directional camera based on movement direction
                     if (this.world.keyboard.RIGHT) {
-                        // Moving right: Pepe at le ft edge of frame with lead ahead
+                        // Moving right: Pepe at left edge of frame with lead ahead
                         targetCameraX = -this.x - 110;
                         this.lastMovedLeft = false;
                     } else if (this.world.keyboard.LEFT) {
@@ -154,8 +158,8 @@ class Character extends MovableObject {
             let minLeft = 0;
             let maxRight = this.world.level.levelEndX - this.width;
 
-            // Freeze all user interactions if character is dead or movement locked
-            if (!this.isDead() && !this.isMovementLocked()) {
+            // Freeze all user interactions if character is dead
+            if (!this.isDead()) {
                 let isMoving = false;
 
                 if (this.world.keyboard.RIGHT && this.x < maxRight) {
@@ -204,10 +208,8 @@ class Character extends MovableObject {
                         this.world.checkGameEnd();
                     }
                 }
-            } else if (this.isMovementLocked()) {
-                // Show hurt animation during movement lock
+            } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
-                return;
             } else if (this.isAboveGround()) {
                 this.playJumpAnimation();
             } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {

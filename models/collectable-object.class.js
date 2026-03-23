@@ -16,7 +16,7 @@ class CollectableObject extends DrawableObject {
         'assets/images/6_salsa_bottle/2_salsa_bottle_on_ground.png'
     ];
 
-    constructor(type, x, y) {
+    constructor(type, x, y, keepY = false) {
         super();
         this.type = type;
         this.x = x;
@@ -32,7 +32,7 @@ class CollectableObject extends DrawableObject {
             this.loadImage(randomImg);
             this.width = 50;
             this.height =  60;
-            this.y = 370;
+            if (!keepY) this.y = 370;
         }
         
         this.updateOffsetBox();

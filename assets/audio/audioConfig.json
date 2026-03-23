@@ -5,7 +5,8 @@
         "battleMusic": "assets/audio/game/a-calm-hellfire.mp3",
         "gameOver": "assets/audio/game/game-over.wav",
         "youWonMusic": "assets/audio/game/latina-chic-airstream-main-version.mp3",
-        "gameStart": "assets/audio/game/gameStart.mp3"
+        "gameStart": "assets/audio/game/gameStart.mp3",
+        "countdown": "assets/audio/game/3-2-1_fight.mp3"
     },
     "character": {
         "walk": "assets/audio/character/characterRun.mp3",

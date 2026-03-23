@@ -7,7 +7,8 @@ class StatusIcon extends DrawableObject {
         healthPepe: 'assets/images/7_statusbars/3_icons/icon_health.png',
         healthEndBoss: 'assets/images/7_statusbars/3_icons/icon_health_endboss.png',
         coin: 'assets/images/7_statusbars/3_icons/icon_coin.png',
-        bottle: 'assets/images/7_statusbars/3_icons/icon_salsa_bottle.png'
+        bottle: 'assets/images/7_statusbars/3_icons/icon_salsa_bottle.png',
+        kill: 'assets/images/3_enemies_chicken/chicken_normal/2_dead/dead.png'
     }
 
     constructor(icon, x, y, width, height, initialAmount) {
