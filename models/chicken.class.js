@@ -3,7 +3,7 @@
  * optionally jumping at random intervals. Extends {@link MovableObject} for movement,
  * gravity, and animation capabilities.
  */
-class Chicken extends MovableObject {
+ class Chicken extends MovableObject {
     width = 50;
     height = 60;
     turnAround = false;

@@ -3,7 +3,7 @@
  * Handles movement, animation states, camera tracking, and input processing.
  * @extends MovableObject
  */
-class Character extends MovableObject {
+ class Character extends MovableObject {
     speed = 5;
     currentImage = 0;
     hurtTime = 0;

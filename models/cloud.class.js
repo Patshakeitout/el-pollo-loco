@@ -1,7 +1,8 @@
 /**
- * Cloud class that extends MovableObject
+ * Represents a background cloud that drifts continuously to the right and wraps
+ * back to the left edge when it exits the level. Extends {@link MovableObject}.
  */
-class Cloud extends MovableObject {
+ class Cloud extends MovableObject {
     y = 10;
     height = 250;
     width = 550;
@@ -14,17 +15,19 @@ class Cloud extends MovableObject {
         this.animate();
     }
 
-    animate() {
+
+    /**
+     * Moves the cloud rightward at a constant speed and resets its position
+     * to the left when it scrolls past the level boundary.
+     */
+     animate() {
         IntervalHub.startInterval(() => {
             this.x += this.speed;
 
-            // Reset position when cloud exits to the right and wrap back to left
             if (this.x > 7650) {
                 this.x = -550;
             }
         }, 1000 / 60);
     }
-
-
 
 }
