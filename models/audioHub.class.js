@@ -26,7 +26,7 @@ class AudioHub {
      * Loads audio configuration and initializes all sounds.
      * @returns {Promise<void>}
      */
-    async loadConfig() {
+     async loadConfig() {
         try {
             const response = await fetch('assets/audio/audioConfig.json');
             const config = await response.json();
@@ -42,7 +42,19 @@ class AudioHub {
      * Initializes Audio objects from config.
      * @param {Object} config - The audio configuration object
      */
-    initializeSounds(config) {
+     initializeSounds(config) {
+        this.initializeMusic(config);
+        this.initializeCharacterSounds(config);
+        this.initializeEnemySounds(config);
+        this.initializeItemSounds(config);
+    }
+
+
+    /**
+     * Initializes all music tracks from config.
+     * @param {Object} config - The audio configuration object
+     */
+     initializeMusic(config) {
         this.music.background = this.createAudio(config.game.backgroundMusic, true);
         this.music.menu = this.createAudio(config.game.menuMusic, true);
         this.music.battle = this.createAudio(config.game.battleMusic, true);
@@ -50,24 +62,43 @@ class AudioHub {
         this.music.countdown = this.createAudio(config.game.countdown, false);
         this.music.gameOver = this.createAudio(config.game.gameOver, false);
         this.music.youWonMusic = this.createAudio(config.game.youWonMusic, false);
+    }
 
+
+    /**
+     * Initializes all character sound effects from config.
+     * @param {Object} config - The audio configuration object
+     */
+     initializeCharacterSounds(config) {
         this.sounds.characterWalk = this.createAudio(config.character.walk, true);
         this.sounds.characterJump = this.createAudio(config.character.jump, false);
         this.sounds.characterHurt = this.createAudio(config.character.hurt, false);
         this.sounds.characterDead = this.createAudio(config.character.dead, false);
         this.sounds.characterScream = this.createAudio(config.character.scream, false);
         this.sounds.characterSnoring = this.createAudio(config.character.snoring, true);
+    }
 
+
+    /**
+     * Initializes all enemy sound effects from config.
+     * @param {Object} config - The audio configuration object
+     */
+     initializeEnemySounds(config) {
         this.sounds.chickenDead = this.createAudio(config.chicken.dead, false);
         this.sounds.chickDead = this.createAudio(config.chick.dead, false);
-
         this.sounds.endbossApproach = this.createAudio(config.endboss.approach, false);
         this.sounds.endbossDead = this.createAudio(config.endboss.dead, false);
         this.sounds.endbossRolling = this.createAudio(config.endboss.rolling, false);
+    }
 
+
+    /**
+     * Initializes collectible and throwable sound effects from config.
+     * @param {Object} config - The audio configuration object
+     */
+     initializeItemSounds(config) {
         this.sounds.coinCollect = this.createAudio(config.collectibles.coin, false);
         this.sounds.bottleCollect = this.createAudio(config.collectibles.bottle, false);
-
         this.sounds.bottleBreak = this.createAudio(config.throwable.bottleBreak, false);
     }
 
@@ -78,7 +109,7 @@ class AudioHub {
      * @param {boolean} loop - Whether the audio should loop
      * @returns {HTMLAudioElement}
      */
-    createAudio(src, loop = false) {
+     createAudio(src, loop = false) {
         const audio = new Audio(src);
         audio.loop = loop;
         audio.preload = 'auto';

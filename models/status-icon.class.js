@@ -1,55 +1,48 @@
-class StatusIcon extends DrawableObject {
+class StatusIcon {
 
     iconName;
     amount;
+    elementId;
 
-    IMAGES = {
-        healthPepe: 'assets/images/7_statusbars/3_icons/icon_health.png',
-        healthEndBoss: 'assets/images/7_statusbars/3_icons/icon_health_endboss.png',
-        coin: 'assets/images/7_statusbars/3_icons/icon_coin.png',
-        bottle: 'assets/images/7_statusbars/3_icons/icon_salsa_bottle.png',
-        kill: 'assets/images/3_enemies_chicken/chicken_normal/2_dead/dead.png'
-    }
-
-    constructor(icon, x, y, width, height, initialAmount) {
-        super();
+    constructor(icon, elementId, initialAmount) {
         this.iconName = icon;
-        this.loadImage(this.IMAGES[icon]);
-        this.x = x;
-        this.y = y;
-        this.width = width
-        this.height = height;
+        this.elementId = elementId;
         this.amount = initialAmount;
+        this.updateDOM();
     }
 
+    /**
+     * Sets the amount and updates the DOM element.
+     * @param {number} amount - The new amount to display.
+     */
     setAmount(amount) {
         this.amount = amount;
+        this.updateDOM();
     }
 
-    draw(ctx) {
-        // Draw the icon image
-        super.draw(ctx);
-        
-        // Draw the percentage text centered with the icon
-        ctx.font = 'bold 22px Boogaloo-Regular';
-        ctx.fillStyle = 'white';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';        
-        
-        let textX, textY;
-        if (this.iconName == 'bottle') {
-            textX = this.x + this.width - 4;
-            textY = this.y + this.height / 2 + 5;
-        } else if (this.iconName == 'healthEndBoss') {
-            textX = this.x + this.width + 11;   
-            textY = this.y + this.height / 2 + 4;
-        }
-        else {
-            textX = this.x + this.width + 8;
-            textY = this.y + this.height / 2 + 5;
-        }
-        
-        ctx.strokeText(this.amount, textX, textY);
-        ctx.fillText(this.amount, textX, textY);
+    /**
+     * Updates the figcaption text of the corresponding HTML element.
+     */
+    updateDOM() {
+        const el = document.getElementById(this.elementId);
+        if (!el) return;
+        const caption = el.querySelector('figcaption');
+        if (caption) caption.textContent = this.amount;
+    }
+
+    /**
+     * Shows this status icon in the DOM.
+     */
+    show() {
+        const el = document.getElementById(this.elementId);
+        if (el) el.classList.remove('d-none');
+    }
+
+    /**
+     * Hides this status icon in the DOM.
+     */
+    hide() {
+        const el = document.getElementById(this.elementId);
+        if (el) el.classList.add('d-none');
     }
 }

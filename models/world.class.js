@@ -6,11 +6,11 @@ class World {
     keyboard;
     cameraX = 0;
     turnAround = false;
-    statusIconPepe = new StatusIcon('healthPepe', 20, 9, 50, 50, 100);
-    statusIconCoin = new StatusIcon('coin', 101, 12.5, 45, 45, 0);
-    statusIconBottle = new StatusIcon('bottle', 166, 15, 55, 40, 10);
-    statusIconKill = new StatusIcon('kill', 232, 12, 40, 40, 0);
-    statusIconEndBoss = new StatusIcon('healthEndBoss', 312, 17, 40, 40, 100);
+    statusIconPepe = new StatusIcon('healthPepe', 'status-health', 100);
+    statusIconCoin = new StatusIcon('coin', 'status-coin', 0);
+    statusIconBottle = new StatusIcon('bottle', 'status-bottle', 10);
+    statusIconKill = new StatusIcon('kill', 'status-kill', 0);
+    statusIconEndBoss = new StatusIcon('healthEndBoss', 'status-endboss', 100);
     thrownObjects = [];
     endBossRevealed = false;
     enemiesKilled = 0;
@@ -42,27 +42,24 @@ class World {
 
             this.ctx.translate(-this.cameraX, 0);
 
-            // --- Space for fixed objects in canvas ---
-            this.addToMap(this.statusIconPepe);
-            this.addToMap(this.statusIconCoin);
-            this.addToMap(this.statusIconBottle);
-            this.addToMap(this.statusIconKill);
-
-            // Only show endboss health icon if endboss is visible or has been revealed
-            const endBoss = this.level.enemies.find(enemy => enemy instanceof EndBoss);
-            if (endBoss && endBoss.x > -this.cameraX - 100 && endBoss.x < -this.cameraX + this.canvas.width + 100) {
-                this.endBossRevealed = true;
-            }
-            if (this.endBossRevealed) {
-                this.addToMap(this.statusIconEndBoss);
-            }
-
-            this.ctx.translate(this.cameraX, 0);
-
-            this.ctx.translate(-this.cameraX, 0);
+            // Reveal endboss health icon when boss enters view
+            this.checkEndBossReveal();
 
             //let self = this;
             requestAnimationFrame(() => this.draw());
+        }
+    }
+
+
+    /**
+     * Shows the endboss health icon once the boss enters the viewport.
+     */
+    checkEndBossReveal() {
+        if (this.endBossRevealed) return;
+        const endBoss = this.level.enemies.find(enemy => enemy instanceof EndBoss);
+        if (endBoss && endBoss.x > -this.cameraX - 100 && endBoss.x < -this.cameraX + this.canvas.width + 100) {
+            this.endBossRevealed = true;
+            this.statusIconEndBoss.show();
         }
     }
 
@@ -160,13 +157,13 @@ class World {
                 collectable.collect();
 
                 if (collectable.type === 'coin') {
-                    this.statusIconCoin.amount += 1;
+                    this.statusIconCoin.setAmount(this.statusIconCoin.amount + 1);
                     audioHub?.playCoinSound();
-                    // Each coin refills 5 health points
+                    // Each coin refills 2 health points
                     this.pepe.energy += 2;
                     this.statusIconPepe.setAmount(this.pepe.energy);
                 } else if (collectable.type === 'bottle') {
-                    this.statusIconBottle.amount += 1;
+                    this.statusIconBottle.setAmount(this.statusIconBottle.amount + 1);
                     audioHub?.playBottleCollectSound();
                 }
 
@@ -194,7 +191,7 @@ class World {
             }
             bottle.world = this;
             this.thrownObjects.push(bottle);
-            this.statusIconBottle.amount -= 1;
+            this.statusIconBottle.setAmount(this.statusIconBottle.amount - 1);
 
         }
     }

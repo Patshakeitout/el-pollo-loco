@@ -155,7 +155,7 @@
 /**
  * Prints a styled credits message to the browser developer console.
  */
-function printConsoleCredits() {
+ function printConsoleCredits() {
     console.log(
         '\n%c  \u2764  %c  </>  %c\n\n' +
         'This game was developed with passion\nand in cooperation with Developer Akademie.\n\n' +

@@ -51,6 +51,28 @@
         <section id="game-container" aria-label="Game Screen">
             <div id="aspect-ratio-wrapper">
                 <canvas id="canvas" width="720" height="480" aria-label="Game Area" class="game-frame d-none"></canvas>
+                <nav id="status-bar" class="d-none" aria-label="Game Status">
+                    <figure class="status-icon" id="status-health">
+                        <img src="assets/images/7_statusbars/3_icons/icon_health.png" alt="Health">
+                        <figcaption>100</figcaption>
+                    </figure>
+                    <figure class="status-icon" id="status-coin">
+                        <img src="assets/images/7_statusbars/3_icons/icon_coin.png" alt="Coins">
+                        <figcaption>0</figcaption>
+                    </figure>
+                    <figure class="status-icon" id="status-bottle">
+                        <img src="assets/images/6_salsa_bottle/salsa_bottle.png" alt="Bottles">
+                        <figcaption>10</figcaption>
+                    </figure>
+                    <figure class="status-icon" id="status-kill">
+                        <img src="assets/images/3_enemies_chicken/chicken_normal/2_dead/dead.png" alt="Kills">
+                        <figcaption>0</figcaption>
+                    </figure>
+                    <figure class="status-icon d-none" id="status-endboss">
+                        <img src="assets/images/7_statusbars/3_icons/icon_health_endboss.png" alt="Boss Health">
+                        <figcaption>100</figcaption>
+                    </figure>
+                </nav>
                 <div id="curtain-overlay" class="d-none">
                     <div class="curtain-left"></div>
                     <div class="curtain-right"></div>

@@ -97,6 +97,38 @@ h1, h3, span {
     overflow: hidden;
 }
 
+#status-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    display: flex;
+    gap: 8px;
+    padding: 6px 10px;
+    pointer-events: none;
+}
+
+.status-icon {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin: 0;
+}
+
+.status-icon img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
+
+.status-icon figcaption {
+    font-family: 'Boogaloo-Regular', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 1px 1px 2px #000;
+}
+
 /* Fullscreen: remove cap and fill screen */
 #game-container:fullscreen {
     background: #000;
@@ -349,7 +381,7 @@ canvas {
     transform: translate(-50%, -50%) scale(0);
     z-index: 90;
     font-family: 'Impact', 'Arial Black', sans-serif;
-    font-size: 4rem;
+    font-size: clamp(2rem, 8vw, 5rem);
     color: #ffd700;
     text-shadow: 0 0 20px rgba(255, 200, 0, 0.9), 0 0 40px rgba(255, 50, 0, 0.7), 0 0 60px rgba(255, 0, 0, 0.4), 3px 3px 0 #000, -1px -1px 0 #a30000;
     letter-spacing: 4px;

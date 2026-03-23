@@ -53,6 +53,7 @@ let cheatCount = 0;
  function initGameWorld(curtain) {
     document.getElementById('start-screen').classList.add('d-none');
     document.getElementById('canvas').classList.remove('d-none');
+    document.getElementById('status-bar').classList.remove('d-none');
 
     const mobileControls = document.getElementById('mobile-controls');
     if (mobileControls) mobileControls.classList.remove('d-none');
@@ -132,9 +133,16 @@ let cheatCount = 0;
  * Restarts the game by resetting world, level, and UI states.
  */
  function restartGame() {
+    if (world) world.paused = true;
+    world = null;
     if (audioHub) audioHub.stopCurrentMusic();
     IntervalHub.stopAllIntervals();
     if (audioHub) audioHub.stopAll();
+
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+
+    const pauseBtn = document.getElementById('btn-pause-top');
+    if (pauseBtn) pauseBtn.innerText = '❚❚';
 
     const curtain = document.getElementById('curtain-overlay');
     curtain.classList.remove('d-none', 'open');
@@ -151,10 +159,8 @@ let cheatCount = 0;
  */
  function reinitGameWorld(curtain) {
     document.getElementById('end-screen').classList.add('d-none');
+    document.getElementById('end-screen').style.display = 'none';
     if (world) world.paused = true;
-
-    initLevel1();
-    world = new World(canvas, keyboard);
 
     const pauseBtn = document.getElementById('btn-pause-top');
     if (pauseBtn) pauseBtn.innerText = '❚❚';
@@ -194,5 +200,5 @@ let cheatCount = 0;
     cheatBuffer = '';
     world.pepe.energy += 100;
     world.statusIconPepe.setAmount(world.pepe.energy);
-    world.statusIconBottle.amount += 50;
+    world.statusIconBottle.setAmount(world.statusIconBottle.amount + 50);
 }

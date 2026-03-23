@@ -144,6 +144,9 @@
     const gameControlsTop = document.getElementById('game-controls-top');
     if (gameControlsTop) gameControlsTop.classList.add('d-none');
 
+    const statusBar = document.getElementById('status-bar');
+    if (statusBar) statusBar.classList.add('d-none');
+
     const overlay = document.getElementById('start-overlay');
     if (overlay) overlay.remove();
 }
