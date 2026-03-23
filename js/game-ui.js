@@ -1,4 +1,10 @@
 /**
+ * @fileoverview UI setup and interaction handlers — start, pause, mute,
+ * fullscreen, tutorial overlay, mobile controls, and developer console credits.
+ */
+
+
+/**
  * Sets up all UI buttons, overlays, and prints console credits.
  */
  function setupUI() {

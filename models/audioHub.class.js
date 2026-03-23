@@ -2,7 +2,8 @@
  * AudioHub - Manages all game audio including music and sound effects.
  * Singleton pattern ensures one centralized audio controller.
  */
-class AudioHub {
+ class AudioHub {
+    
     static instance = null;
 
     constructor() {

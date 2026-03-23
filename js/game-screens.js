@@ -1,4 +1,11 @@
 /**
+ * @fileoverview Screen transitions and overlay management — start overlay,
+ * curtain countdown animation, pixel-build effects, end screens (win/lose),
+ * and legal page navigation.
+ */
+
+
+/**
  * Displays the initial start overlay and transitions to the start screen on click.
  */
  function showStartOverlay() {

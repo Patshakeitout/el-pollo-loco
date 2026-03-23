@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Level 1 configuration and procedural generation.
+ * Builds a randomized desert level with enemies (Chickens, Chicks, EndBoss),
+ * collectables (coins, bottle stacks), and clouds. The level width is
+ * randomized each run via bgRepeat, producing varied gameplay layouts.
+ */
 let bgRepeat;
 let levelEndX;
 let enemies = [];

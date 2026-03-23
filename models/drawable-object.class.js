@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Base class for all visible game objects — provides image
+ * loading, sprite caching, and canvas draw routines.
+ */
 class DrawableObject {
     img;
     imgCache = {};

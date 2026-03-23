@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Story intro sequence — typewriter text animation with
+ * skip support. Displays the narrative backstory before gameplay begins.
+ */
 let storyState = { skipped: false, charIndex: 0 };
 const storyLines = [
     "The desert sun burns without mercy...\n\n",

@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Core game controller — initialization, start, restart, pause,
+ * and cheat code handling. Manages the global game state (canvas, world,
+ * keyboard, audioHub) and orchestrates the game lifecycle.
+ */
 let canvas;
 let world;
 let keyboard;

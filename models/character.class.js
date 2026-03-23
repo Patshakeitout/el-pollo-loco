@@ -1,11 +1,13 @@
 /**
- * Character class that extends MovableObject
+ * Represents the playable character (Pepe) in the game.
+ * Handles movement, animation states, camera tracking, and input processing.
+ * @extends MovableObject
  */
 class Character extends MovableObject {
     speed = 5;
     currentImage = 0;
     hurtTime = 0;
-    hurtDuration = 500; // Duration for movement lock
+    hurtDuration = 500;
     deadAnimationPlayed = false;
     deadAnimationStarted = false;
     deadAnimationFinished = false;
@@ -76,10 +78,10 @@ class Character extends MovableObject {
     constructor() {
         super().loadImage('assets/images/2_character_pepe/2_walk/W-21.png');
 
-        this.lastMovedLeft = false; // Track if last movement was left
-        this.lastDirection = null; // Track previous direction for smooth transitions
-        this.lastActionTime = new Date().getTime(); // Track when Pepe last moved/acted
-        this.idleThreshold = 10000; // 10 seconds before sleep animation
+        this.lastMovedLeft = false;
+        this.lastDirection = null;
+        this.lastActionTime = new Date().getTime();
+        this.idleThreshold = 10000;
         this.hasOffsetBox = true;
         this.offsetBox = {
             x: 0,
@@ -101,135 +103,162 @@ class Character extends MovableObject {
     }
 
 
-    animate() {
+    /**
+     * Starts the main game loops for movement/camera and animation state.
+     */
+     animate() {
         IntervalHub.startInterval(() => {
-            // Freeze camera if character is dead
-            if (!this.isDead()) {
-                // Find the endBoss in the enemies array
-                let endBoss = this.world.level.enemies.find(enemy => enemy instanceof EndBoss);
-
-                let endBossIsClose = endBoss && !endBoss.isDead() &&
-                    Math.abs((endBoss.x + endBoss.width / 2) - (this.x + this.width / 2)) < EndBoss.secureAreaX + 200;
-                let endBossIsToLeft = endBoss && endBoss.x < this.x;
-
-                let targetCameraX;
-
-                if (endBossIsClose && endBossIsToLeft) {
-                    // Cinematic mode: boss is left, position Pepe at the right edge
-                    targetCameraX = -this.x + (this.world.canvas.width - 150);
-                } else if (endBossIsClose && !endBossIsToLeft) {
-                    // Cinematic mode: boss is right, position Pepe at the left edge
-                    targetCameraX = -this.x + 150;
-                } else {
-                    // Normal mode: directional camera based on movement direction
-                    if (this.world.keyboard.RIGHT) {
-                        // Moving right: Pepe at left edge of frame with lead ahead
-                        targetCameraX = -this.x - 110;
-                        this.lastMovedLeft = false;
-                    } else if (this.world.keyboard.LEFT) {
-                        // Moving left: Pepe at right edge of frame (or idle camera if at x=0)
-                        if (this.x > 0) {
-                            targetCameraX = -this.x + (this.world.canvas.width);
-                        } else {
-                            targetCameraX = this.world.cameraX; // Camera stays still at left edge
-                        }
-                        this.lastMovedLeft = true;
-                    } else {
-                        // Idle: keep camera position stable (prevents jumping on flip)
-                        targetCameraX = this.world.cameraX;
-                    }
-                }
-
-
-                // Smooth camera transition with lerp + round to avoid visual artifacts
-                // Always use smooth transition to prevent jumping
-                let currentDirection = this.world.keyboard.RIGHT ? 'RIGHT' : (this.world.keyboard.LEFT ? 'LEFT' : 'IDLE');
-                let lerpFactor = 0.04; // Consistent smooth transition for all directions
-
-                this.lastDirection = currentDirection;
-                this.world.cameraX = Math.round(this.world.cameraX + (targetCameraX - this.world.cameraX) * lerpFactor);
-
-                // Constrain camera to valid boundaries
-                let minCameraX = -(this.world.level.levelEndX - this.world.canvas.width);
-                this.world.cameraX = Math.max(minCameraX, Math.min(0, this.world.cameraX));
-            }
-
-            // Calculate movement boundaries
-            let minLeft = 0;
-            let maxRight = this.world.level.levelEndX - this.width;
-
-            // Freeze all user interactions if character is dead
-            if (!this.isDead()) {
-                let isMoving = false;
-
-                if (this.world.keyboard.RIGHT && this.x < maxRight) {
-                    this.moveRight();
-                    this.turnAround = false;
-                    isMoving = true;
-                    this.lastActionTime = new Date().getTime();
-                }
-
-                if (this.world.keyboard.LEFT && this.x > minLeft) {
-                    this.moveLeft();
-                    this.turnAround = true;
-                    isMoving = true;
-                    this.lastActionTime = new Date().getTime();
-                }
-
-                // Handle walk sound
-                if (isMoving && !this.isAboveGround()) {
-                    audioHub?.playWalkSound();
-                } else {
-                    audioHub?.stopWalkSound();
-                }
-
-                if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-                    this.jump();
-                    if (!this.victoryMode) audioHub?.playJumpSound();
-                    this.lastActionTime = new Date().getTime();
-                }
-            } else {
-                audioHub?.stopWalkSound();
-            }
+            if (!this.isDead()) this.updateCamera();
+            if (!this.isDead()) this.handleMovementInput();
+            else audioHub?.stopWalkSound();
         }, this.FT);
 
-
-        IntervalHub.startInterval(() => {
-            if (this.isDead()) {
-                if (!this.deadAnimationStarted) {
-                    this.playDeathAnimation(this.IMAGES_DEAD);
-                    this.deadAnimationStarted = true;
-                    audioHub?.playDeathSound();
-                }
-                if (this.deadAnimationFinished) {
-                    this.isFallingDown();
-                    // Show end overlay after Pepe sinks
-                    if (this.world && typeof this.world.checkGameEnd === 'function') {
-                        this.world.checkGameEnd();
-                    }
-                }
-            } else if (this.isHurt()) {
-                this.playAnimation(this.IMAGES_HURT);
-            } else if (this.isAboveGround()) {
-                this.playJumpAnimation();
-            } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                this.playAnimation(this.IMAGES_WALKING);
-            } else {
-                // Check if Pepe has been idle for 10 seconds
-                let timeSinceLastAction = new Date().getTime() - this.lastActionTime;
-                if (timeSinceLastAction >= this.idleThreshold) {
-                    this.playAnimation(this.IMAGES_LONG_IDLE);
-                } else {
-                    this.playAnimation(this.IMAGES_IDLE);
-                }
-            }
-
-        }, 100); 
-
+        IntervalHub.startInterval(() => this.updateAnimationState(), 100);
     }
 
 
-    playJumpAnimation() {
+    /**
+     * Calculates the target camera position based on end boss proximity
+     * and player movement direction, then applies smooth lerp transition.
+     */
+     updateCamera() {
+        let endBoss = this.world.level.enemies.find(enemy => enemy instanceof EndBoss);
+        let endBossIsClose = endBoss && !endBoss.isDead() &&
+            Math.abs((endBoss.x + endBoss.width / 2) - (this.x + this.width / 2)) < EndBoss.secureAreaX + 200;
+        let endBossIsToLeft = endBoss && endBoss.x < this.x;
+        let targetCameraX = this.calcTargetCameraX(endBossIsClose, endBossIsToLeft);
+        this.applySmoothCamera(targetCameraX);
+    }
+
+
+    /**
+     * Determines the target camera X position based on boss proximity and input direction.
+     * @param {boolean} endBossIsClose - Whether the end boss is within cinematic range.
+     * @param {boolean} endBossIsToLeft - Whether the end boss is to the left of the character.
+     * @returns {number} The target camera X position.
+     */
+     calcTargetCameraX(endBossIsClose, endBossIsToLeft) {
+        if (endBossIsClose && endBossIsToLeft) return -this.x + (this.world.canvas.width - 150);
+        if (endBossIsClose && !endBossIsToLeft) return -this.x + 150;
+        return this.calcDirectionalCameraX();
+    }
+
+
+    /**
+     * Calculates camera X based on keyboard input direction during normal gameplay.
+     * @returns {number} The target camera X position.
+     */
+     calcDirectionalCameraX() {
+        if (this.world.keyboard.RIGHT) {
+            this.lastMovedLeft = false;
+            return -this.x - 110;
+        } else if (this.world.keyboard.LEFT) {
+            this.lastMovedLeft = true;
+            return this.x > 0 ? -this.x + this.world.canvas.width : this.world.cameraX;
+        }
+        return this.world.cameraX;
+    }
+
+
+    /**
+     * Applies a smooth lerp transition to the camera and clamps it within level bounds.
+     * @param {number} targetCameraX - The desired camera X position.
+     */
+     applySmoothCamera(targetCameraX) {
+        let lerpFactor = 0.04;
+        this.lastDirection = this.world.keyboard.RIGHT ? 'RIGHT' : (this.world.keyboard.LEFT ? 'LEFT' : 'IDLE');
+        this.world.cameraX = Math.round(this.world.cameraX + (targetCameraX - this.world.cameraX) * lerpFactor);
+        let minCameraX = -(this.world.level.levelEndX - this.world.canvas.width);
+        this.world.cameraX = Math.max(minCameraX, Math.min(0, this.world.cameraX));
+    }
+
+
+    /**
+     * Processes keyboard input for horizontal movement, jumping, and walk sounds.
+     */
+     handleMovementInput() {
+        let isMoving = this.handleHorizontalMovement();
+        isMoving && !this.isAboveGround() ? audioHub?.playWalkSound() : audioHub?.stopWalkSound();
+        this.handleJumpInput();
+    }
+
+
+    /**
+     * Handles left/right keyboard input and updates position and direction.
+     * @returns {boolean} Whether the character is moving horizontally.
+     */
+     handleHorizontalMovement() {
+        let isMoving = false;
+        if (this.world.keyboard.RIGHT && this.x < this.world.level.levelEndX - this.width) {
+            this.moveRight();
+            this.turnAround = false;
+            isMoving = true;
+            this.lastActionTime = new Date().getTime();
+        }
+        if (this.world.keyboard.LEFT && this.x > 0) {
+            this.moveLeft();
+            this.turnAround = true;
+            isMoving = true;
+            this.lastActionTime = new Date().getTime();
+        }
+        return isMoving;
+    }
+
+
+    /**
+     * Handles jump input and plays the jump sound.
+     */
+     handleJumpInput() {
+        if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+            this.jump();
+            if (!this.victoryMode) audioHub?.playJumpSound();
+            this.lastActionTime = new Date().getTime();
+        }
+    }
+
+
+    /**
+     * Selects and plays the correct animation based on the character's current state
+     * (dead, hurt, jumping, walking, idle, or long idle).
+     */
+     updateAnimationState() {
+        if (this.isDead()) {
+            this.handleDeadState();
+        } else if (this.isHurt()) {
+            this.playAnimation(this.IMAGES_HURT);
+        } else if (this.isAboveGround()) {
+            this.playJumpAnimation();
+        } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+            this.playAnimation(this.IMAGES_WALKING);
+        } else {
+            let timeSinceLastAction = new Date().getTime() - this.lastActionTime;
+            this.playAnimation(timeSinceLastAction >= this.idleThreshold ? this.IMAGES_LONG_IDLE : this.IMAGES_IDLE);
+        }
+    }
+
+
+    /**
+     * Handles the death sequence: triggers death animation, sound,
+     * falling, and game-end check.
+     */
+     handleDeadState() {
+        if (!this.deadAnimationStarted) {
+            this.playDeathAnimation(this.IMAGES_DEAD);
+            this.deadAnimationStarted = true;
+            audioHub?.playDeathSound();
+        }
+        if (this.deadAnimationFinished) {
+            this.isFallingDown();
+            if (this.world && typeof this.world.checkGameEnd === 'function') this.world.checkGameEnd();
+        }
+    }
+
+
+    /**
+     * Selects and plays the appropriate jump animation frame
+     * based on the current vertical speed (ascending vs descending).
+     */
+     playJumpAnimation() {
         if (this.speedY > 0) {
             if (this.speedY > 15) this.playAnimation(this.IMAGES_JUMPING.slice(1, 2));
             else if (this.speedY > 5) this.playAnimation(this.IMAGES_JUMPING.slice(2, 3));
@@ -242,7 +271,12 @@ class Character extends MovableObject {
     }
 
 
-    playDeathAnimation(images) {  
+    /**
+     * Plays the death animation frame by frame with a 300ms delay between each.
+     * Triggers a jump at frame 3 and sets {@link deadAnimationFinished} when done.
+     * @param {string[]} images - Array of image paths for the death sequence.
+     */
+    playDeathAnimation(images) {
         let delay = 0;
         images.forEach((path, index) => {
             setTimeout(() => {
@@ -254,13 +288,15 @@ class Character extends MovableObject {
             delay += 300;
         });
         
-        // Mark animation as finished after all frames have played
         setTimeout(() => {
             this.deadAnimationFinished = true;
         }, delay);
     }
 
 
+    /**
+     * Moves the character downward each frame to simulate falling off-screen after death.
+     */
     isFallingDown() {
         this.y += 5;
     }
