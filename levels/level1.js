@@ -1,4 +1,3 @@
-  
 let bgRepeat;
 let levelEndX;
 let enemies = [];
@@ -6,7 +5,10 @@ let collectables = [];
 let level1;
 
 
-function initLevel1() {
+/**
+ * Initializes level 1 with random dimensions, enemies, and collectables.
+ */
+ function initLevel1() {
     bgRepeat = Math.floor(Math.random() * 6) + 5;
     levelEndX = bgRepeat * 720;
     enemies = [];
@@ -16,54 +18,53 @@ function initLevel1() {
     createEndBoss();
     createCollectables();
 
-    level1 = new Level(
-        bgRepeat,
-        levelEndX,
-        enemies,
-        createClouds(),
-        collectables
-    );
+    level1 = new Level(bgRepeat, levelEndX, enemies, createClouds(), collectables);
 }
 
 
-function createEnemies(number) {
-    let size = 1;
-     for (let i = 0; i < number; i++) {
-        size = 0.65 + Math.random() * 1.8;
-        enemies.push(new Chicken(size, levelEndX));
-        size = 1 + Math.random() * 3;
-         enemies.push(new Chick(size, levelEndX));
+/**
+ * Creates pairs of Chicken and Chick enemies with random sizes.
+ * @param {number} number - Number of enemy pairs to create.
+ */
+ function createEnemies(number) {
+    for (let i = 0; i < number; i++) {
+        let chickenSize = 0.65 + Math.random() * 1.8;
+        enemies.push(new Chicken(chickenSize, levelEndX));
+        let chickSize = 1 + Math.random() * 3;
+        enemies.push(new Chick(chickSize, levelEndX));
     }
-    return enemies;
-};
-
-
-function createEndBoss() {
-    enemies.push(new EndBoss(levelEndX-20));
-};
-
-
-function createCollectables() {
-    let coinCount = 15 + Math.floor(Math.random() * 11);
-    let coins = createCoins(coinCount, levelEndX);
-    collectables.push(...coins);
-    
-    let bottles = createBottleStacks(levelEndX);
-    collectables.push(...bottles);
-};
+}
 
 
 /**
- * Create coins scattered above ground throughout the world
- * @param {number} count - Number of coins to create
- * @param {number} levelEndX - The end X position of the level
- * @returns {CollectableObject[]} Array of coin objects
+ * Creates the EndBoss and adds it near the end of the level.
  */
-function createCoins(count, levelEndX) {
+ function createEndBoss() {
+    enemies.push(new EndBoss(levelEndX - 20));
+}
+
+
+/**
+ * Creates all collectables (coins and bottle stacks) for the level.
+ */
+ function createCollectables() {
+    let coinCount = 15 + Math.floor(Math.random() * 11);
+    collectables.push(...createCoins(coinCount, levelEndX));
+    collectables.push(...createBottleStacks(levelEndX));
+}
+
+
+/**
+ * Creates coins scattered above ground throughout the world.
+ * @param {number} count - Number of coins to create.
+ * @param {number} levelEndX - The end X position of the level.
+ * @returns {CollectableObject[]} Array of coin objects.
+ */
+ function createCoins(count, levelEndX) {
     let coins = [];
     for (let i = 0; i < count; i++) {
         let x = 500 + Math.random() * (levelEndX - 700);
-        let y = 100 + Math.random() * 200; // Y position above ground - adapt
+        let y = 100 + Math.random() * 200;
         coins.push(new CollectableObject('coin', x, y));
     }
     return coins;
@@ -71,11 +72,11 @@ function createCoins(count, levelEndX) {
 
 
 /**
- * Create bottle stacks scattered throughout the world
- * @param {number} levelEndX - The end X position of the level
- * @returns {CollectableObject[]} Array of bottle objects
+ * Creates bottle stacks scattered throughout the world.
+ * @param {number} levelEndX - The end X position of the level.
+ * @returns {CollectableObject[]} Array of bottle objects.
  */
-function createBottleStacks(levelEndX) {
+ function createBottleStacks(levelEndX) {
     let bottles = [];
     let numberOfStacks = 4 + Math.floor(Math.random() * 2);
 
@@ -84,7 +85,7 @@ function createBottleStacks(levelEndX) {
         let stackStartX = 400 + (stack * (levelEndX / numberOfStacks)) + Math.random() * 200;
 
         for (let i = 0; i < stackSize; i++) {
-            let x = stackStartX + (i * 40); // Bottles spread horizontally - adapt
+            let x = stackStartX + (i * 40);
             bottles.push(new CollectableObject('bottle', x, 350));
         }
     }
@@ -93,16 +94,13 @@ function createBottleStacks(levelEndX) {
 
 
 /**
- * Create clouds scattered throughout the entire level
- * @returns {Cloud[]} Array of cloud objects
+ * Creates clouds randomly distributed across the level.
+ * @returns {Cloud[]} Array of cloud objects.
  */
-function createClouds() {
+ function createClouds() {
     let clouds = [];
-    let numberOfClouds = 25;
-
-    for (let i = 0; i < numberOfClouds; i++) {
+    for (let i = 0; i < 25; i++) {
         let cloud = new Cloud();
-        // Randomly distribute clouds across 7100
         cloud.x = Math.random() * 7100 - 550;
         clouds.push(cloud);
     }
