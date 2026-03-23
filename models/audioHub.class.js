@@ -23,6 +23,18 @@ class AudioHub {
 
 
     /**
+     * Gets the singleton instance of AudioHub.
+     * @returns {AudioHub}
+     */
+     static getInstance() {
+        if (!AudioHub.instance) {
+            AudioHub.instance = new AudioHub();
+        }
+        return AudioHub.instance;
+    }
+
+
+    /**
      * Loads audio configuration and initializes all sounds.
      * @returns {Promise<void>}
      */
@@ -121,7 +133,7 @@ class AudioHub {
     /**
      * Plays background music for gameplay.
      */
-    playBackgroundMusic() {
+     playBackgroundMusic() {
         const bgMusic = this.music.background;
         if (!bgMusic) return;
 
@@ -149,20 +161,15 @@ class AudioHub {
         const menuMusic = this.music.menu;
         if (!menuMusic) return;
 
-        // 1. Stop any OTHER music that might be playing
         if (this.currentMusic && this.currentMusic !== menuMusic) {
             this.currentMusic.pause();
             this.currentMusic.currentTime = 0;
         }
 
-        // 2. CRITICAL: Register this as the "Current Music"
-        // This allows stopAll() and playBackgroundMusic() to control it.
         this.currentMusic = menuMusic;
 
-        // 3. Check Mute State
         if (this.isMuted) return;
 
-        // 4. Play
         menuMusic.loop = true;
         this.play(menuMusic, this.musicVolume);
     }
@@ -171,7 +178,7 @@ class AudioHub {
     /**
      * Plays game start sound.
      */
-    playGameStartSound() {
+     playGameStartSound() {
         this.play(this.music.gameStart, this.sfxVolume);
     }
 
@@ -179,17 +186,25 @@ class AudioHub {
     /**
      * Plays the 3-2-1 fight countdown sound.
      */
-    playCountdownSound() {
+     playCountdownSound() {
         this.play(this.music.countdown, this.sfxVolume * 2.0);
     }
 
-    playLostSound() {
+
+    /**
+     * Plays the game over sound.
+     */
+     playLostSound() {
         if (this.music.gameOver) {
             this.play(this.music.gameOver, 0.5);
         }
     }
 
-    playWinSound() {
+
+    /**
+     * Plays the game won sound.
+     */
+     playWinSound() {
         if (this.music.youWonMusic) {
             this.playMusic(this.music.youWonMusic, 0.5);
         }
@@ -201,7 +216,7 @@ class AudioHub {
      * @param {HTMLAudioElement} music - The music audio element
      * @param {number} volume - Target volume
      */
-    playMusic(music, volume) {
+     playMusic(music, volume) {
         if (this.currentMusic && this.currentMusic !== music) {
             this.currentMusic.pause();
             this.currentMusic.currentTime = 0;
@@ -217,7 +232,7 @@ class AudioHub {
     /**
      * Stops current background music.
      */
-    stopCurrentMusic() {
+     stopCurrentMusic() {
         if (this.currentMusic) {
             this.currentMusic.pause();
             this.currentMusic.currentTime = 0;
@@ -227,11 +242,10 @@ class AudioHub {
 
 
     // ==================== CHARACTER SOUNDS ====================
-
     /**
      * Plays walking sound (loops while walking).
      */
-    playWalkSound() {
+     playWalkSound() {
         if (!this.sounds.characterWalk.paused) return;
         this.play(this.sounds.characterWalk, this.sfxVolume * 0.6);
     }
@@ -240,7 +254,7 @@ class AudioHub {
     /**
      * Stops walking sound.
      */
-    stopWalkSound() {
+     stopWalkSound() {
         this.stop(this.sounds.characterWalk);
     }
 
@@ -248,7 +262,7 @@ class AudioHub {
     /**
      * Plays jump sound.
      */
-    playJumpSound() {
+     playJumpSound() {
         this.play(this.sounds.characterJump, this.sfxVolume);
     }
 
@@ -256,7 +270,7 @@ class AudioHub {
     /**
      * Plays hurt sound when character takes damage.
      */
-    playHurtSound() {
+     playHurtSound() {
         this.play(this.sounds.characterHurt, this.sfxVolume);
     }
 
@@ -264,7 +278,7 @@ class AudioHub {
     /**
      * Plays death sound (extreme scream).
      */
-    playDeathSound() {
+     playDeathSound() {
         this.stopAllSounds();
         this.play(this.sounds.characterScream, this.sfxVolume);
     }
@@ -273,7 +287,7 @@ class AudioHub {
     /**
      * Plays snoring sound during long idle (loops).
      */
-    playSnoringSound() {
+     playSnoringSound() {
         if (!this.sounds.characterSnoring.paused) return;
         this.play(this.sounds.characterSnoring, this.sfxVolume * 0.4);
     }
@@ -282,22 +296,25 @@ class AudioHub {
     /**
      * Stops snoring sound.
      */
-    stopSnoringSound() {
+     stopSnoringSound() {
         this.stop(this.sounds.characterSnoring);
     }
 
 
     // ==================== ENEMY SOUNDS ====================
-
     /**
      * Plays chicken death sound (randomizes between two variants).
      */
-    playChickenDeathSound() {
+     playChickenDeathSound() {
         const sound = this.sounds.chickenDead;
         this.play(sound, 0.8);
     }
 
-    playChickDeathSound() {
+
+    /**
+     * Plays chick death sound (randomizes between two variants).
+     */
+     playChickDeathSound() {
         const sound = this.sounds.chickDead;
         this.play(sound, 0.8);
     }
@@ -305,7 +322,7 @@ class AudioHub {
     /**
      * Plays chicken cackle as a monster roar (lowered pitch).
      */
-    playEndbossCackleSound() {
+     playEndbossCackleSound() {
         const sound = this.sounds.chickenDead;
         if (this.isMuted || !sound) return;
 
@@ -315,10 +332,11 @@ class AudioHub {
         sound.play().catch(e => console.warn('AudioHub: Cackle play blocked:', e));
     }
 
+
     /**
      * Plays endboss approach/alert sound and switches to battle music.
      */
-    playEndbossApproachSound() {
+     playEndbossApproachSound() {
         this.play(this.sounds.endbossApproach, this.sfxVolume);
         this.switchToBattleMusic();
     }
@@ -327,7 +345,7 @@ class AudioHub {
     /**
      * Plays endboss death sound (chicken noise).
      */
-    playEndbossDeathSound() {
+     playEndbossDeathSound() {
         this.play(this.sounds.endbossDead, this.sfxVolume);
     }
 
@@ -335,14 +353,14 @@ class AudioHub {
     /**
      * Plays endboss rolling sound (loud attack sound).
      */
-    playEndbossRollingSound() {
+     playEndbossRollingSound() {
         this.play(this.sounds.endbossRolling, this.sfxVolume * 2.0);
     }
 
     /**
      * Stops endboss rolling sound.
      */
-    stopEndbossRollingSound() {
+     stopEndbossRollingSound() {
         this.stop(this.sounds.endbossRolling);
     }
 
@@ -350,18 +368,17 @@ class AudioHub {
     /**
      * Switches background music to battle music (a-calm-hellfire).
      */
-    switchToBattleMusic() {
+     switchToBattleMusic() {
         if (this.currentMusic === this.music.battle) return;
         this.playMusic(this.music.battle, this.musicVolume);
     }
 
 
     // ==================== COLLECTIBLE SOUNDS ====================
-
     /**
      * Plays coin collection sound.
      */
-    playCoinSound() {
+     playCoinSound() {
         this.play(this.sounds.coinCollect, this.sfxVolume * 0.7);
     }
 
@@ -369,29 +386,27 @@ class AudioHub {
     /**
      * Plays bottle collection sound.
      */
-    playBottleCollectSound() {
+     playBottleCollectSound() {
         this.play(this.sounds.bottleCollect, this.sfxVolume * 0.7);
     }
 
 
     // ==================== THROWABLE SOUNDS ====================
-
     /**
      * Plays bottle break/splash sound.
      */
-    playBottleBreakSound() {
+     playBottleBreakSound() {
         this.play(this.sounds.bottleBreak, this.sfxVolume);
     }
 
 
     // ==================== CORE AUDIO METHODS ====================
-
     /**
      * Plays a sound effect from the beginning.
      * @param {HTMLAudioElement} sound - The sound to play
      * @param {number} volume - Volume level (0-1)
      */
-    play(sound, volume = this.sfxVolume) {
+     play(sound, volume = this.sfxVolume) {
         if (this.isMuted || !sound) return;
 
         sound.volume = volume;
@@ -404,7 +419,7 @@ class AudioHub {
      * Stops a sound and resets to beginning.
      * @param {HTMLAudioElement} sound - The sound to stop
      */
-    stop(sound) {
+     stop(sound) {
         if (!sound) return;
         sound.pause();
         sound.currentTime = 0;
@@ -414,7 +429,7 @@ class AudioHub {
     /**
      * Stops all currently playing sounds (not music).
      */
-    stopAllSounds() {
+     stopAllSounds() {
         Object.values(this.sounds).forEach(sound => this.stop(sound));
     }
 
@@ -422,7 +437,7 @@ class AudioHub {
     /**
      * Stops everything including music.
      */
-    stopAll() {
+     stopAll() {
         this.stopAllSounds();
         this.stopCurrentMusic();
     }
@@ -434,7 +449,7 @@ class AudioHub {
      * Toggles mute state for all audio.
      * @returns {boolean} Current mute state
      */
-    toggleMute() {
+     toggleMute() {
         this.isMuted = !this.isMuted;
         if (this.isMuted) this.stopAll();
         return this.isMuted;
@@ -445,7 +460,7 @@ class AudioHub {
      * Sets master volume for sound effects.
      * @param {number} volume - Volume level (0-1)
      */
-    setSfxVolume(volume) {
+     setSfxVolume(volume) {
         this.sfxVolume = Math.max(0, Math.min(1, volume));
     }
 
@@ -454,22 +469,11 @@ class AudioHub {
      * Sets master volume for music.
      * @param {number} volume - Volume level (0-1)
      */
-    setMusicVolume(volume) {
+     setMusicVolume(volume) {
         this.musicVolume = Math.max(0, Math.min(1, volume));
         if (this.currentMusic) {
             this.currentMusic.volume = this.musicVolume;
         }
     }
 
-
-    /**
-     * Gets the singleton instance of AudioHub.
-     * @returns {AudioHub}
-     */
-    static getInstance() {
-        if (!AudioHub.instance) {
-            AudioHub.instance = new AudioHub();
-        }
-        return AudioHub.instance;
-    }
 }
