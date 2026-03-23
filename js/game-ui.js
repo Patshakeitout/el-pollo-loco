@@ -161,13 +161,13 @@ function printConsoleCredits() {
         'This game was developed with passion\nand in cooperation with Developer Akademie.\n\n' +
         '%c \u{1F310} Portfolio %c https://patrickschauer.de/\n' +
         '%c DA %c Academy  %c https://developerakademie.com/',
-        'background:#e74c3c; color:#fff; font-size: 16px; padding: 6px 2px; border-radius: 4px 0 0 4px;',
-        'background:#2c3e50; color:#3498db; font-size: 16px; font-weight:bold; padding: 6px 2px; border-radius: 0 4px 4px 0;',
-        'color:#f0c040; font-size: 14px; font-weight:bold; line-height: 1.6;',
-        'color:#aaa; font-weight:bold; font-size:12px;',
-        'color:#ccc; font-size:12px;',
-        'color:#e94560; font-size:12px; font-weight:bold;',
-        'color:#aaa; font-weight:bold; font-size:12px;',
-        'color:#ccc; font-size:12px;'
+        'background:#e74c3c; color:#fff; font-size: 12px; padding: 3px 1px; border-radius: 4px 0 0 4px;',
+        'background:#2c3e50; color:#3498db; font-size: 12px; font-weight:bold; padding: 3px 1px; border-radius: 0 4px 4px 0;',
+        'color:#f0c040; font-size: 13px; font-weight:bold; line-height: 1.4;',
+        'color:#aaa; font-weight:bold; font-size:10px;',
+        'color:#ccc; font-size:10px;',
+        'color:#e94560; font-size:10px; font-weight:bold;',
+        'color:#aaa; font-weight:bold; font-size:10px;',
+        'color:#ccc; font-size:10px;'
     );
 }
