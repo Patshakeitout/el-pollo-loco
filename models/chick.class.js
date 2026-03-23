@@ -1,5 +1,7 @@
 /**
- * Chicken class that extends MovableObject
+ * Represents a small chick enemy that patrols the level by walking left and right,
+ * optionally jumping at random intervals. Extends {@link MovableObject} for movement,
+ * gravity, and animation capabilities.
  */
 class Chick extends MovableObject {
     width = 28;
@@ -37,32 +39,38 @@ class Chick extends MovableObject {
     }
 
 
-    animate() {
-        IntervalHub.startInterval(() => {
-            if (this.isDead()) return;
+    /**
+     * Starts movement and animation loops for patrolling, jumping, and death handling.
+     */
+     animate() {
+        IntervalHub.startInterval(() => this.updateMovement(), this.FT);
+        IntervalHub.startInterval(() => this.updateAnimationState(), this.FT * 10);
+    }
 
-            if (this.x <= 0) this.turnAround = true;
-            if (this.x >= this.levelEndX) this.turnAround = false;
 
-            this.turnAround ? this.moveRight() : this.moveLeft();
+    /**
+     * Patrols between level bounds, reverses at edges, and randomly jumps.
+     */
+     updateMovement() {
+        if (this.isDead()) return;
+        if (this.x <= 0) this.turnAround = true;
+        if (this.x >= this.levelEndX) this.turnAround = false;
+        this.turnAround ? this.moveRight() : this.moveLeft();
+        if (this.canJump && !this.isAboveGround()) this.jump(5 + Math.random() * 10);
+    }
 
-            if (this.canJump && !this.isAboveGround()) {
-                this.jump(5 + Math.random()*10);
-            }
-                
 
-        }, this.FT);
-
-        IntervalHub.startInterval(() => {
-            if (this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD);
-            } else {
-                let moduloIndex = this.currentImage % this.IMAGES_WALKING.length;
-                let path = this.IMAGES_WALKING[moduloIndex];
-                this.img = this.imgCache[path];
-                this.currentImage++;
-            }
-        }, this.FT * 10);
+    /**
+     * Plays the walking or death animation based on current state.
+     */
+     updateAnimationState() {
+        if (this.isDead()) {
+            this.playAnimation(this.IMAGES_DEAD);
+        } else {
+            let moduloIndex = this.currentImage % this.IMAGES_WALKING.length;
+            this.img = this.imgCache[this.IMAGES_WALKING[moduloIndex]];
+            this.currentImage++;
+        }
     }
 
 }

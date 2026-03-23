@@ -445,7 +445,6 @@
 
 
     // ==================== VOLUME & MUTE CONTROLS ====================
-
     /**
      * Toggles mute state for all audio.
      * @returns {boolean} Current mute state

@@ -77,29 +77,41 @@ class Character extends MovableObject {
 
     constructor() {
         super().loadImage('assets/images/2_character_pepe/2_walk/W-21.png');
+        this.initCharacterState();
+        this.initOffsetBox();
+        this.loadAllImages();
+        this.applyGravity();
+        this.animate();
+    }
 
+
+    /**
+     * Initializes movement tracking and idle timeout properties.
+     */
+     initCharacterState() {
         this.lastMovedLeft = false;
         this.lastDirection = null;
         this.lastActionTime = new Date().getTime();
         this.idleThreshold = 10000;
-        this.hasOffsetBox = true;
-        this.offsetBox = {
-            x: 0,
-            y: 0,
-            offsetX: 30,
-            offsetY: 60,
-            w: this.width - 65,
-            h: this.height - 70
-        };
+    }
 
-        this.loadImages(this.IMAGES_WALKING);
-        this.loadImages(this.IMAGES_JUMPING);
-        this.loadImages(this.IMAGES_IDLE);
-        this.loadImages(this.IMAGES_LONG_IDLE);
-        this.loadImages(this.IMAGES_HURT);
-        this.loadImages(this.IMAGES_DEAD);
-        this.applyGravity();
-        this.animate();
+
+    /**
+     * Configures the collision offset box dimensions and position.
+     */
+     initOffsetBox() {
+        this.hasOffsetBox = true;
+        this.offsetBox = { x: 0, y: 0, offsetX: 30, offsetY: 60, w: this.width - 65, h: this.height - 70 };
+    }
+
+
+    /**
+     * Preloads all animation sprite sets into the image cache.
+     */
+     loadAllImages() {
+        [this.IMAGES_WALKING, this.IMAGES_JUMPING, this.IMAGES_IDLE,
+         this.IMAGES_LONG_IDLE, this.IMAGES_HURT, this.IMAGES_DEAD
+        ].forEach(images => this.loadImages(images));
     }
 
 
@@ -276,7 +288,7 @@ class Character extends MovableObject {
      * Triggers a jump at frame 3 and sets {@link deadAnimationFinished} when done.
      * @param {string[]} images - Array of image paths for the death sequence.
      */
-    playDeathAnimation(images) {
+     playDeathAnimation(images) {
         let delay = 0;
         images.forEach((path, index) => {
             setTimeout(() => {
@@ -297,7 +309,7 @@ class Character extends MovableObject {
     /**
      * Moves the character downward each frame to simulate falling off-screen after death.
      */
-    isFallingDown() {
+     isFallingDown() {
         this.y += 5;
     }
 
@@ -306,7 +318,7 @@ class Character extends MovableObject {
      * Check if movement is locked (500ms after being hit)
      * isHurt() still provides 1 second invincibility for collision detection
      */
-    isMovementLocked() {
+     isMovementLocked() {
         let timePassed = new Date().getTime() - this.lastHit;
         return timePassed < this.hurtDuration;
     }
