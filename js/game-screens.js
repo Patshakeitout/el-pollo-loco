@@ -150,6 +150,8 @@
 
     const gameControlsTop = document.getElementById('game-controls-top');
     if (gameControlsTop) gameControlsTop.classList.add('d-none');
+    const controlsToggle = document.getElementById('btn-controls-toggle');
+    if (controlsToggle) controlsToggle.classList.add('d-none');
 
     const statusBar = document.getElementById('status-bar');
     if (statusBar) statusBar.classList.add('d-none');

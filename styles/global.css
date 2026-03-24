@@ -20,7 +20,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 100vh;
+    min-height: 100dvh;
 
     background-image: url('../assets/images/background.png');
     background-size: cover;
@@ -41,7 +41,7 @@ main {
     align-items: center;
     justify-content: center;
     width: 100%;
-    min-height: 100vh;  
+    min-height: 100dvh;
     width: 100vw;
     padding: 0;
     margin: 0;
@@ -84,10 +84,10 @@ h1, h3, span {
     /* MAGIE: */
     /* Nimm 100% der Breite, ABER nicht mehr als das 1.5-fache der Höhe */
     /* Das garantiert, dass es NIEMALS über die Höhe hinauswächst */
-    width: min(100vw, 150vh); 
-    
+    width: min(100vw, 150dvh);
+
     /* Optional: Wenn du etwas Rand für den Hintergrund willst (95% statt 100%): */
-    /* width: min(95vw, calc(95vh * 1.5)); */
+    /* width: min(95vw, calc(95dvh * 1.5)); */
 
     /* Maximale Größe (Desktop Cap), damit es nicht riesig wird */
     max-width: 720px; 
@@ -136,7 +136,7 @@ h1, h3, span {
 
 #game-container:fullscreen #aspect-ratio-wrapper {
     max-width: none;
-    width: min(100vw, 150vh);
+    width: min(100vw, 150dvh);
     margin-top: 0;
 }
 
@@ -175,7 +175,7 @@ canvas {
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -266,7 +266,8 @@ canvas {
 #game-controls-top {
     position: absolute;
     top: 2.5%;
-    right: 8px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 50;
     display: flex;
     gap: 8px;
@@ -303,15 +304,34 @@ canvas {
     background: rgba(0, 0, 0, 0.6);
 }
 
-#game-controls-top #btn-music-top,
-#game-controls-top #btn-controls-toggle {
+#game-controls-top #btn-music-top {
     background: rgba(0, 0, 0, 0.3);
     border-color: rgba(255, 193, 7, 0.4);
     color: #FFC107;
 }
 
-#game-controls-top #btn-music-top:hover,
-#game-controls-top #btn-controls-toggle:hover {
+#game-controls-top #btn-music-top:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+#btn-controls-toggle {
+    position: absolute;
+    top: 2.5%;
+    right: 8px;
+    z-index: 51;
+    font-size: clamp(0.9em, 2.2vw, 1.3em);
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 193, 7, 0.4);
+    color: #FFC107;
+    opacity: 0.6;
+    cursor: pointer;
+    line-height: 1;
+}
+
+#btn-controls-toggle:hover {
     opacity: 1;
     background: rgba(0, 0, 0, 0.6);
 }
@@ -747,8 +767,7 @@ button:hover {
     bottom: 0;
     width: 100%;
     z-index: 50;
-    gap: 6px;
-    justify-content: center;
+    justify-content: space-between;
     padding-bottom: 4px;
     box-sizing: border-box;
     background: none;

@@ -68,6 +68,8 @@ let cheatCount = 0;
 
     const gameControlsTop = document.getElementById('game-controls-top');
     if (gameControlsTop) gameControlsTop.classList.remove('d-none');
+    const controlsToggle = document.getElementById('btn-controls-toggle');
+    if (controlsToggle) controlsToggle.classList.remove('d-none');
 
     curtain.classList.add('open');
     startGameAudio();

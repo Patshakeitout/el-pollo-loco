@@ -1,31 +1,36 @@
+/**
+ * Central registry for all game intervals. Provides global pause/resume
+ * and bulk-stop functionality for all registered intervals.
+ */
 class IntervalHub {
     static allIntervals = [];
     static isPaused = false;
 
-    // Startet ein neues Intervall und
-    // fügt es dem Array allIntervals hinzu
-    static startInterval(func, timer) {
-        // const newInterval = setInterval(func, timer);
-        // IntervalHub.allIntervals.push(newInterval);
 
+    /**
+     * Wraps the callback in a pause-aware function, starts a setInterval,
+     * and registers it for later cleanup.
+     * @param {Function} func - The callback to execute on each tick.
+     * @param {number} timer - The interval delay in milliseconds.
+     */
+     static startInterval(func, timer) {
         const pausableFunc = () => {
             if (!IntervalHub.isPaused) {
                 func();
             }
         };
-
-        // 3. Register the WRAPPER, not the original function
         const newInterval = setInterval(pausableFunc, timer);
         IntervalHub.allIntervals.push(newInterval);
     }
 
-    
+
     /**
      * Stops all currently running intervals and empties the registry.
      */
-    static stopAllIntervals() {
+     static stopAllIntervals() {
         IntervalHub.allIntervals.forEach(clearInterval);
         IntervalHub.allIntervals = [];
         IntervalHub.isPaused = false;
     }
+    
 }

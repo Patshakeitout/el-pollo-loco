@@ -330,9 +330,9 @@ class EndBoss extends MovableObject {
      * Trigger rolling when hit by a bottle
      * Rolling direction is towards Pepe (not away)
      */
-    startRolling() {
+     startRolling() {
         if (this.isDead()) return;
-        
+
         this.playAnimation(this.IMAGES_ATTACK_B);
         this.isWalking = false;
         this.rollingStartX = this.x; 

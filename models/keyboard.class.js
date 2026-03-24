@@ -5,6 +5,7 @@ class Keyboard {
     SPACE = false;
     ENTER = false;
 
+
     /** * Static constants to avoid "Magic Numbers" in code.
      * Use these to map keys to actions.
      */
@@ -13,6 +14,7 @@ class Keyboard {
     static KEY_SPACE = ' ';
     static KEY_ENTER = 'Enter';
 
+
     /**
      * Initializes the keyboard and binds event listeners.
      */
@@ -20,6 +22,7 @@ class Keyboard {
         this.bindKeyPressEvents();
         this.bindMobileTouchEvents();
     }
+
 
     /**
      * Binds standard keyboard events (keydown/keyup).
@@ -35,6 +38,7 @@ class Keyboard {
             this.handleKeyEvent(e.key, false);
         });
     }
+
 
     /**
      * Helper function to toggle boolean states based on key input.
@@ -58,6 +62,7 @@ class Keyboard {
         }
     }
 
+
     /**
      * Binds touch events for mobile buttons.
      * You will need to assign IDs to your HTML buttons (e.g., 'btnLeft').
@@ -69,6 +74,7 @@ class Keyboard {
         this.bindTouch('btn-throw', 'ENTER');
     }
 
+    
     /**
      * Helper to bind touch and mouse events to class variables.
      * @param {string} elementId - The HTML ID of the button.
