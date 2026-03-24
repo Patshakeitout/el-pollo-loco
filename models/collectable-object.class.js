@@ -1,3 +1,8 @@
+/**
+ * Represents a pickable item (coin or bottle) placed in the level. Tracks its
+ * collected state and center coordinates for collision detection.
+ * Extends {@link DrawableObject}.
+ */
 class CollectableObject extends DrawableObject {
     collected = false;
     type;
@@ -22,34 +27,49 @@ class CollectableObject extends DrawableObject {
         this.x = x;
         this.y = y;
 
-        if (type === 'coin') {
-            let randomImg = Math.random() < 0.5 ? this.IMAGE_COIN[0] : this.IMAGE_COIN[1];
-            this.loadImage(randomImg);
-            this.width = 100;
-            this.height = 100;
-        } else if (type === 'bottle') {
-            let randomImg = Math.random() < 0.5 ? this.IMAGES_BOTTLE[0] : this.IMAGES_BOTTLE[1];
-            this.loadImage(randomImg);
-            this.width = 50;
-            this.height =  60;
-            if (!keepY) this.y = 370;
-        }
-        
+        if (type === 'coin') this.initCoin();
+        else if (type === 'bottle') this.initBottle(keepY);
+
         this.updateOffsetBox();
     }
+
+
+    /**
+     * Loads a random coin image and sets coin dimensions.
+     */
+     initCoin() {
+        let randomImg = Math.random() < 0.5 ? this.IMAGE_COIN[0] : this.IMAGE_COIN[1];
+        this.loadImage(randomImg);
+        this.width = 100;
+        this.height = 100;
+    }
+
+
+    /**
+     * Loads a random bottle image, sets bottle dimensions, and snaps to ground unless keepY is set.
+     */
+     initBottle(keepY) {
+        let randomImg = Math.random() < 0.5 ? this.IMAGES_BOTTLE[0] : this.IMAGES_BOTTLE[1];
+        this.loadImage(randomImg);
+        this.width = 50;
+        this.height = 60;
+        if (!keepY) this.y = 370;
+    }
+
 
     /**
      * Update center coordinates for collision detection
      */
-    updateOffsetBox() {
+     updateOffsetBox() {
         this.centerX = this.x + (this.width / 2);
         this.centerY = this.y + (this.height / 2);
     }
 
+
     /**
      * Mark this collectable as collected
      */
-    collect() {
+     collect() {
         this.collected = true;
     }
 }

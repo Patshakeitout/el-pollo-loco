@@ -1,3 +1,8 @@
+/**
+ * The final boss enemy. Patrols near the level end, transitions between alert,
+ * walking, and rolling-ball attack states based on proximity to the player.
+ * Extends {@link MovableObject}.
+ */
 class EndBoss extends MovableObject {
 
     static secureAreaX = 450;
@@ -68,7 +73,7 @@ class EndBoss extends MovableObject {
     /**
      * Reduces the EndBoss energy by 5 per hit.
      */
-    hit() {
+     hit() {
         this.energy -= 3.5;
         this.energy = Math.floor(this.energy);
         if (this.energy < 0) {
@@ -79,156 +84,201 @@ class EndBoss extends MovableObject {
     }
 
 
-    setWorld(world) {
+    /**
+     * Stores a reference to the game world for accessing Pepe and level data.
+     * @param {World} world - The game world instance.
+     */
+     setWorld(world) {
         this.world = world;
     }
 
 
-    animate() {
-        let lastDistance;
-        let directionFlag = 1;
-        let rollingDirection = 1; // Store direction when rolling starts
-        const MIN_ROLLING_DISTANCE = 800; // Minimum distance to roll through
-        let hasPlayedApproachSound = false;
+    /**
+     * Starts two intervals: one for animation state logic and one for movement.
+     */
+     animate() {
+        this.directionFlag = 1;
+        this.rollingDirection = 1;
+        this.hasPlayedApproachSound = false;
+        this.MIN_ROLLING_DISTANCE = 800;
 
-        // INTERVAL 1: ANIMATION & STATE LOGIC (Slow)
-        IntervalHub.startInterval(() => {
-            if (!this.world || !this.world.pepe) return; // Safety check
-            
-            if (this.isDead()) {
-                this.isRolling = false;
-                this.playDeathAnimation();
-                // Show win overlay if Pepe is alive
-                if (this.world && this.world.pepe && !this.world.pepe.isDead() && typeof this.world.checkGameEnd === 'function') {
-                    this.world.checkGameEnd();
-                }
-                return;
-            }
-
-            // 1. If we are rolling (Ball Mode), we stop playing standard animations.
-            //    (But we DO NOT return if we are walking, because we need to update walking frames!)
-            if (this.isRolling) return;
-
-            // Calculate distance using centerX of both characters
-            let endBossCenterX = this.x + this.width / 2;
-            let pepeCenterX = this.world.pepe.x + this.world.pepe.width / 2;
-            let distance = Math.abs(endBossCenterX - pepeCenterX);
-            
-            directionFlag = pepeCenterX < endBossCenterX ? 1 : -1;
-            this.turnAround = directionFlag === -1;
-
-            // ZONE 1: FAR AWAY
-            if (distance > EndBoss.secureAreaX) {
-
-                this.playAnimation(this.IMAGES_ALERT);
-                this.isWalking = false;
-                
-                // Play approach sound when player first enters detection range
-                if (!hasPlayedApproachSound && distance < EndBoss.secureAreaX + 200) {
-                    audioHub?.playEndbossApproachSound();
-                    hasPlayedApproachSound = true;
-                }
-
-                // ZONE 2: WALKING RANGE
-            } else if (distance > EndBoss.secureAreaX - 100) {
-
-                this.playAnimation(this.IMAGES_WALK);
-                this.isWalking = true;
-
-                // ZONE 3: ATTACK RANGE - Rolling triggers here
-            } else {
-
-                this.playAnimation(this.IMAGES_ATTACK_B);
-                this.isWalking = false;
-
-                // Check if we hit the "Ball" frame
-                let frameIndex = this.currentImage % this.IMAGES_ATTACK_B.length;
-                let path = this.IMAGES_ATTACK_B[frameIndex];
-
-                if (path.includes('angry-ball.png')) {
-                    // Play cackle sound BEFORE transforming to ball
-                    audioHub?.playEndbossCackleSound();
-
-                    this.isRolling = true;
-                    this.rollingStartX = this.x; // Track starting position
-                    rollingDirection = directionFlag; // Capture direction when roll starts
-                    lastDistance = undefined; // Reset for the rolling check
-
-                    // Delay roar sound to let cackle play first
-                    setTimeout(() => {
-                        if (this.isRolling) {
-                            audioHub?.playEndbossRollingSound();
-                        }
-                    }, 200);
-                }
-            }
-
-            if (this.isHurt()) { 
-                this.playAnimation(this.IMAGES_HURT);
-             }
-
-        }, 300);
-
-
-        IntervalHub.startInterval(() => {
-            if (!this.world || !this.world.pepe) return; // Safety check
-            
-            if (this.isDead()) { 
-                if (this.deadAnimationIndex >= this.IMAGES_DEAD.length) {
-                    this.y += 2; // Fall down slowly
-                }
-                return;
-            }
-
-            // Calculate current distance using centerX positions
-            let endBossCenterX = this.x + this.width / 2;
-            let pepeCenterX = this.world.pepe.x + this.world.pepe.width / 2;
-            let currentDistance = Math.abs(endBossCenterX - pepeCenterX);
-
-            if (this.isRolling) {
-                // Calculate distance rolled using center positions
-                let rollingStartCenterX = this.rollingStartX + this.width / 2;
-                let distanceRolled = Math.abs((this.x + this.width / 2) - rollingStartCenterX);
-
-                // Stop rolling when minimum rolling distance is covered
-                if (distanceRolled >= MIN_ROLLING_DISTANCE) {
-                    this.isRolling = false;
-                    this.rollingStartX = null;
-                    window.endBossRollingDirection = undefined;
-                    audioHub?.stopEndbossRollingSound();
-                }
-
-                // Fast Roll Speed - use rolling direction (towards Pepe when hit by bottle)
-                this.speed = 5
-                let currentRollingDir = window.endBossRollingDirection || rollingDirection;
-
-                // Stop rolling if hitting world boundaries
-                if (this.x <= 0 || this.x >= this.world.level.levelEndX - this.width) {
-                    this.isRolling = false;
-                    this.rollingStartX = null;
-                    window.endBossRollingDirection = undefined;
-                    audioHub?.stopEndbossRollingSound();
-                } else {
-                    if (currentRollingDir > 0) this.moveLeft();
-                    else this.moveRight();
-                }
-
-            } else if (this.isWalking) {
-                let currentDistance = Math.abs(this.x - this.world.pepe.x);
-                // Update direction for walking
-                directionFlag = this.world.pepe.x < this.x ? 1 : -1;
-                // Slow Walk Speed
-                this.speed = 0.5;
-                if (directionFlag > 0) this.moveLeft();
-                else this.moveRight();
-            }
-
-            lastDistance = currentDistance;
-
-        }, this.FT);
+        IntervalHub.startInterval(() => this.updateAnimationState(), 300);
+        IntervalHub.startInterval(() => this.updateMovement(), this.FT);
     }
 
-    playDeathAnimation() {
+
+    /**
+     * Handles animation state transitions (alert, walk, attack) based on distance to Pepe.
+     */
+     updateAnimationState() {
+        if (!this.world || !this.world.pepe) return;
+        if (this.isDead()) return this.handleDeath();
+        if (this.isRolling) return;
+
+        this.updateDirection();
+        this.handleZoneByDistance(this.getDistanceToPepe());
+        if (this.isHurt()) this.playAnimation(this.IMAGES_HURT);
+    }
+
+
+    /**
+     * Stops rolling, plays death animation, and triggers game-end check.
+     */
+     handleDeath() {
+        this.isRolling = false;
+        this.playDeathAnimation();
+        if (!this.world.pepe.isDead() && typeof this.world.checkGameEnd === 'function') {
+            this.world.checkGameEnd();
+        }
+    }
+
+
+    /**
+     * Updates the facing direction based on Pepe's position.
+     */
+     updateDirection() {
+        this.directionFlag = this.getPepeCenterX() < this.getCenterX() ? 1 : -1;
+        this.turnAround = this.directionFlag === -1;
+    }
+
+
+    /**
+     * Dispatches to the correct zone handler based on distance to Pepe.
+     */
+     handleZoneByDistance(distance) {
+        if (distance > EndBoss.secureAreaX) this.handleAlertZone(distance);
+        else if (distance > EndBoss.secureAreaX - 100) this.handleWalkZone();
+        else this.handleAttackZone();
+    }
+
+
+    /**
+     * Handles movement logic for rolling and walking states.
+     */
+     updateMovement() {
+        if (!this.world || !this.world.pepe) return;
+
+        if (this.isDead()) {
+            if (this.deadAnimationIndex >= this.IMAGES_DEAD.length) this.y += 2;
+            return;
+        }
+
+        if (this.isRolling) this.updateRolling();
+        else if (this.isWalking) this.updateWalking();
+    }
+
+
+    /**
+     * Alert zone: plays alert animation, triggers approach sound when close enough.
+     */
+     handleAlertZone(distance) {
+        this.playAnimation(this.IMAGES_ALERT);
+        this.isWalking = false;
+        if (!this.hasPlayedApproachSound && distance < EndBoss.secureAreaX + 200) {
+            audioHub?.playEndbossApproachSound();
+            this.hasPlayedApproachSound = true;
+        }
+    }
+
+
+    /**
+     * Walk zone: plays walk animation and enables walking state.
+     */
+     handleWalkZone() {
+        this.playAnimation(this.IMAGES_WALK);
+        this.isWalking = true;
+    }
+
+
+    /**
+     * Attack zone: plays attack animation and initiates rolling on the ball frame.
+     */
+     handleAttackZone() {
+        this.playAnimation(this.IMAGES_ATTACK_B);
+        this.isWalking = false;
+        let frameIndex = this.currentImage % this.IMAGES_ATTACK_B.length;
+        let path = this.IMAGES_ATTACK_B[frameIndex];
+
+        if (path.includes('angry-ball.png')) {
+            audioHub?.playEndbossCackleSound();
+            this.isRolling = true;
+            this.rollingStartX = this.x;
+            this.rollingDirection = this.directionFlag;
+            setTimeout(() => {
+                if (this.isRolling) audioHub?.playEndbossRollingSound();
+            }, 200);
+        }
+    }
+
+
+    /**
+     * Moves the boss in rolling state and stops when distance or boundary limits are reached.
+     */
+     updateRolling() {
+        let distanceRolled = Math.abs(this.getCenterX() - (this.rollingStartX + this.width / 2));
+        if (distanceRolled >= this.MIN_ROLLING_DISTANCE) return this.stopRollingState();
+
+        this.speed = 5;
+        let currentRollingDir = window.endBossRollingDirection || this.rollingDirection;
+
+        if (this.x <= 0 || this.x >= this.world.level.levelEndX - this.width) {
+            this.stopRollingState();
+        } else {
+            currentRollingDir > 0 ? this.moveLeft() : this.moveRight();
+        }
+    }
+
+
+    /**
+     * Moves the boss toward Pepe at walking speed.
+     */
+     updateWalking() {
+        this.directionFlag = this.world.pepe.x < this.x ? 1 : -1;
+        this.speed = 0.5;
+        this.directionFlag > 0 ? this.moveLeft() : this.moveRight();
+    }
+
+
+    /**
+     * Resets rolling state and stops the rolling sound.
+     */
+     stopRollingState() {
+        this.isRolling = false;
+        this.rollingStartX = null;
+        window.endBossRollingDirection = undefined;
+        audioHub?.stopEndbossRollingSound();
+    }
+
+
+    /**
+     * @returns {number} The horizontal center of this boss.
+     */
+     getCenterX() {
+        return this.x + this.width / 2;
+    }
+
+
+    /**
+     * @returns {number} The horizontal center of Pepe.
+     */
+     getPepeCenterX() {
+        return this.world.pepe.x + this.world.pepe.width / 2;
+    }
+
+
+    /**
+     * @returns {number} The absolute distance between boss center and Pepe center.
+     */
+     getDistanceToPepe() {
+        return Math.abs(this.getCenterX() - this.getPepeCenterX());
+    }
+
+
+    /**
+     * Steps through the death animation frames one at a time, playing
+     * the death sound on the first frame.
+     */
+     playDeathAnimation() {
         if (this.deadAnimationIndex < this.IMAGES_DEAD.length) {
             if (this.deadAnimationIndex === 0) {
                 audioHub?.playEndbossDeathSound();
@@ -245,11 +295,11 @@ class EndBoss extends MovableObject {
      * This is crucial! We need to interrupt the standard drawing
      * to perform the rotation.
      */
-    draw(ctx) {
+     draw(ctx) {
         if (this.isRolling) {
             this.drawRotatingBall(ctx);
         } else {
-            super.draw(ctx); // Use standard drawing for normal animations
+            super.draw(ctx);
         }
     }
 
@@ -257,33 +307,24 @@ class EndBoss extends MovableObject {
     /**
      * Handles the rotation logic directly on the canvas
      */
-    drawRotatingBall(ctx) {
-        // Ensure we have the ball image loaded
-        // We force the image to be the ball (last in array)
+     drawRotatingBall(ctx) {
         let ballImage = this.IMAGES_ATTACK_B[4];
-
         if (!ballImage) return;
-
         ctx.save();
-
-        // 1. Calculate Center of the Boss
+        
         let centerX = this.x + this.width / 2;
         let centerY = this.y + this.height / 2;
-
-        // 2. Translate Canvas to that center
         ctx.translate(centerX, centerY);
 
-        // 3. Rotate Context
-        // We subtract (-) to ro tate Counter-Clockwise (rolling left)
         this.rotationAngle -= 5;
         ctx.rotate((this.rotationAngle * Math.PI) / 180);
 
-        // 4. Draw Image centered on the new origin (0,0)
         super.loadImage(ballImage);
         ctx.drawImage(this.img, -this.width / 2, -this.height / 2, this.width, this.height);
 
         ctx.restore();
     }
+
 
      /**
      * Trigger rolling when hit by a bottle
@@ -291,22 +332,16 @@ class EndBoss extends MovableObject {
      */
     startRolling() {
         if (this.isDead()) return;
-        // Play attack animation to transition to ball
+        
         this.playAnimation(this.IMAGES_ATTACK_B);
-
         this.isWalking = false;
-        this.rollingStartX = this.x; // Track starting position
-        // Set rolling direction TOWARDS Pepe when hit by bottle
+        this.rollingStartX = this.x; 
         window.endBossRollingDirection = this.world.pepe.x < this.x ? 1 : -1;
-
-        // Delay rolling to let animation play (400ms for attack animation)
+        
         setTimeout(() => {
-            // Play cackle sound BEFORE transforming to ball
             audioHub?.playEndbossCackleSound();
-
             this.isRolling = true;
 
-            // Delay roar sound to let cackle play first
             setTimeout(() => {
                 if (this.isRolling) {
                     audioHub?.playEndbossRollingSound();
