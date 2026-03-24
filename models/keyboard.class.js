@@ -18,7 +18,7 @@ class Keyboard {
     /**
      * Initializes the keyboard and binds event listeners.
      */
-    constructor() {
+     constructor() {
         this.bindKeyPressEvents();
         this.bindMobileTouchEvents();
     }
@@ -27,7 +27,7 @@ class Keyboard {
     /**
      * Binds standard keyboard events (keydown/keyup).
      */
-    bindKeyPressEvents() {
+     bindKeyPressEvents() {
         window.addEventListener('keydown', (e) => {
             if (e.key === Keyboard.KEY_SPACE || e.key === Keyboard.KEY_ENTER) e.preventDefault();
             this.handleKeyEvent(e.key, true);
@@ -45,7 +45,7 @@ class Keyboard {
      * @param {string} key - The key pressed or released.
      * @param {boolean} isPressed - True if key is down, false if up.
      */
-    handleKeyEvent(key, isPressed) {
+     handleKeyEvent(key, isPressed) {
         switch (key) {
             case Keyboard.KEY_LEFT:
                 this.LEFT = isPressed;
@@ -67,7 +67,7 @@ class Keyboard {
      * Binds touch events for mobile buttons.
      * You will need to assign IDs to your HTML buttons (e.g., 'btnLeft').
      */
-    bindMobileTouchEvents() {
+     bindMobileTouchEvents() {
         this.bindTouch('btn-left', 'LEFT');
         this.bindTouch('btn-right', 'RIGHT');
         this.bindTouch('btn-jump', 'SPACE');
@@ -80,35 +80,14 @@ class Keyboard {
      * @param {string} elementId - The HTML ID of the button.
      * @param {string} command - The property to toggle (e.g., 'LEFT').
      */
-    bindTouch(elementId, command) {
-        const element = document.getElementById(elementId);
-        if (!element) return;
-
-        // Touch events
-        element.addEventListener('touchstart', (e) => {
-            if (e.cancelable) e.preventDefault();
-            this[command] = true;
-        }, { passive: false });
-
-        element.addEventListener('touchend', (e) => {
-            if (e.cancelable) e.preventDefault();
-            this[command] = false;
-        }, { passive: false });
-
-        // Mouse events for testing/desktop
-        element.addEventListener('mousedown', (e) => {
-            e.preventDefault();
-            this[command] = true;
-        });
-
-        element.addEventListener('mouseup', (e) => {
-            e.preventDefault();
-            this[command] = false;
-        });
-
-        // Handle mouse leaving the button while pressed
-        element.addEventListener('mouseleave', (e) => {
-            this[command] = false;
-        });
+     bindTouch(elementId, command) {
+        const el = document.getElementById(elementId);
+        if (!el) return;
+        const set = (v) => (e) => { if (e.cancelable) e.preventDefault(); this[command] = v; };
+        el.addEventListener('touchstart', set(true), { passive: false });
+        el.addEventListener('touchend', set(false), { passive: false });
+        el.addEventListener('mousedown', set(true));
+        el.addEventListener('mouseup', set(false));
+        el.addEventListener('mouseleave', set(false));
     }
 }

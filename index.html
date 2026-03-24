@@ -123,8 +123,8 @@
                     </nav>
 
                     <footer>
-                        <a href="#" onclick="openLegalOverlay('imprint-overlay'); return false;" aria-label="Legal Notice">Imprint</a>
-                        <a href="#" onclick="openLegalOverlay('privacy-overlay'); return false;" aria-label="Privacy Policy">Privacy Policy</a>
+                        <a id="link-imprint" href="#" aria-label="Legal Notice">Imprint</a>
+                        <a id="link-privacy" href="#" aria-label="Privacy Policy">Privacy Policy</a>
                     </footer>
                 </section>
 
@@ -143,8 +143,8 @@
                     <button id="btn-music-top" aria-label="Toggle Music" title="Music" onclick="toggleMusic()">🔊</button>
                     <button id="btn-fullscreen-desktop" aria-label="Enter Fullscreen" title="Fullscreen" onclick="toggleFullscreen()">⛶</button>
                     <button id="btn-home" aria-label="Back to Home" onclick="goHome()">&#127968;</button>
+                    <button id="btn-controls-toggle" class="d-none" aria-label="Toggle Mobile Controls" title="Mobile Controls" onclick="toggleMobileControls()">🕹️</button>
                 </nav>
-                <button id="btn-controls-toggle" class="d-none" aria-label="Toggle Mobile Controls" title="Mobile Controls" onclick="toggleMobileControls()">🕹️</button>
 
                 <nav id="mobile-controls" class="d-none" aria-label="Mobile Game Controls">
                     <button id="btn-left" aria-label="Move Left">&#8592;</button>
@@ -155,134 +155,11 @@
                     <button id="btn-right" aria-label="Move Right">&#8594;</button>
                 </nav>
 
-                <section id="imprint-overlay" class="legal-overlay d-none" aria-label="Imprint">
-                    <button class="legal-close-btn" onclick="closeLegalOverlay('imprint-overlay')">&times;</button>
-                    <div class="legal-content">
-                        <h2>Legal Notice (Imprint)</h2>
-                        <p>This game was developed in cooperation with <a href="https://developerakademie.com/" target="_blank">Developer Akademie</a>.</p>
-                        <p>This legal notice applies to the following websites:<br>
-                            <a href="#" target="_blank">tbd</a>,
-                            <a href="#" target="_blank">tbd</a></p>
-                        <h3>Information pursuant to &sect; 5 TMG</h3>
-                        <p>Patrick Schauer<br>Elbeblick 5<br>DE-25524 Itzehoe</p>
-                        <h3>Represented by</h3>
-                        <p>Patrick Schauer</p>
-                        <h3>Contact</h3>
-                        <p>Phone: +49-15168125358<br>Email: <a href="mailto:patrick_schauer@t-online.de">patrick_schauer@t-online.de</a></p>
-                        <h3>Responsible for content pursuant to &sect; 55 (2) RStV</h3>
-                        <p>Patrick Schauer<br>Elbeblick 5<br>DE-25554 Itzehoe</p>
-                        <h3>Disclaimer</h3>
-                        <h4>Liability for Content</h4>
-                        <p>The contents of our pages have been created with the utmost care. However, we cannot guarantee the accuracy, completeness, or timeliness of the content. As a service provider, we are responsible for our own content on these pages in accordance with &sect; 7 (1) TMG under general law. According to &sect;&sect; 8 to 10 TMG, however, we are not obligated as a service provider to monitor transmitted or stored third-party information or to investigate circumstances that indicate illegal activity. Obligations to remove or block the use of information under general law remain unaffected. However, liability in this regard is only possible from the point in time at which a specific legal violation becomes known. Upon becoming aware of such violations, we will remove the content immediately.</p>
-                        <h4>Liability for Links</h4>
-                        <p>Our website contains links to external third-party websites over whose content we have no influence. Therefore, we cannot accept any liability for this external content. The respective provider or operator of the linked pages is always responsible for the content of those pages. The linked pages were checked for possible legal violations at the time of linking. Illegal content was not recognizable at the time of linking. However, permanent monitoring of the content of linked pages is not reasonable without concrete evidence of a legal violation. Upon becoming aware of legal violations, we will remove such links immediately.</p>
-                        <h4>Copyright</h4>
-                        <p>The content and works created by the site operators on these pages are subject to German copyright law. Duplication, processing, distribution, and any kind of exploitation beyond the limits of copyright law require the written consent of the respective author or creator. Downloads and copies of this site are only permitted for private, non-commercial use. Insofar as the content on this site was not created by the operator, the copyrights of third parties are respected. In particular, third-party content is identified as such. Should you nevertheless become aware of a copyright infringement, please notify us accordingly. Upon becoming aware of legal violations, we will remove such content immediately.</p>
-                        <h4>Data Privacy</h4>
-                        <p>The use of our website is generally possible without providing personal data. Insofar as personal data (such as name, address, or email addresses) is collected on our pages, this is always done on a voluntary basis as far as possible. This data will not be disclosed to third parties without your express consent.</p>
-                        <p>We would like to point out that data transmission over the Internet (e.g., communication by email) may have security vulnerabilities. Complete protection of data against access by third parties is not possible.</p>
-                        <p>The use of contact data published within the scope of the imprint obligation by third parties for sending unsolicited advertising and information materials is hereby expressly prohibited. The operators of this site expressly reserve the right to take legal action in the event of unsolicited sending of advertising information, such as spam emails.</p>
-                        <h4>Google Analytics</h4>
-                        <p>This website uses Google Analytics, a web analytics service provided by Google Inc. ("Google"). Google Analytics uses "cookies," text files that are stored on your computer and enable analysis of your use of the website. The information generated by the cookie about your use of this website (including your IP address) is transmitted to and stored on a Google server in the USA. Google will use this information to evaluate your use of the website, compile reports on website activity for website operators, and provide other services related to website and internet usage. Google may also transfer this information to third parties where required by law or where third parties process this data on behalf of Google. Under no circumstances will Google associate your IP address with other Google data. You may prevent the installation of cookies by adjusting your browser software accordingly; however, please note that in this case you may not be able to use all functions of this website to their full extent. By using this website, you consent to the processing of data about you by Google in the manner and for the purpose described above.</p>
-                        <h3>Audio Credits</h3>
-                        <h4>Music</h4>
-                        <ul>
-                            <li>Music from <a href="https://uppbeat.io/t/the-wayward-hearts/a-calm-hellfire" target="_blank">#Uppbeat</a> &ndash; The Wayward Hearts &ndash; A Calm Hellfire (License: LC9ILSX2DQQWNPJX)</li>
-                            <li>Music from <a href="https://uppbeat.io/t/vince-mcgill/buffalo-girls" target="_blank">#Uppbeat</a> &ndash; Vince McGill &ndash; Buffalo Girls (License: SC2EH58LMCQIUBHN)</li>
-                            <li>Song by <a href="https://stocktune.com/free-music/desert-winds-whispering-292129-173142?signup=true" target="_blank">StockTune</a></li>      
-                        </ul>
-                        <h4>Sound Effects</h4>
-                        <ul>
-                            <li>Sound Effect by <a href="https://pixabay.com/de/users/alex_jauk-16800354/" target="_blank">Alexander Jauk</a> from <a href="https://pixabay.com/sound-effects/" target="_blank">Pixabay</a></li>
-                            <li>Sound Effect by <a href="https://pixabay.com/de/users/youssefmizani-26195775/" target="_blank">Youssef Mizani</a> from <a href="https://pixabay.com/" target="_blank">Pixabay</a></li>
-                            <li>Sound Effect by <a href="https://pixabay.com/de/users/universfield-28281460/" target="_blank">Universfield</a> from <a href="https://pixabay.com/sound-effects/" target="_blank">Pixabay</a></li>
-                            <li>Sound Effect by <a href="https://pixabay.com/users/freesound_community-46691455/" target="_blank">freesound_community</a> from <a href="https://pixabay.com/" target="_blank">Pixabay</a></li>
-                        </ul>
-                        <p class="legal-note">Legal notice generated by the Imprint Generator of Kanzlei Hasselbach, Attorneys for Employment Law and Family Law.</p>
-                    </div>
+                <section id="legal-overlay" class="legal-overlay d-none" aria-label="Legal Information">
+                    <button class="legal-close-btn" onclick="closeLegalOverlay()">&times;</button>
+                    <div id="legal-content" class="legal-content"></div>
                 </section>
 
-                <section id="privacy-overlay" class="legal-overlay d-none" aria-label="Privacy Policy">
-                    <button class="legal-close-btn" onclick="closeLegalOverlay('privacy-overlay')">&times;</button>
-                    <div class="legal-content">
-                        <h2>Privacy Policy</h2>
-                        <p>This privacy policy applies to the following websites:<br>
-                            <a href="#" target="_blank">tbd</a>,
-                            <a href="#" target="_blank">tbd</a></p>
-                        <h3>Data Controller</h3>
-                        <p>Responsible within the meaning of data protection laws, in particular the EU General Data Protection Regulation (GDPR):<br><br>Patrick Schauer<br>Elbeblick 5<br>DE-25524 Itzehoe<br><br>Phone: +49-15168125358<br>Email: <a href="mailto:patrick_schauer@t-online.de">patrick_schauer@t-online.de</a></p>
-                        <h3>Your Rights as a Data Subject</h3>
-                        <p>Using the contact details provided above, you may exercise the following rights at any time:</p>
-                        <ul>
-                            <li>Information about your data stored by us and its processing (Art. 15 GDPR)</li>
-                            <li>Correction of inaccurate personal data (Art. 16 GDPR)</li>
-                            <li>Deletion of your data stored by us (Art. 17 GDPR)</li>
-                            <li>Restriction of data processing (Art. 18 GDPR)</li>
-                            <li>Objection to the processing of your data (Art. 21 GDPR)</li>
-                            <li>Data portability (Art. 20 GDPR)</li>
-                        </ul>
-                        <h3>Introduction</h3>
-                        <p>With this privacy policy, we inform you about the types of your personal data that we process, for what purposes, and to what extent. This privacy policy applies to all processing of personal data carried out by us, both in the context of providing our services and on our websites, in mobile applications, and within external online presences such as our social media profiles (collectively "Online Offering"). The terms used are not gender-specific.</p>
-                        <p><em>Last updated: July 11, 2022</em></p>
-                        <h3>Types of Data Processed</h3>
-                        <ul>
-                            <li>Inventory data, contact data, content data</li>
-                            <li>Contract data, usage data</li>
-                            <li>Meta/communication data</li>
-                        </ul>
-                        <h3>Purposes of Processing</h3>
-                        <ul>
-                            <li>Provision of contractual services and customer service</li>
-                            <li>Contact requests and communication</li>
-                            <li>Security measures and direct marketing</li>
-                            <li>Management and response to inquiries</li>
-                            <li>Provision of our online offering and user-friendliness</li>
-                        </ul>
-                        <h3>Applicable Legal Bases</h3>
-                        <ul>
-                            <li><strong>Consent (Art. 6(1)(a) GDPR)</strong> &ndash; The data subject has given consent for one or more specific purposes.</li>
-                            <li><strong>Contract Performance (Art. 6(1)(b) GDPR)</strong> &ndash; Processing is necessary for contract performance or pre-contractual measures.</li>
-                            <li><strong>Legitimate Interests (Art. 6(1)(f) GDPR)</strong> &ndash; Processing is necessary for legitimate interests pursued by the controller.</li>
-                        </ul>
-                        <p>In addition to the GDPR, national data protection regulations apply in Germany, particularly the Federal Data Protection Act (BDSG).</p>
-                        <h3>Security Measures</h3>
-                        <p>We take appropriate technical and organizational measures to ensure a level of protection appropriate to the risk, including securing the confidentiality, integrity, and availability of data.</p>
-                        <p><strong>SSL/TLS Encryption (HTTPS):</strong> To protect your data transmitted via our online offering, we use SSL/TLS encryption. You can recognize encrypted connections by the prefix https:// in the address bar.</p>
-                        <h3>Transfer of Personal Data</h3>
-                        <p>In the course of processing personal data, it may be transferred to or disclosed to other entities. We observe legal requirements and conclude appropriate contracts to protect your data.</p>
-                        <h3>Data Processing in Third Countries</h3>
-                        <p>If we process data in a third country (outside the EU/EEA), this is only done in accordance with legal requirements, with recognized data protection levels, or standard contractual clauses (Art. 44 to 49 GDPR).</p>
-                        <h3>Deletion of Data</h3>
-                        <p>Data processed by us will be deleted in accordance with legal requirements as soon as consents are revoked or other permissions cease to apply.</p>
-                        <h3>Use of Cookies</h3>
-                        <p>Cookies are small text files that store information on end devices. We use cookies in accordance with legal regulations and obtain prior consent unless not legally required.</p>
-                        <p><strong>Storage Duration:</strong> Temporary cookies (session cookies) are deleted after the session. Permanent cookies may remain up to two years.</p>
-                        <p><strong>Opt-Out:</strong> Users may revoke consent at any time and manage cookies via browser settings.</p>
-                        <h3>Web Hosting</h3>
-                        <p>We use web hosting providers to securely and efficiently provide our online offering. Server log files (IP addresses, browser type, access times) are stored for a maximum of 30 days.</p>
-                        <h3>Contact and Inquiry Management</h3>
-                        <p>When contacting us, the information provided is processed to respond to inquiries. Legal bases: Contract performance (Art. 6(1)(b) GDPR); Legitimate interests (Art. 6(1)(f) GDPR).</p>
-                        <h3>Newsletter</h3>
-                        <p>We send newsletters only with consent or legal permission, using a double opt-in procedure. You may cancel receipt at any time.</p>
-                        <h3>Social Media Presences</h3>
-                        <p>We maintain presences on social networks (Instagram, Facebook, LinkedIn, Pinterest, Snapchat, Twitter, Xing). User data may be processed outside the EU. Refer to the privacy policies of the respective network operators.</p>
-                        <h3>Plugins and Embedded Content</h3>
-                        <p>We integrate content from third-party providers (Google Fonts, Google Maps, YouTube). This requires processing of user IP addresses. Refer to <a href="https://policies.google.com/privacy" target="_blank">Google's Privacy Policy</a> for details.</p>
-                        <h3>Changes to this Privacy Policy</h3>
-                        <p>We adapt this privacy policy as necessary. We will inform you when changes require your cooperation.</p>
-                        <h3>Rights of Data Subjects</h3>
-                        <ul>
-                            <li><strong>Right to Object</strong> (Art. 21 GDPR)</li>
-                            <li><strong>Right to Withdraw Consent</strong></li>
-                            <li><strong>Right of Access</strong> (Art. 15 GDPR)</li>
-                            <li><strong>Right to Rectification</strong> (Art. 16 GDPR)</li>
-                            <li><strong>Right to Erasure</strong> (Art. 17 GDPR)</li>
-                            <li><strong>Right to Data Portability</strong> (Art. 20 GDPR)</li>
-                            <li><strong>Right to Lodge a Complaint</strong> with a supervisory authority</li>
-                        </ul>
-                        <p class="legal-note">Legal text by Dr. Schwenke &ndash; <a href="https://datenschutz-generator.de/" target="_blank">datenschutz-generator.de</a></p>
-                    </div>
-                </section>
             </div>
         </section>
     </main>

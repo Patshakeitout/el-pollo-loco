@@ -103,8 +103,8 @@ h1, h3, span {
     left: 0;
     z-index: 10;
     display: flex;
-    gap: 8px;
-    padding: 6px 10px;
+    gap: clamp(4px, 1.2vw, 8px);
+    padding: clamp(4px, 1vw, 6px) clamp(6px, 1.4vw, 10px);
     pointer-events: none;
 }
 
@@ -116,14 +116,14 @@ h1, h3, span {
 }
 
 .status-icon img {
-    width: 36px;
-    height: 36px;
+    width: clamp(20px, 5vw, 36px);
+    height: clamp(20px, 5vw, 36px);
     object-fit: contain;
 }
 
 .status-icon figcaption {
     font-family: 'Boogaloo-Regular', sans-serif;
-    font-size: 18px;
+    font-size: clamp(11px, 2.5vw, 18px);
     font-weight: bold;
     color: #fff;
     text-shadow: 1px 1px 2px #000;
@@ -266,11 +266,10 @@ canvas {
 #game-controls-top {
     position: absolute;
     top: 2.5%;
-    left: 50%;
-    transform: translateX(-50%);
+    right: clamp(4px, 1vw, 8px);
     z-index: 50;
     display: flex;
-    gap: 8px;
+    gap: clamp(4px, 1vw, 8px);
     align-items: center;
     background: none;
     border: none;
@@ -278,12 +277,12 @@ canvas {
 }
 
 #game-controls-top button {
-    font-size: clamp(0.7em, 1.8vw, 1em);
-    padding: 1px 4px;
-    border-radius: 6px;
+    font-size: clamp(0.5em, 1.8vw, 1em);
+    padding: clamp(1px, 0.4vw, 3px) clamp(2px, 0.8vw, 6px);
+    border-radius: clamp(4px, 0.8vw, 6px);
     opacity: 0.6;
     line-height: 1;
-    min-width: 30px;
+    min-width: clamp(20px, 4vw, 30px);
     text-align: center;
     border-width: 1px;
     margin: 0;
@@ -316,19 +315,9 @@ canvas {
 }
 
 #btn-controls-toggle {
-    position: absolute;
-    top: 2.5%;
-    right: 8px;
-    z-index: 51;
-    font-size: clamp(0.9em, 2.2vw, 1.3em);
-    padding: 2px 6px;
-    border-radius: 6px;
     background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 193, 7, 0.4);
+    border-color: rgba(255, 193, 7, 0.4);
     color: #FFC107;
-    opacity: 0.6;
-    cursor: pointer;
-    line-height: 1;
 }
 
 #btn-controls-toggle:hover {
@@ -608,6 +597,14 @@ canvas {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.legal-overlay h1 {
+    color: #f5c842;
+    font-size: clamp(22px, 4.5vw, 34px);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0 0 16px 0;
+    text-shadow: none;
+}
+
 .legal-overlay h2 {
     color: #f5c842;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -806,7 +803,7 @@ button:hover {
 }
 
 footer {
-    display: flex;  
+    display: flex;
     justify-content: space-between;
     align-items: center;
     position: absolute;
@@ -814,6 +811,8 @@ footer {
     left: 10px;
     right: 10px;
     font-size: 14px;
+    z-index: 3;
+    pointer-events: auto;
 }
 
 footer a {
@@ -856,7 +855,7 @@ footer a {
 
 /* Center #game-container vertically when header elements are hidden */
 @media only screen and (max-height: 703px) {
-    h1, h3, span {
+    header h1, header h3, header span {
         display: none;
     }
     

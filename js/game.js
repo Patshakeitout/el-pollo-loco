@@ -9,6 +9,8 @@ let keyboard;
 let audioHub;
 let cheatBuffer = '';
 let cheatCount = 0;
+let cheatTaps = 0;
+let cheatTapTimer = null;
 
 
 /**
@@ -42,6 +44,7 @@ let cheatCount = 0;
 
     if (audioHub) audioHub.stopCurrentMusic();
 
+    document.getElementById('start-screen').style.display = 'none';
     const curtain = document.getElementById('curtain-overlay');
     curtain.classList.remove('d-none', 'open');
     curtain.style.display = 'flex';
@@ -196,6 +199,26 @@ let cheatCount = 0;
     cheatBuffer += e.key.toLowerCase();
     if (cheatBuffer.length > 11) cheatBuffer = cheatBuffer.slice(-11);
     if (cheatBuffer === 'pepehotkill') activateCheat();
+});
+
+
+/**
+ * Listens for 4 rapid taps on the health icon to activate the cheat on mobile.
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    const health = document.getElementById('status-health');
+    if (!health) return;
+    health.style.pointerEvents = 'auto';
+    health.addEventListener('click', () => {
+        if (!world || !world.pepe || cheatCount >= 2) return;
+        cheatTaps++;
+        clearTimeout(cheatTapTimer);
+        cheatTapTimer = setTimeout(() => cheatTaps = 0, 800);
+        if (cheatTaps >= 4) {
+            cheatTaps = 0;
+            activateCheat();
+        }
+    });
 });
 
 

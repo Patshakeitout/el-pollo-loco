@@ -191,22 +191,49 @@
 
 
 /**
- * Opens a legal overlay (imprint or privacy policy) inside the game container.
- * @param {string} id - The overlay element ID.
+ * Opens the legal overlay and fetches content from an external HTML file.
+ * @param {string} url - The URL of the HTML file (e.g., 'imprint.html').
  */
-function openLegalOverlay(id) {
-    const overlay = document.getElementById(id);
-    if (!overlay) return;
+ async function openLegalOverlay(url) {
+    const overlay = document.getElementById('legal-overlay');
+    const container = document.getElementById('legal-content');
+    if (!overlay || !container) return;
+    container.innerHTML = '<p>Loading...</p>';
     overlay.classList.remove('d-none');
     overlay.scrollTop = 0;
+    const res = await fetch(url);
+    const html = await res.text();
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const content = doc.querySelector('.imprint-container, .privacy-container');
+    if (content) content.querySelector('.back-link')?.remove();
+    container.innerHTML = content?.innerHTML || doc.body.innerHTML;
 }
 
 
 /**
- * Closes a legal overlay and returns to the start screen.
- * @param {string} id - The overlay element ID.
+ * Closes the legal overlay.
  */
-function closeLegalOverlay(id) {
-    const overlay = document.getElementById(id);
+ function closeLegalOverlay() {
+    const overlay = document.getElementById('legal-overlay');
     if (overlay) overlay.classList.add('d-none');
 }
+
+
+/**
+ * Binds touch and click events to the footer legal links.
+ */
+ function bindLegalLinks() {
+    const links = [
+        { id: 'link-imprint', url: 'imprint.html' },
+        { id: 'link-privacy', url: 'privacy-policy.html' }
+    ];
+    links.forEach(({ id, url }) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const handler = (e) => { e.preventDefault(); openLegalOverlay(url); };
+        el.addEventListener('touchstart', handler, { passive: false });
+        el.addEventListener('click', handler);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', bindLegalLinks);

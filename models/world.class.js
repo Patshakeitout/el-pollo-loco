@@ -77,37 +77,10 @@ class World {
 
 
     addToMap(mo) {
-
-        if (mo.turnAround) {
-            this.flipImage(mo);
-        }
-
+        if (mo.turnAround) { this.ctx.save(); this.ctx.translate(mo.width, 0); this.ctx.scale(-1, 1); mo.x *= -1; }
         mo.draw(this.ctx);
-
-        if (mo instanceof MovableObject) {
-            //mo.drawCollisionBox(this.ctx, mo.x, mo.y, mo.width, mo.height);
-            //mo.drawCollisionCenter(this.ctx, mo.x, mo.y, mo.width, mo.height);
-            mo.updateOffsetBox();
-            //mo.drawOffsetBox(this.ctx);
-        }
-
-        if (mo.turnAround) {
-            this.flipImageBack(mo);
-        }
-    };
-
-
-    flipImage(mo) {
-        this.ctx.save();
-        this.ctx.translate(mo.width, 0);
-        this.ctx.scale(-1, 1);
-        mo.x = mo.x * -1;
-    }
-
-
-    flipImageBack(mo) {
-        this.ctx.restore();
-        mo.x = mo.x * -1;
+        if (mo instanceof MovableObject) mo.updateOffsetBox();
+        if (mo.turnAround) { this.ctx.restore(); mo.x *= -1; }
     }
 
 
@@ -174,26 +147,13 @@ class World {
 
 
     checkThrowObjects() {
-        if (this.keyboard.ENTER) {
-
-            if (this.statusIconBottle.amount == 0) {
-
-                return;
-            }
-
-            // Determine throw direction based on Pepe's facing direction
-            let throwDirection = this.pepe.turnAround ? -9 : 9;
-            let bottle;
-            if (throwDirection == 9) {
-                bottle = new ThrowableObject(this.pepe.x + this.pepe.width / 2, this.pepe.y + 100, throwDirection);
-            } else {
-                bottle = new ThrowableObject(this.pepe.x, this.pepe.y + 100, throwDirection);
-            }
-            bottle.world = this;
-            this.thrownObjects.push(bottle);
-            this.statusIconBottle.setAmount(this.statusIconBottle.amount - 1);
-
-        }
+        if (!this.keyboard.ENTER || this.statusIconBottle.amount == 0) return;
+        let dir = this.pepe.turnAround ? -9 : 9;
+        let startX = dir > 0 ? this.pepe.x + this.pepe.width / 2 : this.pepe.x;
+        let bottle = new ThrowableObject(startX, this.pepe.y + 100, dir);
+        bottle.world = this;
+        this.thrownObjects.push(bottle);
+        this.statusIconBottle.setAmount(this.statusIconBottle.amount - 1);
     }
 
 
