@@ -34,9 +34,9 @@ let level1;
  */
  function createEnemies(number) {
     for (let i = 0; i < number; i++) {
-        let chickenSize = 0.65 + Math.random() * 1.8;
+        let chickenSize = 0.65 + Math.random() * 1.5;
         enemies.push(new Chicken(chickenSize, levelEndX));
-        let chickSize = 1 + Math.random() * 3;
+        let chickSize = 1 + Math.random() * 2;
         enemies.push(new Chick(chickSize, levelEndX));
     }
 }

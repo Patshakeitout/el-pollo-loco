@@ -147,12 +147,17 @@
                 </nav>
 
                 <nav id="mobile-controls" class="d-none" aria-label="Mobile Game Controls">
-                    <button id="btn-left" aria-label="Move Left">&#8592;</button>
-                    <button id="btn-jump" aria-label="Jump">&#8593;</button>
-                    <button id="btn-throw" aria-label="Throw Bottle">
-                        <img src="assets/images/6_salsa_bottle/salsa_bottle.png" alt="Throw Bottle">
-                    </button>
-                    <button id="btn-right" aria-label="Move Right">&#8594;</button>
+                    <div id="joystick-zone" aria-label="Movement Joystick">
+                        <div id="joystick-base">
+                            <div id="joystick-thumb"></div>
+                        </div>
+                    </div>
+                    <div id="action-buttons">
+                        <button id="btn-jump" aria-label="Jump">&#8593;</button>
+                        <button id="btn-throw" aria-label="Throw Bottle">
+                            <img src="assets/images/6_salsa_bottle/salsa_bottle.png" alt="Throw Bottle">
+                        </button>
+                    </div>
                 </nav>
 
                 <section id="legal-overlay" class="legal-overlay d-none" aria-label="Legal Information">

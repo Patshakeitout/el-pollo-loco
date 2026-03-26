@@ -122,9 +122,11 @@ let cheatTapTimer = null;
  function handleTryAgain() {
     audioHub?.stopAll();
     IntervalHub.stopAllIntervals();
-    restartGame();
+    if (world) { world.paused = true; world = null; }
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
     document.getElementById('end-screen').classList.add('d-none');
     document.getElementById('end-screen').style.display = 'none';
+    restartGame();
 }
 
 
@@ -134,6 +136,7 @@ let cheatTapTimer = null;
  function handleGoHomeFromEnd() {
     audioHub?.stopAll();
     IntervalHub.stopAllIntervals();
+    resetCheatState();
     showStartScreen();
     document.getElementById('end-screen').classList.add('d-none');
 }
@@ -145,6 +148,7 @@ let cheatTapTimer = null;
  function restartGame() {
     if (world) world.paused = true;
     world = null;
+    resetCheatState();
     if (audioHub) audioHub.stopCurrentMusic();
     IntervalHub.stopAllIntervals();
     if (audioHub) audioHub.stopAll();
@@ -187,7 +191,18 @@ let cheatTapTimer = null;
     world.paused = true;
     audioHub?.stopAll();
     IntervalHub.stopAllIntervals();
+    resetCheatState();
     showStartScreen();
+}
+
+
+/**
+ * Resets cheat state for a new game.
+ */
+function resetCheatState() {
+    cheatCount = 0;
+    cheatBuffer = '';
+    cheatTaps = 0;
 }
 
 
