@@ -37,9 +37,9 @@
 
 <body onload="init()">
 
-    <div id="rotate-device-overlay" aria-hidden="true">
+    <aside id="rotate-device-overlay" aria-hidden="true">
         <p>Please rotate your device to landscape mode!</p>
-    </div>
+    </aside>
 
     <main>
         <header>
@@ -84,30 +84,30 @@
                 </section>
 
                 <section id="story-screen" class="d-none" aria-label="Story Intro">
-                    <div id="story-text"></div>
+                    <p id="story-text"></p>
                 </section>
                 <button id="skip-story-btn" class="d-none">Skip</button>
 
                 <section id="controls-overlay" class="d-none" aria-label="Controls Guide">
                     <h2>Controls</h2>
-                    <div class="controls-grid">
-                        <div class="control-row">
+                    <ul class="controls-grid">
+                        <li class="control-row">
                             <kbd>&larr;</kbd>
                             <span>Move Left</span>
-                        </div>
-                        <div class="control-row">
+                        </li>
+                        <li class="control-row">
                             <kbd>&rarr;</kbd>
                             <span>Move Right</span>
-                        </div>
-                        <div class="control-row">
+                        </li>
+                        <li class="control-row">
                             <kbd>Space</kbd>
                             <span>Jump</span>
-                        </div>
-                        <div class="control-row">
+                        </li>
+                        <li class="control-row">
                             <kbd>Enter</kbd>
                             <span>Throw Bottle</span>
-                        </div>
-                    </div>
+                        </li>
+                    </ul>
                     <button id="close-controls-btn">Got it!</button>
                 </section>
 
@@ -162,9 +162,8 @@
 
                 <section id="legal-overlay" class="legal-overlay d-none" aria-label="Legal Information">
                     <button class="legal-close-btn" onclick="closeLegalOverlay()">&times;</button>
-                    <div id="legal-content" class="legal-content"></div>
+                    <article id="legal-content" class="legal-content"></article>
                 </section>
-
             </div>
         </section>
     </main>

@@ -1,7 +1,6 @@
 /* --- FONTS --- */
 @font-face {
     font-family: 'TheDeadSaloon';
-    /* Adjust path if you move the ttf file to a 'fonts' folder as recommended */
     src: url('../assets/fonts/thedeadsaloon-Regular.ttf') format('truetype');
 }
 
@@ -24,14 +23,13 @@ body {
 
     background-image: url('../assets/images/background.png');
     background-size: cover;
-    background-position: center top; /* changed from center bottom to center top */
+    background-position: center top;
     background-repeat: no-repeat;
-    background-attachment: fixed; /* Keeps background stable */
+    background-attachment: fixed;
 
     font-family: var(--main-font);
     overflow: hidden;
     user-select: none;
-    /* Prevents highlighting text/images */
 }
 
 /* --- GENERAL SETTINGS --- */
@@ -47,22 +45,18 @@ main {
     margin: 0;
 }
 
-/* Header texts absolutely at top left */
 header {
-    /* Neu: Absolute Positionierung */
     position: absolute;
-    top: 4vh; 
+    top: 4vh;
     left: 0;
-    width: 100%; /* Volle Breite für Zentrierung */
-    
+    width: 100%;
     z-index: 2;
     text-align: center;
-    /* right: 10px; <-- Kann weg, da wir width:100% und text-align:center nutzen */
-    pointer-events: none; /* Klicks gehen durch den Header durch (optional) */
+    pointer-events: none;
 }
 
 h1, h3, span {
-    color: #3e1f00; /* Rich dark brown for western look, not black */
+    color: #3e1f00;
     text-shadow: 2px 2px 8px #e6a96b, 0 0 2px #fff;
 }
 
@@ -80,19 +74,9 @@ h1, h3, span {
 #aspect-ratio-wrapper {
     position: relative;
     aspect-ratio: 720 / 480;
-
-    /* MAGIE: */
-    /* Nimm 100% der Breite, ABER nicht mehr als das 1.5-fache der Höhe */
-    /* Das garantiert, dass es NIEMALS über die Höhe hinauswächst */
     width: min(100vw, 150dvh);
-
-    /* Optional: Wenn du etwas Rand für den Hintergrund willst (95% statt 100%): */
-    /* width: min(95vw, calc(95dvh * 1.5)); */
-
-    /* Maximale Größe (Desktop Cap), damit es nicht riesig wird */
-    max-width: 720px; 
+    max-width: 720px;
     margin-top: 0;
-
     border-radius: 10px;
     overflow: hidden;
 }
@@ -129,7 +113,6 @@ h1, h3, span {
     text-shadow: 1px 1px 2px #000;
 }
 
-/* Fullscreen: remove cap and fill screen */
 #game-container:fullscreen {
     background: #000;
 }
@@ -140,7 +123,6 @@ h1, h3, span {
     margin-top: 0;
 }
 
-/* Header texts */
 h1 {
     font-size: 60px;
     margin: 0;
@@ -221,9 +203,9 @@ canvas {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, 
-        rgba(135, 206, 235, 0.1) 0%, 
-        rgba(255, 183, 77, 0.08) 50%, 
+    background: linear-gradient(135deg,
+        rgba(135, 206, 235, 0.1) 0%,
+        rgba(255, 183, 77, 0.08) 50%,
         rgba(210, 105, 30, 0.1) 100%);
     border-radius: 10px;
     z-index: -2;
@@ -231,9 +213,9 @@ canvas {
 
 #start-screen #start-btn {
     position: absolute;
-    top: 4%; 
+    top: 4%;
     left: 50%;
-    transform: translateX(-50%);    
+    transform: translateX(-50%);
     margin-bottom: 40px;
     font-size: 24px;
     padding: 12px 20px;
@@ -528,6 +510,9 @@ canvas {
     gap: clamp(8px, 2vh, 16px);
     width: 100%;
     max-width: 320px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
 .control-row {
@@ -684,7 +669,7 @@ canvas {
 /* --- END SCREEN --- */
 #end-screen {
     z-index: 100;
-    display: none; /* Toggled by JS */
+    display: none;
     justify-content: center;
     align-items: center;
     pointer-events: auto;
@@ -710,9 +695,8 @@ canvas {
 }
 
 #end-screen-img.game-over {
-    object-fit: cover;   /* for game over */
+    object-fit: cover;
 }
-
 
 #end-screen .game-over-btns {
     position: absolute;
@@ -753,8 +737,6 @@ button {
 button:hover {
     transform: scale(1.15);
 }
-
-
 
 /* --- MOBILE CONTROLS --- */
 #mobile-controls {
@@ -864,19 +846,13 @@ footer a {
 }
 
 /* --- RESPONSIVENESS --- */
-/* Nur auf Screens, die hoch genug sind (also kein Handy im Querformat) */
-@media only screen and (min-height: 703px) { 
+@media only screen and (min-height: 703px) {
     #aspect-ratio-wrapper {
-        /* Hier kommt der Abstand wieder rein, aber NUR für Desktop */
-        margin-top: 16vh; 
+        margin-top: 16vh;
     }
 }
 
-
-/* Only shrink when viewport is actually smaller than canvas */
-/* Width smaller than 720px - scale proportionally */
 @media only screen and (max-width: 720px) {
-    /* Scale buttons proportionally */
     #start-screen #start-btn {
         font-size: clamp(14px, 3.3vw, 24px);
         padding: clamp(6px, 1.6vw, 12px) clamp(10px, 2.8vw, 20px);
@@ -894,29 +870,17 @@ footer a {
     }
 }
 
-
-/* Center #game-container vertically when header elements are hidden */
 @media only screen and (max-height: 703px) {
     header h1, header h3, header span {
         display: none;
     }
-    
+
     main {
         justify-content: center;
     }
-    
 }
 
-/* Nur auf Screens, die hoch genug sind (Desktop/Tablet) */
-@media only screen and (min-height: 703px) { 
-    #aspect-ratio-wrapper {
-        margin-top: 16vh; /* Schiebt das Spiel etwas runter, damit die Überschrift Platz hat */
-    }
-}
-
-/* Height smaller than 480px - scale canvas/start-screen */
 @media only screen and (max-height: 480px) {
-    /* Scale buttons proportionally for small height */
     #start-screen #start-btn {
         font-size: clamp(14px, 5vh, 24px);
         padding: clamp(6px, 2.5vh, 12px) clamp(10px, 4vh, 20px);
@@ -934,14 +898,13 @@ footer a {
     }
 }
 
-/* Mobile controls hidden by default on desktop */
 @media only screen and (min-width: 1025px) {
     #mobile-controls:not(.show-controls) {
         display: none !important;
     }
 }
 
-/* Rotate device overlay - hidden by default */
+/* --- ROTATE DEVICE OVERLAY --- */
 #rotate-device-overlay {
     display: none;
     position: fixed;
@@ -964,13 +927,11 @@ footer a {
     max-width: 80%;
 }
 
-/* Portrait Mode Warning - show rotate overlay */
 @media only screen and (orientation: portrait) {
     #rotate-device-overlay {
         display: flex;
     }
 
-    /* Hide all game content in portrait */
     h1,
     h3,
     canvas,

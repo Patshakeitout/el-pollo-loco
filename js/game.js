@@ -199,7 +199,7 @@ let cheatTapTimer = null;
 /**
  * Resets cheat state for a new game.
  */
-function resetCheatState() {
+ function resetCheatState() {
     cheatCount = 0;
     cheatBuffer = '';
     cheatTaps = 0;
@@ -220,7 +220,7 @@ function resetCheatState() {
 /**
  * Listens for 4 rapid taps on the health icon to activate the cheat on mobile.
  */
-document.addEventListener('DOMContentLoaded', () => {
+ document.addEventListener('DOMContentLoaded', () => {
     const health = document.getElementById('status-health');
     if (!health) return;
     health.style.pointerEvents = 'auto';
