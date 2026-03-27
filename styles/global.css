@@ -853,13 +853,14 @@ footer {
     right: 10px;
     font-size: 14px;
     z-index: 3;
-    pointer-events: auto;
+    pointer-events: none;
 }
 
 footer a {
     color:#FFC107;
     font-size: 16px;
     text-decoration: none;
+    pointer-events: auto;
 }
 
 /* --- RESPONSIVENESS --- */
