@@ -118,39 +118,48 @@ Level
 
 ```
 el-pollo-loco/
-├── index.html                  # Entry point — game container and script loading
-├── models/                     # OOP class definitions (16 classes)
-│   ├── drawable-object.class.js    # Base class — image loading and rendering
-│   ├── movable-object.class.js     # Physics, gravity, collision detection
-│   ├── character.class.js          # Player character (Pepe)
-│   ├── chicken.class.js            # Regular enemy
-│   ├── chick.class.js              # Small enemy variant
-│   ├── endBoss.class.js            # Final boss with multi-phase AI
-│   ├── throwable-object.class.js   # Bottle projectiles
-│   ├── collectable-object.class.js # Coins and bottles
-│   ├── world.class.js              # Game world — loop, collisions, entities
+├── assets/                         # Game assets (sprites, audio, fonts)
+│   ├── audio/                      # Music and sound effects
+│   ├── fonts/                      # Custom game fonts
+│   └── images/                     # Sprites, backgrounds, UI graphics
+├── imprint.html                    # Legal imprint page
+├── index.html                      # Entry point — game container and script loading
+├── js/                             # Game logic modules
+│   ├── game-screens.js             # Screen transitions, overlays, curtain animation
+│   ├── game-story.js               # Story typewriter, skip logic
+│   ├── game-ui.js                  # Button handlers, mute, fullscreen, tutorial
+│   └── game.js                     # Core init, start, restart, pause, cheat code
+├── levels/                         # Level configurations
+│   └── level1.js                   # Level 1 configuration and entity spawning
+├── models/                         # OOP class definitions (16 classes)
 │   ├── audioHub.class.js           # Singleton audio manager
+│   ├── background.class.js         # Parallax background layers
+│   ├── character.class.js          # Player character (Pepe)
+│   ├── chick.class.js              # Small enemy variant
+│   ├── chicken.class.js            # Regular enemy
+│   ├── cloud.class.js              # Animated clouds
+│   ├── collectable-object.class.js # Coins and bottles
+│   ├── drawable-object.class.js    # Base class — image loading and rendering
+│   ├── endBoss.class.js            # Final boss with multi-phase AI
 │   ├── intervalHub.class.js        # Centralized interval management
-│   ├── status-icon.class.js        # DOM-bound status indicators
 │   ├── keyboard.class.js           # Input handling
 │   ├── level.class.js              # Level data structure
-│   ├── background.class.js         # Parallax background layers
-│   └── cloud.class.js              # Animated clouds
-├── js/                         # Game logic modules
-│   ├── game.js                     # Core init, start, restart, pause, cheat code
-│   ├── game-ui.js                  # Button handlers, mute, fullscreen, tutorial
-│   ├── game-screens.js             # Screen transitions, overlays, curtain animation
-│   └── game-story.js               # Story typewriter, skip logic
-├── levels/
-│   └── level1.js                   # Level 1 configuration and entity spawning
-├── assets/
-│   ├── images/                     # Sprites, backgrounds, UI graphics
-│   ├── audio/                      # Music and sound effects
-│   └── fonts/                      # Custom game fonts
-├── styles/
-│   └── global.css                  # All styling — responsive, animations, layout
-├── imprint.html                # Legal imprint page
-└── privacy-policy.html         # Privacy policy page
+│   ├── movable-object.class.js     # Physics, gravity, collision detection
+│   ├── status-icon.class.js        # DOM-bound status indicators
+│   ├── throwable-object.class.js   # Bottle projectiles
+│   └── world.class.js              # Game world — loop, collisions, entities
+├── privacy-policy.html             # Privacy policy page
+├── README.md                       # Project documentation (this file)
+└── styles/                         # Modular stylesheet files
+    ├── base.css                    # Fonts, body, header, general settings
+    ├── controls.css                # In-game controls and control overlays
+    ├── curtain.css                 # Curtain overlay and countdown animations
+    ├── game-container.css          # Game canvas and aspect ratio wrapper
+    ├── global.css                  # Main stylesheet (legacy reference)
+    ├── legal-pages.css             # Styling for imprint and privacy pages
+    ├── mobile.css                  # Mobile joystick and touch controls
+    ├── responsive.css              # Media queries and responsive design
+    └── screens.css                 # Start, story, and end screens
 ```
 
 ---

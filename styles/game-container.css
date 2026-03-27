@@ -1,0 +1,79 @@
+/* --- GAME CONTAINER --- */
+#game-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100dvh;
+    overflow: hidden;
+}
+
+#aspect-ratio-wrapper {
+    position: relative;
+    aspect-ratio: 720 / 480;
+    width: min(100vw, 150dvh);
+    max-width: 720px;
+    margin-top: 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#game-container:fullscreen {
+    background: #000;
+}
+
+#game-container:fullscreen #aspect-ratio-wrapper {
+    max-width: none;
+    width: min(100vw, 150dvh);
+    margin-top: 0;
+}
+
+#status-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    display: flex;
+    gap: clamp(4px, 1.2vw, 8px);
+    padding: clamp(4px, 1vw, 6px) clamp(6px, 1.4vw, 10px);
+    pointer-events: none;
+}
+
+.status-icon {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin: 0;
+}
+
+.status-icon img {
+    width: clamp(20px, 5vw, 36px);
+    height: clamp(20px, 5vw, 36px);
+    object-fit: contain;
+}
+
+.status-icon figcaption {
+    font-family: 'Boogaloo-Regular', sans-serif;
+    font-size: clamp(11px, 2.5vw, 18px);
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 1px 1px 2px #000;
+}
+
+/* --- CANVAS and SCREENS fill up the Wrapper --- */
+canvas,
+#start-screen,
+#end-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    object-fit: contain;
+}
+
+canvas {
+    display: block;
+}

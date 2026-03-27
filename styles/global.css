@@ -38,9 +38,8 @@ main {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    min-height: 100dvh;
     width: 100vw;
+    min-height: 100dvh;
     padding: 0;
     margin: 0;
 }
@@ -58,6 +57,38 @@ header {
 h1, h3, span {
     color: #3e1f00;
     text-shadow: 2px 2px 8px #e6a96b, 0 0 2px #fff;
+}
+
+h1 {
+    font-size: 60px;
+    margin: 0;
+}
+
+h3 {
+    font-size: 25px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+/* --- HIDDEN --- */
+.d-none {
+    display: none !important;
+}
+
+/* --- BUTTONS --- */
+button {
+    cursor: pointer;
+    font-family: var(--main-font);
+    font-size: 24px;
+    padding: 10px 20px;
+    background-color: #FFC107;
+    border: 2px solid #DA5F00;
+    border-radius: 8px;
+    transition: transform 0.1s;
+}
+
+button:hover {
+    transform: scale(1.15);
 }
 
 /* --- GAME CONTAINER --- */
@@ -79,6 +110,16 @@ h1, h3, span {
     margin-top: 0;
     border-radius: 10px;
     overflow: hidden;
+}
+
+#game-container:fullscreen {
+    background: #000;
+}
+
+#game-container:fullscreen #aspect-ratio-wrapper {
+    max-width: none;
+    width: min(100vw, 150dvh);
+    margin-top: 0;
 }
 
 #status-bar {
@@ -111,27 +152,6 @@ h1, h3, span {
     font-weight: bold;
     color: #fff;
     text-shadow: 1px 1px 2px #000;
-}
-
-#game-container:fullscreen {
-    background: #000;
-}
-
-#game-container:fullscreen #aspect-ratio-wrapper {
-    max-width: none;
-    width: min(100vw, 150dvh);
-    margin-top: 0;
-}
-
-h1 {
-    font-size: 60px;
-    margin: 0;
-}
-
-h3 {
-    font-size: 25px;
-    margin-top: 12px;
-    margin-bottom: 12px;
 }
 
 /* --- CANVAS and SCREENS fill up the Wrapper --- */
@@ -178,10 +198,6 @@ canvas {
     border-radius: 10px;
     overflow: hidden;
     transition: opacity 0.9s linear, filter 0.9s linear;
-}
-
-#start-screen.d-none {
-    display: none !important;
 }
 
 #start-screen .start-bg {
@@ -268,41 +284,12 @@ canvas {
     text-align: center;
     border-width: 1px;
     margin: 0;
-}
-
-#game-controls-top #btn-pause-top,
-#game-controls-top #btn-fullscreen-desktop,
-#game-controls-top #btn-home {
     background: rgba(0, 0, 0, 0.3);
     border-color: rgba(255, 193, 7, 0.4);
     color: #FFC107;
 }
 
-#game-controls-top #btn-pause-top:hover,
-#game-controls-top #btn-fullscreen-desktop:hover,
-#game-controls-top #btn-home:hover {
-    opacity: 1;
-    background: rgba(0, 0, 0, 0.6);
-}
-
-#game-controls-top #btn-music-top {
-    background: rgba(0, 0, 0, 0.3);
-    border-color: rgba(255, 193, 7, 0.4);
-    color: #FFC107;
-}
-
-#game-controls-top #btn-music-top:hover {
-    opacity: 1;
-    background: rgba(0, 0, 0, 0.6);
-}
-
-#btn-controls-toggle {
-    background: rgba(0, 0, 0, 0.3);
-    border-color: rgba(255, 193, 7, 0.4);
-    color: #FFC107;
-}
-
-#btn-controls-toggle:hover {
+#game-controls-top button:hover {
     opacity: 1;
     background: rgba(0, 0, 0, 0.6);
 }
@@ -338,31 +325,29 @@ canvas {
     background-position: left center;
 }
 
-.curtain-left::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: -5px;
-    width: 10px;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 200, 87, 0.2));
-    filter: blur(5px);
-}
-
 .curtain-right {
     transform-origin: right;
     background-position: right center;
 }
 
+.curtain-left::before,
 .curtain-right::before {
     content: '';
     position: absolute;
     top: 0;
-    left: -5px;
     width: 10px;
     height: 100%;
-    background: linear-gradient(90deg, rgba(255, 200, 87, 0.2), transparent);
     filter: blur(5px);
+}
+
+.curtain-left::before {
+    right: -5px;
+    background: linear-gradient(90deg, transparent, rgba(255, 200, 87, 0.2));
+}
+
+.curtain-right::before {
+    left: -5px;
+    background: linear-gradient(90deg, rgba(255, 200, 87, 0.2), transparent);
 }
 
 #curtain-text {
@@ -582,20 +567,20 @@ canvas {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.legal-overlay h1 {
+.legal-overlay h1,
+.legal-overlay h2 {
     color: #f5c842;
-    font-size: clamp(22px, 4.5vw, 34px);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0 0 16px 0;
     text-shadow: none;
 }
 
+.legal-overlay h1 {
+    font-size: clamp(22px, 4.5vw, 34px);
+}
+
 .legal-overlay h2 {
-    color: #f5c842;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: clamp(18px, 3.5vw, 28px);
-    margin: 0 0 16px 0;
-    text-shadow: none;
 }
 
 .legal-overlay h3 {
@@ -611,17 +596,18 @@ canvas {
     margin: 14px 0 6px;
 }
 
-.legal-overlay p {
-    color: #ccc4b8;
-    font-size: clamp(10px, 1.8vw, 13px);
-    line-height: 1.6;
-    margin-bottom: 8px;
-}
-
+.legal-overlay p,
 .legal-overlay ul {
     color: #ccc4b8;
     font-size: clamp(10px, 1.8vw, 13px);
     line-height: 1.6;
+}
+
+.legal-overlay p {
+    margin-bottom: 8px;
+}
+
+.legal-overlay ul {
     margin: 4px 0 12px 20px;
 }
 
@@ -715,27 +701,6 @@ canvas {
     border-width: clamp(1.5px, min(0.4vw, 0.6vh), 3px);
     min-width: clamp(80px, min(18vw, 20vh), 180px);
     min-height: clamp(32px, min(5vw, 7vh), 56px);
-}
-
-/* --- HIDDEN --- */
-.d-none {
-    display: none !important;
-}
-
-/* --- BUTTONS --- */
-button {
-    cursor: pointer;
-    font-family: var(--main-font);
-    font-size: 24px;
-    padding: 10px 20px;
-    background-color: #FFC107;
-    border: 2px solid #DA5F00;
-    border-radius: 8px;
-    transition: transform 0.1s;
-}
-
-button:hover {
-    transform: scale(1.15);
 }
 
 /* --- MOBILE CONTROLS --- */
@@ -839,7 +804,7 @@ footer {
 }
 
 footer a {
-    color:#FFC107;
+    color: #FFC107;
     font-size: 16px;
     text-decoration: none;
     pointer-events: auto;

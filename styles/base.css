@@ -1,0 +1,90 @@
+/* --- FONTS --- */
+@font-face {
+    font-family: 'TheDeadSaloon';
+    src: url('../assets/fonts/thedeadsaloon-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Boogaloo-Regular';
+    src: url('../assets/fonts/Boogaloo-Regular.ttf') format('truetype');
+}
+
+:root {
+    --main-font: 'TheDeadSaloon', sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100dvh;
+    background-image: url('../assets/images/background.png');
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: var(--main-font);
+    overflow: hidden;
+    user-select: none;
+}
+
+/* --- GENERAL SETTINGS --- */
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    min-height: 100dvh;
+    padding: 0;
+    margin: 0;
+}
+
+header {
+    position: absolute;
+    top: 4vh;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+    text-align: center;
+    pointer-events: none;
+}
+
+h1, h3, span {
+    color: #3e1f00;
+    text-shadow: 2px 2px 8px #e6a96b, 0 0 2px #fff;
+}
+
+h1 {
+    font-size: 60px;
+    margin: 0;
+}
+
+h3 {
+    font-size: 25px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+/* --- HIDDEN --- */
+.d-none {
+    display: none !important;
+}
+
+/* --- BUTTONS --- */
+button {
+    cursor: pointer;
+    font-family: var(--main-font);
+    font-size: 24px;
+    padding: 10px 20px;
+    background-color: #FFC107;
+    border: 2px solid #DA5F00;
+    border-radius: 8px;
+    transition: transform 0.1s;
+}
+
+button:hover {
+    transform: scale(1.15);
+}

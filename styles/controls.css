@@ -1,0 +1,111 @@
+/* --- IN-GAME CONTROLS CONTAINER --- */
+#game-controls-top {
+    position: absolute;
+    top: 2.5%;
+    right: clamp(4px, 1vw, 8px);
+    z-index: 50;
+    display: flex;
+    gap: clamp(4px, 1vw, 8px);
+    align-items: center;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+#game-controls-top button {
+    font-size: clamp(0.5em, 1.8vw, 1em);
+    padding: clamp(1px, 0.4vw, 3px) clamp(2px, 0.8vw, 6px);
+    border-radius: clamp(4px, 0.8vw, 6px);
+    opacity: 0.6;
+    line-height: 1;
+    min-width: clamp(20px, 4vw, 30px);
+    text-align: center;
+    border-width: 1px;
+    margin: 0;
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 193, 7, 0.4);
+    color: #FFC107;
+}
+
+#game-controls-top button:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* --- CONTROLS OVERLAY --- */
+#controls-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    background: rgba(13, 8, 5, 0.95);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 95;
+    box-sizing: border-box;
+    padding: 5% 8%;
+}
+
+#controls-overlay h2 {
+    font-family: var(--main-font);
+    color: #f5c842;
+    font-size: clamp(22px, 4vw, 36px);
+    margin: 0 0 6% 0;
+    text-shadow: 0 0 10px rgba(245, 200, 66, 0.4);
+}
+
+.controls-grid {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 2vh, 16px);
+    width: 100%;
+    max-width: 320px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.control-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.control-row kbd {
+    font-family: 'Boogaloo-Regular', sans-serif;
+    background: linear-gradient(180deg, #3a2510, #1f1008);
+    color: #f5c842;
+    border: 2px solid #DA5F00;
+    border-radius: 6px;
+    padding: clamp(4px, 1vh, 8px) clamp(10px, 2vw, 20px);
+    font-size: clamp(14px, 2.5vw, 20px);
+    min-width: clamp(60px, 12vw, 90px);
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.control-row span {
+    font-family: 'Boogaloo-Regular', sans-serif;
+    color: #e0c8a0;
+    font-size: clamp(14px, 2.5vw, 20px);
+    flex: 1;
+    text-align: right;
+}
+
+#close-controls-btn {
+    margin-top: 6%;
+    font-size: clamp(16px, 2.5vw, 22px);
+    padding: 8px 24px;
+    background: transparent;
+    border: 2px solid #f5c842;
+    color: #f5c842;
+}
+
+#close-controls-btn:hover {
+    background: rgba(245, 200, 66, 0.15);
+}
