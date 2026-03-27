@@ -32,8 +32,8 @@
 
     let isMuted = localStorage.getItem('elPolloMute') === 'true';
     if (audioHub) {
-        audioHub.isMuted = isMuted;
-        if (isMuted) audioHub.stopAll();
+        audioHub.musicMuted = isMuted;
+        if (isMuted) audioHub.stopCurrentMusic();
     }
 
     muteBtn.textContent = isMuted ? '🔇' : '🔈';
@@ -47,11 +47,13 @@
  */
  function handleMuteToggle(muteBtn) {
     if (!audioHub) return;
-    const newMutedState = audioHub.toggleMute();
-    localStorage.setItem('elPolloMute', newMutedState);
-    muteBtn.textContent = newMutedState ? '🔇' : '🔈';
+    audioHub.musicMuted = !audioHub.musicMuted;
+    localStorage.setItem('elPolloMute', audioHub.musicMuted);
+    muteBtn.textContent = audioHub.musicMuted ? '🔇' : '🔈';
 
-    if (!newMutedState) {
+    if (audioHub.musicMuted) {
+        audioHub.stopCurrentMusic();
+    } else {
         const startScreen = document.getElementById('start-screen');
         const startOverlay = document.getElementById('start-overlay');
         const canvas = document.getElementById('canvas');

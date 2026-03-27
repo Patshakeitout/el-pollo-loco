@@ -15,6 +15,7 @@
         this.music = {};
         this.currentMusic = null;
         this.isMuted = false;
+        this.musicMuted = false;
         this.musicVolume = 0.2;
         this.sfxVolume = 0.3;
         this.isLoaded = false;
@@ -144,12 +145,9 @@
             this.currentMusic.currentTime = 0;
         }
 
-        // 2. Set new Current
         this.currentMusic = bgMusic;
+        if (this.musicMuted) return;
 
-        // 3. Play if not muted
-        if (this.isMuted) return;
-        
         bgMusic.loop = true;
         this.play(bgMusic, this.musicVolume);
     }
@@ -169,7 +167,7 @@
 
         this.currentMusic = menuMusic;
 
-        if (this.isMuted) return;
+        if (this.musicMuted) return;
 
         menuMusic.loop = true;
         this.play(menuMusic, this.musicVolume);
