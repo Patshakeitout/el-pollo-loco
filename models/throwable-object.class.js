@@ -1,3 +1,8 @@
+/**
+ * Represents a throwable salsa bottle that flies with parabolic physics
+ * and plays a splash animation on ground impact before being removed from the world.
+ * @extends MovableObject
+ */
 class ThrowableObject extends MovableObject {
     speedY;
     speedX;
@@ -32,13 +37,14 @@ class ThrowableObject extends MovableObject {
         this.throw();
     }
 
-/**
- * Throw the bottle in the air.
- * This method is called when the player hits the space bar.
- * It makes the bottle move up and to the right, and starts an animation.
- * The animation is played every 100ms and the bottle moves 10 pixels to the right every 25ms.
- */
-    throw() {
+
+    /**
+     * Throw the bottle in the air.
+     * This method is called when the player hits the space bar.
+     * It makes the bottle move up and to the right, and starts an animation.
+     * The animation is played every 100ms and the bottle moves 10 pixels to the right every 25ms.
+     */
+     throw() {
         this.speedY = 8;
         this.applyGravity();
         let splashTriggered = false;
@@ -59,7 +65,11 @@ class ThrowableObject extends MovableObject {
 
     }
 
-    splash() {    
+
+    /**
+     * Plays the splash animation and removes the bottle from the world after it finishes.
+     */
+     splash() {
         IntervalHub.startInterval(() => this.playAnimation(this.IMAGES_SPLASH), 100);
 
         setTimeout(() => {
@@ -73,14 +83,18 @@ class ThrowableObject extends MovableObject {
     }
 
     
+    /** Checks whether the bottle has reached ground level (y >= 360). */
     isOnGround() { return this.y >= 360; }
 
-    isColliding(obj) {
-        // Don't collide with enemies after already hitting one
+
+    /**
+     * Checks collision with another object, skipping enemy collisions after the first hit.
+     * @param {MovableObject} obj - The object to check collision against.
+     */
+     isColliding(obj) {
         if (this.hasHitEnemy && !(obj instanceof Character)) {
             return false;
         }
         return super.isColliding(obj);
     }
-
 }   

@@ -161,12 +161,13 @@
      * @returns {number} The target camera X position.
      */
      calcDirectionalCameraX() {
+        const canvasW = this.world.canvas.width;
         if (this.world.keyboard.RIGHT) {
             this.lastMovedLeft = false;
-            return -this.x - 110;
+            return -this.x + canvasW * 0.3;
         } else if (this.world.keyboard.LEFT) {
             this.lastMovedLeft = true;
-            return this.x > 0 ? -this.x + this.world.canvas.width : this.world.cameraX;
+            return this.x > 0 ? -this.x + canvasW * 0.7 : this.world.cameraX;
         }
         return this.world.cameraX;
     }
@@ -177,7 +178,7 @@
      * @param {number} targetCameraX - The desired camera X position.
      */
      applySmoothCamera(targetCameraX) {
-        let lerpFactor = 0.04;
+        let lerpFactor = 0.1;
         this.lastDirection = this.world.keyboard.RIGHT ? 'RIGHT' : (this.world.keyboard.LEFT ? 'LEFT' : 'IDLE');
         this.world.cameraX = Math.round(this.world.cameraX + (targetCameraX - this.world.cameraX) * lerpFactor);
         let minCameraX = -(this.world.level.levelEndX - this.world.canvas.width);
@@ -322,5 +323,4 @@
         let timePassed = new Date().getTime() - this.lastHit;
         return timePassed < this.hurtDuration;
     }
-
 }

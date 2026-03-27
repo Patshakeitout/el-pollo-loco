@@ -475,5 +475,4 @@
             this.currentMusic.volume = this.musicVolume;
         }
     }
-
 }

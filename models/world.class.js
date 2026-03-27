@@ -28,7 +28,8 @@ class World {
     }
 
 
-    draw() {
+    /** Clears and redraws all game objects each animation frame. Stops when the game is paused. */
+     draw() {
         if (!this.paused) {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.ctx.translate(this.cameraX, 0);
@@ -41,11 +42,8 @@ class World {
             this.addObjectsToMap(this.thrownObjects);
 
             this.ctx.translate(-this.cameraX, 0);
-
-            // Reveal endboss health icon when boss enters view
             this.checkEndBossReveal();
 
-            //let self = this;
             requestAnimationFrame(() => this.draw());
         }
     }
@@ -54,7 +52,7 @@ class World {
     /**
      * Shows the endboss health icon once the boss enters the viewport.
      */
-    checkEndBossReveal() {
+     checkEndBossReveal() {
         if (this.endBossRevealed) return;
         const endBoss = this.level.enemies.find(enemy => enemy instanceof EndBoss);
         if (endBoss && endBoss.x > -this.cameraX - 100 && endBoss.x < -this.cameraX + this.canvas.width + 100) {
@@ -68,7 +66,7 @@ class World {
      * Toggles the pause state of the game. If the game is unpaused,
      * the draw loop is restarted.
      */
-    togglePause() {
+     togglePause() {
         this.paused = !this.paused;
         if (!this.paused) {
             this.draw();
@@ -76,7 +74,11 @@ class World {
     }
 
 
-    addToMap(mo) {
+    /**
+     * Draws a single movable object onto the canvas, handling horizontal flipping.
+     * @param {MovableObject} mo - The object to draw.
+     */
+     addToMap(mo) {
         if (mo.turnAround) { this.ctx.save(); this.ctx.translate(mo.width, 0); this.ctx.scale(-1, 1); mo.x *= -1; }
         mo.draw(this.ctx);
         if (mo instanceof MovableObject) mo.updateOffsetBox();
@@ -84,10 +86,17 @@ class World {
     }
 
 
-    addObjectsToMap(objArr) { objArr.forEach(o => { this.addToMap(o); }) };
+    /**
+     * Draws an array of objects onto the canvas.
+     * @param {MovableObject[]} objArr - The objects to draw.
+     */
+     addObjectsToMap(objArr) {
+        objArr.forEach(o => { this.addToMap(o); })
+    };
 
 
-    setWorld() {
+    /** Assigns this world instance to Pepe and all EndBoss enemies so they can reference it. */
+     setWorld() {
         this.pepe.world = this;
         this.level.enemies.forEach(enemy => {
             if (enemy instanceof EndBoss) {
@@ -97,7 +106,8 @@ class World {
     }
 
 
-    run() {
+    /** Starts all recurring game loops: collision checks, throw input, and Pepe cleanup. */
+     run() {
         IntervalHub.startInterval(() => {
             this.checkCollisions();
             this.checkCollectableCollisions();
@@ -108,31 +118,27 @@ class World {
         }, 200);
 
         IntervalHub.startInterval(() => {
-            // Remove Pepe if dead and has fallen below the canvas
             if (this.pepe && this.pepe.isDead() && this.pepe.y > this.canvas.height) {
                 this.pepe = null;
             }
         }, this.FT);
-
     }
 
 
     /**
      * Check collisions between Pepe and collectables (coins and bottles)
      */
-    checkCollectableCollisions() {
+     checkCollectableCollisions() {
         if (!this.pepe || this.pepe.isDead()) return;
 
         this.level.collectables.forEach((collectable, index) => {
             if (collectable.collected) return;
-
             if (this.pepe.isColliding(collectable)) {
                 collectable.collect();
 
                 if (collectable.type === 'coin') {
                     this.statusIconCoin.setAmount(this.statusIconCoin.amount + 1);
                     audioHub?.playCoinSound();
-                    // Each coin refills 2 health points
                     this.pepe.energy += 2;
                     this.statusIconPepe.setAmount(this.pepe.energy);
                 } else if (collectable.type === 'bottle') {
@@ -146,7 +152,8 @@ class World {
     }
 
 
-    checkThrowObjects() {
+    /** Throws a bottle in Pepe's facing direction when ENTER is pressed and bottles are available. */
+     checkThrowObjects() {
         if (!this.keyboard.ENTER || this.statusIconBottle.amount == 0) return;
         let dir = this.pepe.turnAround ? -9 : 9;
         let startX = dir > 0 ? this.pepe.x + this.pepe.width / 2 : this.pepe.x;
@@ -157,74 +164,77 @@ class World {
     }
 
 
-    checkCollisions() {
+    /** Handles Pepe stomping enemies, bottle-enemy impacts, and Pepe taking damage. */
+     checkCollisions() {
         this.level.enemies.forEach(enemy => {
             if (enemy.isDead()) return;
-
-            if (this.pepe && this.pepe.isColliding(enemy)) {
-                let pepeBottom = this.pepe.y + this.pepe.height;
-                if (this.pepe.hasOffsetBox) {
-                    pepeBottom = this.pepe.offsetBox.y + this.pepe.offsetBox.h;
-                }
-                let enemyCenterY = enemy.y + (enemy.height / 2);
-
-                if (!this.pepe.isDead() && this.pepe.isAboveGround() && this.pepe.speedY < 0 && !(enemy instanceof EndBoss) && pepeBottom < enemyCenterY) {
-                    enemy.energy = 0;
-                    this.pepe.speedY = 15; // Bounce
-                    this.trackKill();
-                    audioHub?.playJumpSound();
-                    if (enemy instanceof Chicken) {
-                        audioHub?.playChickenDeathSound?.(); // Play chickenDead.mp3
-                    } else if (enemy instanceof Chick) {
-                        audioHub?.playChickDeathSound?.(); // Play chickDead.mp3
-                    }
-                    setTimeout(() => {
-                        let enemyIndex = this.level.enemies.indexOf(enemy);
-                        if (enemyIndex > -1) {
-                            this.level.enemies.splice(enemyIndex, 1);
-                        }
-                    }, 1000);
-                } else if (!this.pepe.isDead() && !this.pepe.isHurt()) {
-                    this.pepe.hit();
-                    this.pepe.isHurt();
-                    audioHub?.playHurtSound();
-                    this.statusIconPepe.setAmount(this.pepe.energy);
-                }
-            }
-
-            if (this.thrownObjects.length > 0) {
-                this.thrownObjects.forEach((bottle) => {
-                    if (bottle.isColliding(enemy)) {
-                        bottle.hasHitEnemy = true;
-                        bottle.speedY = 0;
-                        bottle.speedX = 0;
-                        bottle.splash();
-                        audioHub?.playBottleBreakSound();
-                        if (enemy instanceof EndBoss) {
-                            enemy.hit();
-                            this.spawnBossMinions(enemy);
-                            enemy.startRolling();
-                            this.statusIconEndBoss.setAmount(enemy.energy);
-                        } else {
-                            enemy.energy = 0;
-                            this.trackKill();
-                            audioHub?.playChickenDeathSound();
-                            // Remove enemy after delay
-                            setTimeout(() => {
-                                let enemyIndex = this.level.enemies.indexOf(enemy);
-                                if (enemyIndex > -1) {
-                                    this.level.enemies.splice(enemyIndex, 1);
-                                }
-                            }, 1000);
-                        }
-
-
-                    }
-                });
-            }
-
+            if (this.pepe && this.pepe.isColliding(enemy)) this.handlePepeEnemyCollision(enemy);
+            this.thrownObjects.forEach(bottle => {
+                if (bottle.isColliding(enemy)) this.handleBottleEnemyCollision(bottle, enemy);
+            });
         });
+    }
 
+
+    /**
+     * Stomps or damages Pepe depending on collision angle.
+     * @param {MovableObject} enemy
+     */
+     handlePepeEnemyCollision(enemy) {
+        let pepeBottom = this.pepe.hasOffsetBox ? this.pepe.offsetBox.y + this.pepe.offsetBox.h : this.pepe.y + this.pepe.height;
+        let enemyCenterY = enemy.y + (enemy.height / 2);
+        let stomp = !this.pepe.isDead() && this.pepe.isAboveGround() && this.pepe.speedY < 0 && !(enemy instanceof EndBoss) && pepeBottom < enemyCenterY;
+        if (stomp) {
+            enemy.energy = 0;
+            this.pepe.speedY = 15;
+            this.trackKill();
+            audioHub?.playJumpSound();
+            if (enemy instanceof Chicken) audioHub?.playChickenDeathSound?.();
+            else if (enemy instanceof Chick) audioHub?.playChickDeathSound?.();
+            this.removeEnemyDelayed(enemy);
+        } else if (!this.pepe.isDead() && !this.pepe.isHurt()) {
+            this.pepe.hit();
+            this.pepe.isHurt();
+            audioHub?.playHurtSound();
+            this.statusIconPepe.setAmount(this.pepe.energy);
+        }
+    }
+
+
+    /**
+     * Applies bottle hit to an enemy, triggering boss or regular enemy effects.
+     * @param {ThrowableObject} bottle
+     * @param {MovableObject} enemy
+     */
+     handleBottleEnemyCollision(bottle, enemy) {
+        bottle.hasHitEnemy = true;
+        bottle.speedY = 0;
+        bottle.speedX = 0;
+        bottle.splash();
+        audioHub?.playBottleBreakSound();
+        if (enemy instanceof EndBoss) {
+            enemy.hit();
+            this.spawnBossMinions(enemy);
+            enemy.startRolling();
+            this.statusIconEndBoss.setAmount(enemy.energy);
+        } else {
+            enemy.energy = 0;
+            this.trackKill();
+            audioHub?.playChickenDeathSound();
+            this.removeEnemyDelayed(enemy);
+        }
+    }
+
+
+    /**
+     * Removes an enemy from the level after a short delay.
+     * @param {MovableObject} enemy
+     */
+    removeEnemyDelayed(enemy) {
+        setTimeout(() => {
+            let i = this.level.enemies.indexOf(enemy);
+            if (i > -1) this.level.enemies.splice(i, 1);
+        }, 1000);
     }
 
 
@@ -232,7 +242,7 @@ class World {
      * Checks for win/lose state and shows overlay accordingly.
      * Call this in your game loop or after relevant events.
      */
-    checkGameEnd() {
+     checkGameEnd() {
         if (this.gameEnded) return;
 
         const endBoss = this.level.enemies.find(enemy => enemy instanceof EndBoss);
@@ -259,7 +269,7 @@ class World {
     /**
      * Makes Pepe jump repeatedly after winning the game.
      */
-    startVictoryJump() {
+     startVictoryJump() {
         this.pepe.victoryMode = true;
         IntervalHub.startInterval(() => {
             if (this.pepe && !this.pepe.isAboveGround()) {
@@ -273,7 +283,7 @@ class World {
      * Tracks enemy kills and spawns a supply pile of coins and bottles
      * in the sky near the EndBoss after 30 kills.
      */
-    trackKill() {
+     trackKill() {
         this.enemiesKilled++;
         this.statusIconKill.setAmount(this.enemiesKilled);
         let thresholds = [20, 40, 60, 80];
@@ -288,7 +298,7 @@ class World {
      * Spawns coins randomly across the level in the sky
      * and a pile of bottles near the EndBoss.
      */
-    spawnSupplyPile() {
+     spawnSupplyPile() {
         let levelEnd = this.level.levelEndX;
 
         for (let i = 0; i < 15; i++) {
@@ -309,33 +319,37 @@ class World {
      * Spawns 3 fast, aggressive minions (chicks/chickens) at the EndBoss position
      * that jump toward Pepe to attack.
      */
-    spawnBossMinions(endBoss) {
+     spawnBossMinions(endBoss) {
         if (endBoss.isDead()) return;
-        let pepeX = this.pepe ? this.pepe.x : 0;
-        let towardPepe = pepeX < endBoss.x;
-
+        let towardPepe = (this.pepe ? this.pepe.x : 0) < endBoss.x;
         for (let i = 0; i < 3; i++) {
-            let isChick = Math.random() < 0.5;
-            let size = isChick ? 1.5 + Math.random() * 1.5 : 0.8 + Math.random() * 0.8;
-            let minion = isChick
-                ? new Chick(size, this.level.levelEndX)
-                : new Chicken(size, this.level.levelEndX);
-
-            minion.x = endBoss.x + endBoss.width / 2 + (i - 1) * 40;
-            minion.y = minion.groundY;
-            minion.speed = 3 + Math.random() * 2;
-            minion.canJump = true;
-            minion.turnAround = !towardPepe;
-
-            // Make them jump immediately on spawn
-            minion.jump(15 + Math.random() * 5);
-
-            this.level.enemies.push(minion);
+            this.level.enemies.push(this.createMinion(endBoss, i, towardPepe));
         }
     }
 
+    
+    /**
+     * Creates a single minion placed at the EndBoss position.
+     * @param {EndBoss} endBoss
+     * @param {number} i - Spawn slot index (0–2).
+     * @param {boolean} towardPepe - Whether the minion faces Pepe.
+     */
+     createMinion(endBoss, i, towardPepe) {
+        let isChick = Math.random() < 0.5;
+        let size = isChick ? 1.5 + Math.random() * 1.5 : 0.8 + Math.random() * 0.8;
+        let minion = isChick ? new Chick(size, this.level.levelEndX) : new Chicken(size, this.level.levelEndX);
+        minion.x = endBoss.x + endBoss.width / 2 + (i - 1) * 40;
+        minion.y = minion.groundY;
+        minion.speed = 3 + Math.random() * 2;
+        minion.canJump = true;
+        minion.turnAround = !towardPepe;
+        minion.jump(15 + Math.random() * 5);
+        return minion;
+    }
 
-    startDisco() {
+
+    /** Animates the win-screen image with flashing disco colors after the player wins. */
+     startDisco() {
         const img = document.getElementById('end-screen-img');
         if (!img) return;
         let discoColors = ['#fff', '#ff0', '#0ff', '#f0f', '#0f0', '#f00', '#00f'];
@@ -346,5 +360,4 @@ class World {
             i++;
         }, 120);
     }
-
 }

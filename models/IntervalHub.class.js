@@ -31,6 +31,5 @@ class IntervalHub {
         IntervalHub.allIntervals.forEach(clearInterval);
         IntervalHub.allIntervals = [];
         IntervalHub.isPaused = false;
-    }
-    
+     }
 }

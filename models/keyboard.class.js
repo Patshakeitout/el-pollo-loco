@@ -4,11 +4,7 @@ class Keyboard {
     RIGHT = false;
     SPACE = false;
     ENTER = false;
-
-
-    /** * Static constants to avoid "Magic Numbers" in code.
-     * Use these to map keys to actions.
-     */
+    
     static KEY_LEFT = 'ArrowLeft';
     static KEY_RIGHT = 'ArrowRight';
     static KEY_SPACE = ' ';

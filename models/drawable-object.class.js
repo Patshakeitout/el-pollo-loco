@@ -43,5 +43,4 @@ class DrawableObject {
             this.imgCache[path] = img;
         });
     }
-    
 }

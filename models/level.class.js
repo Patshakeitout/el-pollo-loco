@@ -1,3 +1,6 @@
+/**
+ * Represents a game level with enemies, clouds, backgrounds, and collectables.
+ */
 class Level {
     enemies;
     clouds;
@@ -5,6 +8,7 @@ class Level {
     collectables = [];
     bgRepeat;
     levelEndX;
+
 
     constructor(bgRepeat, levelEndX, enemies, clouds, collectables) {
         this.enemies = enemies;
@@ -16,7 +20,11 @@ class Level {
     }
 
 
-    createBackgrounds() {
+    /**
+     * Generates parallax background layers based on the repeat count.
+     * Alternates between two image sets for visual variety.
+     */
+     createBackgrounds() {
         let i = 0;
         while (i <= this.bgRepeat) {
             let x = i * 720;

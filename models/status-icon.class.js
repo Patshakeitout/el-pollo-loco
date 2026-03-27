@@ -1,8 +1,11 @@
+/**
+ * Represents a HUD status icon that displays a numeric amount in the DOM.
+ */
 class StatusIcon {
-
     iconName;
     amount;
     elementId;
+
 
     constructor(icon, elementId, initialAmount) {
         this.iconName = icon;
@@ -11,37 +14,41 @@ class StatusIcon {
         this.updateDOM();
     }
 
+
     /**
      * Sets the amount and updates the DOM element.
      * @param {number} amount - The new amount to display.
      */
-    setAmount(amount) {
+     setAmount(amount) {
         this.amount = amount;
         this.updateDOM();
     }
 
+
     /**
      * Updates the figcaption text of the corresponding HTML element.
      */
-    updateDOM() {
+     updateDOM() {
         const el = document.getElementById(this.elementId);
         if (!el) return;
         const caption = el.querySelector('figcaption');
         if (caption) caption.textContent = this.amount;
     }
 
+
     /**
      * Shows this status icon in the DOM.
      */
-    show() {
+     show() {
         const el = document.getElementById(this.elementId);
         if (el) el.classList.remove('d-none');
     }
 
+
     /**
      * Hides this status icon in the DOM.
      */
-    hide() {
+     hide() {
         const el = document.getElementById(this.elementId);
         if (el) el.classList.add('d-none');
     }
