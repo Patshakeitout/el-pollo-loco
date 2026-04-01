@@ -32,6 +32,27 @@
     background: rgba(0, 0, 0, 0.6);
 }
 
+.volume-control {
+    position: relative;
+}
+
+#game-volume-panel {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 6px;
+
+    background: rgba(0,0,0,0.8);
+    padding: 6px 10px;
+    border-radius: 8px;
+}
+
+#game-volume-panel[hidden] {
+    display: none;
+}
+
+
 /* --- CONTROLS OVERLAY --- */
 #controls-overlay {
     position: absolute;

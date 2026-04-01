@@ -16,6 +16,7 @@
         this.currentMusic = null;
         this.isMuted = false;
         this.musicMuted = false;
+        this.sfxMuted = false;
         this.musicVolume = 0.2;
         this.sfxVolume = 0.3;
         this.isLoaded = false;
@@ -139,24 +140,28 @@
         const bgMusic = this.music.background;
         if (!bgMusic) return;
 
-        // 1. Stop the Menu Music (or whatever was playing before)
         if (this.currentMusic && this.currentMusic !== bgMusic) {
             this.currentMusic.pause();
             this.currentMusic.currentTime = 0;
         }
 
         this.currentMusic = bgMusic;
-        if (this.musicMuted) return;
+        if (this.isMuted || this.musicMuted) return;
 
         bgMusic.loop = true;
-        this.play(bgMusic, this.musicVolume);
+        bgMusic.volume = this.musicVolume;
+        bgMusic.muted = this.isMuted || this.musicMuted;
+        
+        if (bgMusic.paused) {
+            bgMusic.play().catch(event => console.warn(event));
+        }
     }
 
 
     /**
-       * Plays the menu loop (Desert Winds) and tracks it.
-       */
-    playMenuMusic() {
+     * Plays the menu loop (Desert Winds) and tracks it.
+     */
+     playMenuMusic() {
         const menuMusic = this.music.menu;
         if (!menuMusic) return;
 
@@ -167,10 +172,16 @@
 
         this.currentMusic = menuMusic;
 
-        if (this.musicMuted) return;
+        if (this.isMuted || this.musicMuted) return;
 
         menuMusic.loop = true;
-        this.play(menuMusic, this.musicVolume);
+
+        menuMusic.volume = this.musicVolume;
+        menuMusic.muted = this.isMuted || this.musicMuted;
+
+        if (menuMusic.paused) {
+            menuMusic.play().catch(event => console.warn(event));
+        }
     }
 
 
@@ -186,7 +197,8 @@
      * Plays the 3-2-1 fight countdown sound.
      */
      playCountdownSound() {
-        this.play(this.music.countdown, this.sfxVolume * 2.0);
+        const louderVolume = Math.min(this.sfxVolume * 1.5, 1); // never more than 1
+        this.play(this.music.countdown, louderVolume);
     }
 
 
@@ -246,7 +258,7 @@
      */
      playWalkSound() {
         if (!this.sounds.characterWalk.paused) return;
-        this.play(this.sounds.characterWalk, this.sfxVolume * 0.6);
+        this.playSfx(this.sounds.characterWalk, this.sfxVolume * 0.6);
     }
 
 
@@ -262,7 +274,7 @@
      * Plays jump sound.
      */
      playJumpSound() {
-        this.play(this.sounds.characterJump, this.sfxVolume);
+        this.playSfx(this.sounds.characterJump, this.sfxVolume);
     }
 
 
@@ -270,7 +282,7 @@
      * Plays hurt sound when character takes damage.
      */
      playHurtSound() {
-        this.play(this.sounds.characterHurt, this.sfxVolume);
+        this.playSfx(this.sounds.characterHurt, this.sfxVolume);
     }
 
 
@@ -279,7 +291,7 @@
      */
      playDeathSound() {
         this.stopAllSounds();
-        this.play(this.sounds.characterScream, this.sfxVolume);
+        this.playSfx(this.sounds.characterScream, this.sfxVolume);
     }
 
 
@@ -288,7 +300,7 @@
      */
      playSnoringSound() {
         if (!this.sounds.characterSnoring.paused) return;
-        this.play(this.sounds.characterSnoring, this.sfxVolume * 0.4);
+        this.playSfx(this.sounds.characterSnoring, this.sfxVolume * 0.4);
     }
 
 
@@ -306,7 +318,7 @@
      */
      playChickenDeathSound() {
         const sound = this.sounds.chickenDead;
-        this.play(sound, 0.8);
+        this.playSfx(sound, 0.8);
     }
 
 
@@ -315,7 +327,7 @@
      */
      playChickDeathSound() {
         const sound = this.sounds.chickDead;
-        this.play(sound, 0.8);
+        this.playSfx(sound, 0.8);
     }
 
     /**
@@ -323,11 +335,11 @@
      */
      playEndbossCackleSound() {
         const sound = this.sounds.chickenDead;
-        if (this.isMuted || !sound) return;
+        if (this.isMuted || this.sfxMuted || !sound) return;
 
         sound.volume = 1.0;
         sound.currentTime = 0;
-        sound.playbackRate = 0.6; // Lower pitch/frequency for monster effect
+        sound.playbackRate = 0.6;
         sound.play().catch(e => console.warn('AudioHub: Cackle play blocked:', e));
     }
 
@@ -336,7 +348,7 @@
      * Plays endboss approach/alert sound and switches to battle music.
      */
      playEndbossApproachSound() {
-        this.play(this.sounds.endbossApproach, this.sfxVolume);
+        this.playSfx(this.sounds.endbossApproach, this.sfxVolume);
         this.switchToBattleMusic();
     }
 
@@ -345,7 +357,7 @@
      * Plays endboss death sound (chicken noise).
      */
      playEndbossDeathSound() {
-        this.play(this.sounds.endbossDead, this.sfxVolume);
+        this.playSfx(this.sounds.endbossDead, this.sfxVolume);
     }
 
 
@@ -353,7 +365,7 @@
      * Plays endboss rolling sound (loud attack sound).
      */
      playEndbossRollingSound() {
-        this.play(this.sounds.endbossRolling, this.sfxVolume * 2.0);
+        this.playSfx(this.sounds.endbossRolling, this.sfxVolume * 2.0);
     }
 
     /**
@@ -378,7 +390,7 @@
      * Plays coin collection sound.
      */
      playCoinSound() {
-        this.play(this.sounds.coinCollect, this.sfxVolume * 0.7);
+        this.playSfx(this.sounds.coinCollect, this.sfxVolume * 0.7);
     }
 
 
@@ -386,7 +398,7 @@
      * Plays bottle collection sound.
      */
      playBottleCollectSound() {
-        this.play(this.sounds.bottleCollect, this.sfxVolume * 0.7);
+        this.playSfx(this.sounds.bottleCollect, this.sfxVolume * 0.7);
     }
 
 
@@ -395,22 +407,35 @@
      * Plays bottle break/splash sound.
      */
      playBottleBreakSound() {
-        this.play(this.sounds.bottleBreak, this.sfxVolume);
+        this.playSfx(this.sounds.bottleBreak, this.sfxVolume);
     }
 
 
     // ==================== CORE AUDIO METHODS ====================
     /**
-     * Plays a sound effect from the beginning.
+     * Plays an audio element from the beginning (used for both SFX and music).
      * @param {HTMLAudioElement} sound - The sound to play
      * @param {number} volume - Volume level (0-1)
      */
      play(sound, volume = this.sfxVolume) {
-        if (this.isMuted || !sound) return;
+        if (!sound) return;
 
         sound.volume = volume;
-        sound.currentTime = 0;
-        sound.play().catch(e => console.warn('AudioHub: Sound play blocked:', e));
+
+        if (sound.paused) {
+            sound.play().catch(e => console.warn('AudioHub:', e));
+        }
+    }
+
+
+    /**
+     * Plays a sound effect, respecting both global and SFX mute.
+     * @param {HTMLAudioElement} sound - The sound to play
+     * @param {number} volume - Volume level (0-1)
+     */
+     playSfx(sound, volume = this.sfxVolume) {
+        if (this.sfxMuted) return;
+        this.play(sound, volume);
     }
 
 
@@ -434,7 +459,7 @@
 
 
     /**
-     * Stops everything including music.
+     * Stops everything including music. 
      */
      stopAll() {
         this.stopAllSounds();
@@ -449,8 +474,26 @@
      */
      toggleMute() {
         this.isMuted = !this.isMuted;
-        if (this.isMuted) this.stopAll();
+        if (this.isMuted) {
+            this.musicMuted = true;
+            this.sfxMuted = true;
+            this.stopAll();
+        } else {
+            this.musicMuted = false;
+            this.sfxMuted = false;
+        }
         return this.isMuted;
+    }
+
+
+    /**
+     * Toggles SFX mute state.
+     * @returns {boolean} Current SFX mute state
+     */
+     toggleSfxMute() {
+        this.sfxMuted = !this.sfxMuted;
+        if (this.sfxMuted) this.stopAllSounds();
+        return this.sfxMuted;
     }
 
 
@@ -471,6 +514,29 @@
         this.musicVolume = Math.max(0, Math.min(1, volume));
         if (this.currentMusic) {
             this.currentMusic.volume = this.musicVolume;
+        }
+    }
+
+
+    /**
+     *  
+     */
+     syncAudioState() {
+        if (!this.currentMusic) return;
+
+        this.currentMusic.muted = this.isMuted || this.musicMuted;
+        this.currentMusic.volume = this.musicVolume;
+    }
+
+
+    resumeMusic() {
+        if (this.isMuted || this.musicMuted) return;
+        if (this.currentMusic) {
+            this.currentMusic.muted = false;
+            this.currentMusic.volume = this.musicVolume;
+            if (this.currentMusic.paused) {
+                this.currentMusic.play().catch(() => {});
+            }
         }
     }
 }

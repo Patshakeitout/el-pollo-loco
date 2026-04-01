@@ -124,6 +124,7 @@
  function showStartScreen() {
     const startBtn = document.getElementById('start-btn');
     if (startBtn) startBtn.classList.add('d-none');
+    syncVolumeButtonState();
     audioHub.playMenuMusic();
 
     const startScreen = document.getElementById('start-screen');

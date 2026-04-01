@@ -125,7 +125,12 @@
                     <nav id="start-screen-controls">
                         <button id="story-btn" aria-label="Replay Story" title="Story">📜</button>
                         <button id="tutorial-btn" aria-label="Show Tutorial" title="Tutorial">❓</button>
-                        <button id="mute-btn" aria-label="Mute/Unmute Audio">🔇</button>
+                        <div class="volume-wrapper">
+                            <button id="mute-all-btn" aria-label="Mute/Unmute All Audio" title="Mute All">🔊</button>
+                            <div id="volume-slider-container" class="d-none">
+                                <input type="range" id="volume-slider" min="0" max="100" value="100" aria-label="Volume">
+                            </div>
+                        </div>
                         <button id="fullscreen-btn" aria-label="Enter Fullscreen" title="Fullscreen">⛶</button>
                     </nav>
 
@@ -147,7 +152,31 @@
 
                 <nav id="game-controls-top" class="d-none" aria-label="Game Controls">
                     <button id="btn-pause-top" aria-label="Pause" title="Pause" onclick="togglePauseGame()">❚❚</button>
-                    <button id="btn-music-top" aria-label="Toggle Music" title="Music" onclick="toggleMusic()">🔊</button>
+                    <section class="volume-control">
+                        <button 
+                            id="btn-volume-top"
+                            aria-label="Volume"
+                            aria-controls="game-volume-panel"
+                            aria-expanded="false"
+                            title="Volume"
+                        >
+                            🔊
+                        </button>
+
+                        <form id="game-volume-panel" class="d-none">
+                            <label>
+                                <input 
+                                    type="range"
+                                    id="game-volume-slider"
+                                    class="volume-slider"
+                                    min="0"
+                                    max="100"
+                                    value="100"
+                                >
+                            </label>
+                        </form>
+                    </section>
+                    <button id="btn-sfx-top" aria-label="Toggle SFX Only" title="SFX Only" onclick="toggleSfxOnly()">SFX</button>
                     <button id="btn-fullscreen-desktop" aria-label="Enter Fullscreen" title="Fullscreen" onclick="toggleFullscreen()">⛶</button>
                     <button id="btn-home" aria-label="Back to Home" onclick="goHome()">&#127968;</button>
                     <button id="btn-controls-toggle" class="d-none" aria-label="Toggle Mobile Controls" title="Mobile Controls" onclick="toggleMobileControls()">🕹️</button>
