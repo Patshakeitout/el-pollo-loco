@@ -96,6 +96,11 @@
     }
 
 
+    isSleeping() {
+        return new Date().getTime() - this.lastActionTime >= this.idleThreshold;
+    }
+
+
     /**
      * Configures the collision offset box dimensions and position.
      */
@@ -239,6 +244,7 @@
             this.handleDeadState();
         } else if (this.isHurt()) {
             this.playAnimation(this.IMAGES_HURT);
+            this.lastActionTime = new Date().getTime();
         } else if (this.isAboveGround()) {
             this.playJumpAnimation();
         } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {

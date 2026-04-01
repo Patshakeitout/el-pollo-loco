@@ -154,7 +154,7 @@ class World {
 
     /** Throws a bottle in Pepe's facing direction when ENTER is pressed and bottles are available. */
      checkThrowObjects() {
-        if (!this.keyboard.ENTER || this.statusIconBottle.amount == 0) return;
+        if (!this.keyboard.ENTER || this.statusIconBottle.amount == 0 || this.pepe.isDead() || this.pepe.isSleeping()) return;
         let dir = this.pepe.turnAround ? -9 : 9;
         let startX = dir > 0 ? this.pepe.x + this.pepe.width / 2 : this.pepe.x;
         let bottle = new ThrowableObject(startX, this.pepe.y + 100, dir);

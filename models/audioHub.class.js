@@ -519,7 +519,8 @@
 
 
     /**
-     *  
+     * Syncs the current music track's muted state and volume with the hub's settings.
+     * Applies both master mute and music-specific mute. No-op if no music is playing.
      */
      syncAudioState() {
         if (!this.currentMusic) return;
