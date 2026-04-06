@@ -91,6 +91,9 @@
     const mobileControls = document.getElementById('mobile-controls');
     if (mobileControls) { mobileControls.classList.add('d-none'); mobileControls.classList.remove('show-controls'); }
 
+    const gameControlsTop = document.getElementById('game-controls-top');
+    if (gameControlsTop) gameControlsTop.classList.add('d-none');
+
     if (overlay && img) {
         setEndScreenImage(img, isWin);
         overlay.classList.remove('d-none');
