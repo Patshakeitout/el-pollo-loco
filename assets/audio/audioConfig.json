@@ -14,7 +14,7 @@
         "hurt": "assets/audio/character/characterDamage.mp3",
         "dead": "assets/audio/character/characterDead.wav",
         "scream": "assets/audio/character/male-extreme-scream.mp3",
-        "snoring": "assets/audio/character/characterSnoring.mp3"
+        "snoring": "assets/audio/character/audiopapkin-male-snoring-297875.mp3"
     },
     "chicken": {
         "dead": "assets/audio/chicken/chickenDead.mp3"

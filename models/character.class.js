@@ -241,17 +241,22 @@
      */
      updateAnimationState() {
         if (this.isDead()) {
+            audioHub?.stopSnoringSound();
             this.handleDeadState();
         } else if (this.isHurt()) {
+            audioHub?.stopSnoringSound();
             this.playAnimation(this.IMAGES_HURT);
             this.lastActionTime = new Date().getTime();
         } else if (this.isAboveGround()) {
             this.playJumpAnimation();
         } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
             this.playAnimation(this.IMAGES_WALKING);
+        } else if (this.isSleeping()) {
+            this.playAnimation(this.IMAGES_LONG_IDLE);
+            if (!this.victoryMode) audioHub?.playSnoringSound();
         } else {
-            let timeSinceLastAction = new Date().getTime() - this.lastActionTime;
-            this.playAnimation(timeSinceLastAction >= this.idleThreshold ? this.IMAGES_LONG_IDLE : this.IMAGES_IDLE);
+            this.playAnimation(this.IMAGES_IDLE);
+            audioHub?.stopSnoringSound();
         }
     }
 
