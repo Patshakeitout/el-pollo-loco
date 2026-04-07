@@ -84,7 +84,9 @@ class ThrowableObject extends MovableObject {
 
     
     /** Checks whether the bottle has reached ground level (y >= 360). */
-    isOnGround() { return this.y >= 360; }
+     isOnGround() { 
+        return this.y >= 360; 
+    }
 
 
     /**

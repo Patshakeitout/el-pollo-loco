@@ -230,7 +230,7 @@ class World {
      * Removes an enemy from the level after a short delay.
      * @param {MovableObject} enemy
      */
-    removeEnemyDelayed(enemy) {
+     removeEnemyDelayed(enemy) {
         setTimeout(() => {
             let i = this.level.enemies.indexOf(enemy);
             if (i > -1) this.level.enemies.splice(i, 1);

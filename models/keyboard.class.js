@@ -94,7 +94,9 @@ class Keyboard {
 
 
     /** @param {Event} e - Prevents default if cancelable. */
-    prevent(e) { if (e.cancelable) e.preventDefault(); }
+     prevent(e) { 
+        if (e.cancelable) e.preventDefault(); 
+    }
 
 
     /**

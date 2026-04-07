@@ -95,8 +95,10 @@
         this.idleThreshold = 10000;
     }
 
-
-    isSleeping() {
+    /**
+     * Configures idle/sleeping mode.
+     */
+     isSleeping() {
         return new Date().getTime() - this.lastActionTime >= this.idleThreshold;
     }
 
