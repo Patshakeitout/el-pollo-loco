@@ -130,22 +130,6 @@
     sliders.forEach(slider => {
         if (slider && slider !== event.target) slider.value = value;
     });
-
-    const isMuted = value === 0;
-
-    audioHub.isMuted = isMuted;
-    audioHub.musicMuted = isMuted;
-    audioHub.sfxMuted = isMuted;
-
-    if (audioHub.currentMusic) {
-        audioHub.currentMusic.muted = isMuted;
-    }
-
-    localStorage.setItem('elPolloMuteAll', isMuted);
-
-    syncVolumeButtonState();
-
-    audioHub.resumeMusic();
 }
 
 
@@ -170,42 +154,37 @@
  function syncVolumeButtonState() {
     if (!audioHub) return;
     const allOn = !audioHub.isMuted && !audioHub.musicMuted && !audioHub.sfxMuted;
-    const icon = allOn ? '🔊' : '🔇';
     const startBtn = document.getElementById('mute-all-btn');
     const gameBtn = document.getElementById('btn-volume-top');
-    if (startBtn) startBtn.textContent = icon;
-    if (gameBtn) gameBtn.textContent = icon;
+    if (startBtn) startBtn.textContent = allOn ? '🔊' : '🔇';
+    const gameMuted = audioHub.isMuted || audioHub.sfxMuted;
+    if (gameBtn) gameBtn.textContent = gameMuted ? '🔇' : '🔊';
 }
 
 
 /**
- * Toggles SFX-only mode during gameplay.
- * State 1 (all audio) → SFX only
- * State 2 (SFX only) → all muted
- * State 3 (all muted) → SFX only
+ * Toggles SFX-only mode during gameplay (binary):
+ *   - SFX-only ON  → music muted, sfx on
+ *   - SFX-only OFF → music on, sfx on
  */
  function toggleSfxOnly() {
     if (!audioHub) return;
 
-    if (audioHub.isMuted) {
-        audioHub.isMuted = false;
-        audioHub.sfxMuted = false;
-        audioHub.musicMuted = true;
-        audioHub.stopCurrentMusic();
-        localStorage.setItem('elPolloMuteAll', false);
-    } else if (audioHub.musicMuted) {
-        audioHub.isMuted = true;
-        audioHub.sfxMuted = true;
-        audioHub.musicMuted = true;
-        if (audioHub.currentMusic) {
-            audioHub.currentMusic.muted = true;
-        }
+    const sfxOnlyActive = !audioHub.isMuted && audioHub.musicMuted && !audioHub.sfxMuted;
 
-        localStorage.setItem('elPolloMuteAll', true);
+    if (sfxOnlyActive) {
+        audioHub.isMuted = false;
+        audioHub.musicMuted = false;
+        audioHub.sfxMuted = false;
+        if (audioHub.currentMusic) audioHub.currentMusic.muted = false;
+        audioHub.resumeMusic();
     } else {
+        audioHub.isMuted = false;
         audioHub.musicMuted = true;
-        audioHub.stopCurrentMusic();
+        audioHub.sfxMuted = false;
+        if (audioHub.currentMusic) audioHub.currentMusic.muted = true;
     }
+    localStorage.setItem('elPolloMuteAll', false);
 
     syncVolumeButtonState();
     syncSfxButtonState();

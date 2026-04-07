@@ -192,6 +192,11 @@ let cheatTapTimer = null;
     audioHub?.stopAll();
     IntervalHub.stopAllIntervals();
     resetCheatState();
+    if (audioHub) {
+        audioHub.isMuted = false;
+        audioHub.musicMuted = false;
+        audioHub.sfxMuted = false;
+    }
     showStartScreen();
 }
 
