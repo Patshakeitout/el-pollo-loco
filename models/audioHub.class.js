@@ -381,6 +381,10 @@
      */
      switchToBattleMusic() {
         if (this.currentMusic === this.music.battle) return;
+        if (this.isMuted || this.musicMuted) {
+            this.currentMusic = this.music.battle;
+            return;
+        }
         this.playMusic(this.music.battle, this.musicVolume);
     }
 
