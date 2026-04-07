@@ -115,7 +115,7 @@ class World {
 
         IntervalHub.startInterval(() => {
             this.checkThrowObjects();
-        }, 200);
+        }, 100);
 
         IntervalHub.startInterval(() => {
             if (this.pepe && this.pepe.isDead() && this.pepe.y > this.canvas.height) {
