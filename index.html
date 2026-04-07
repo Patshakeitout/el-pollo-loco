@@ -1,22 +1,20 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google" content="notranslate">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google" content="notranslate" />
     <title>El Pollo Loco</title>
 
-    <link rel="icon" type="image/png" href="assets/images/favicon.png">
-    <link rel="stylesheet" href="styles/base.css">
-    <link rel="stylesheet" href="styles/game-container.css">
-    <link rel="stylesheet" href="styles/screens.css">
-    <link rel="stylesheet" href="styles/controls.css">
-    <link rel="stylesheet" href="styles/curtain.css">
-    <link rel="stylesheet" href="styles/legal.css">
-    <link rel="stylesheet" href="styles/mobile.css">
-    <link rel="stylesheet" href="styles/responsive.css">
-
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+    <link rel="stylesheet" href="styles/base.css" />
+    <link rel="stylesheet" href="styles/game-container.css" />
+    <link rel="stylesheet" href="styles/screens.css" />
+    <link rel="stylesheet" href="styles/controls.css" />
+    <link rel="stylesheet" href="styles/curtain.css" />
+    <link rel="stylesheet" href="styles/legal.css" />
+    <link rel="stylesheet" href="styles/mobile.css" />
+    <link rel="stylesheet" href="styles/responsive.css" />
 
     <script src="models/intervalHub.class.js"></script>
     <script src="models/audioHub.class.js"></script>
@@ -39,170 +37,282 @@
     <script src="js/game-screens.js"></script>
     <script src="js/game-ui.js"></script>
     <script src="js/game.js"></script>
+  </head>
 
-</head>
-
-<body onload="init()">
-
+  <body onload="init()">
     <aside id="rotate-device-overlay" aria-hidden="true">
-        <p>Please rotate your device to landscape mode!</p>
+      <p>Please rotate your device to landscape mode!</p>
     </aside>
 
     <main>
-        <header>
-            <h1>El Pollo Loco</h1>
-            <span>by Patrick Schauer</span>
-            <h3>Welcome To The Western Planet</h3>
-        </header>
+      <header>
+        <h1>El Pollo Loco</h1>
+        <span>by Patrick Schauer</span>
+        <h3>Welcome To The Western Planet</h3>
+      </header>
 
-        <section id="game-container" aria-label="Game Screen">
-            <div id="aspect-ratio-wrapper">
-                <canvas id="canvas" width="720" height="480" aria-label="Game Area" class="game-frame d-none"></canvas>
-                <nav id="status-bar" class="d-none" aria-label="Game Status">
-                    <figure class="status-icon" id="status-health">
-                        <img src="assets/images/7_statusbars/3_icons/icon_health.png" alt="Health">
-                        <figcaption>100</figcaption>
-                    </figure>
-                    <figure class="status-icon" id="status-coin">
-                        <img src="assets/images/7_statusbars/3_icons/icon_coin.png" alt="Coins">
-                        <figcaption>0</figcaption>
-                    </figure>
-                    <figure class="status-icon" id="status-bottle">
-                        <img src="assets/images/6_salsa_bottle/salsa_bottle.png" alt="Bottles">
-                        <figcaption>10</figcaption>
-                    </figure>
-                    <figure class="status-icon" id="status-kill">
-                        <img src="assets/images/3_enemies_chicken/chicken_normal/2_dead/dead.png" alt="Kills">
-                        <figcaption>0</figcaption>
-                    </figure>
-                    <figure class="status-icon d-none" id="status-endboss">
-                        <img src="assets/images/7_statusbars/3_icons/icon_health_endboss.png" alt="Boss Health">
-                        <figcaption>100</figcaption>
-                    </figure>
-                </nav>
-                <div id="curtain-overlay" class="d-none">
-                    <div class="curtain-left"></div>
-                    <div class="curtain-right"></div>
-                    <span id="curtain-text"></span>
+      <section id="game-container" aria-label="Game Screen">
+        <div id="aspect-ratio-wrapper">
+          <canvas
+            id="canvas"
+            width="720"
+            height="480"
+            aria-label="Game Area"
+            class="game-frame d-none"
+          ></canvas>
+          <nav id="status-bar" class="d-none" aria-label="Game Status">
+            <figure class="status-icon" id="status-health">
+              <img
+                src="assets/images/7_statusbars/3_icons/icon_health.png"
+                alt="Health"
+              />
+              <figcaption>100</figcaption>
+            </figure>
+            <figure class="status-icon" id="status-coin">
+              <img
+                src="assets/images/7_statusbars/3_icons/icon_coin.png"
+                alt="Coins"
+              />
+              <figcaption>0</figcaption>
+            </figure>
+            <figure class="status-icon" id="status-bottle">
+              <img
+                src="assets/images/6_salsa_bottle/salsa_bottle.png"
+                alt="Bottles"
+              />
+              <figcaption>10</figcaption>
+            </figure>
+            <figure class="status-icon" id="status-kill">
+              <img
+                src="assets/images/3_enemies_chicken/chicken_normal/2_dead/dead.png"
+                alt="Kills"
+              />
+              <figcaption>0</figcaption>
+            </figure>
+            <figure class="status-icon d-none" id="status-endboss">
+              <img
+                src="assets/images/7_statusbars/3_icons/icon_health_endboss.png"
+                alt="Boss Health"
+              />
+              <figcaption>100</figcaption>
+            </figure>
+          </nav>
+          <div id="curtain-overlay" class="d-none">
+            <div class="curtain-left"></div>
+            <div class="curtain-right"></div>
+            <span id="curtain-text"></span>
+          </div>
+
+          <section id="start-overlay" aria-label="Start Screen Overlay">
+            <button id="start-btn-overlay">Enter World</button>
+          </section>
+
+          <section id="story-screen" class="d-none" aria-label="Story Intro">
+            <p id="story-text"></p>
+          </section>
+          <button id="skip-story-btn" class="d-none">Skip</button>
+
+          <section
+            id="controls-overlay"
+            class="d-none"
+            aria-label="Controls Guide"
+          >
+            <h2>Controls</h2>
+            <ul class="controls-grid">
+              <li class="control-row">
+                <kbd>&larr;</kbd>
+                <span>Move Left</span>
+              </li>
+              <li class="control-row">
+                <kbd>&rarr;</kbd>
+                <span>Move Right</span>
+              </li>
+              <li class="control-row">
+                <kbd>Space</kbd>
+                <span>Jump</span>
+              </li>
+              <li class="control-row">
+                <kbd>Enter</kbd>
+                <span>Throw Bottle</span>
+              </li>
+            </ul>
+            <button id="close-controls-btn">Got it!</button>
+          </section>
+
+          <section id="start-screen">
+            <img
+              src="assets/images/9_intro_outro_screens/start/startscreen_2.png"
+              alt="Start Screen"
+              class="start-bg"
+            />
+            <button id="start-btn" class="btn-primary" aria-label="Start Game">
+              Start Game
+            </button>
+            <nav id="start-screen-controls">
+              <button id="story-btn" aria-label="Replay Story" title="Story">
+                📜
+              </button>
+              <button
+                id="tutorial-btn"
+                aria-label="Show Tutorial"
+                title="Tutorial"
+              >
+                ❓
+              </button>
+              <div class="volume-wrapper">
+                <button
+                  id="mute-all-btn"
+                  aria-label="Mute/Unmute All Audio"
+                  title="Mute All"
+                >
+                  🔊
+                </button>
+                <div id="volume-slider-container" class="d-none">
+                  <input
+                    type="range"
+                    id="volume-slider"
+                    min="0"
+                    max="100"
+                    value="100"
+                    aria-label="Volume"
+                  />
                 </div>
+              </div>
+              <button
+                id="fullscreen-btn"
+                aria-label="Enter Fullscreen"
+                title="Fullscreen"
+              >
+                ⛶
+              </button>
+            </nav>
 
-                <section id="start-overlay" aria-label="Start Screen Overlay">
-                    <button id="start-btn-overlay">Enter World</button>
-                </section>
+            <footer>
+              <a id="link-imprint" href="#" aria-label="Legal Notice"
+                >Imprint</a
+              >
+              <a id="link-privacy" href="#" aria-label="Privacy Policy"
+                >Privacy Policy</a
+              >
+            </footer>
+          </section>
 
-                <section id="story-screen" class="d-none" aria-label="Story Intro">
-                    <p id="story-text"></p>
-                </section>
-                <button id="skip-story-btn" class="d-none">Skip</button>
+          <section id="end-screen" class="d-none" aria-label="End Screen">
+            <figure>
+              <img
+                id="end-screen-img"
+                src="assets/images/9_intro_outro_screens/end_screens/You win B.png"
+                alt="End Screen"
+              />
+            </figure>
+            <nav class="game-over-btns" aria-label="End Screen Actions">
+              <button id="try-again-btn" type="button" aria-label="Try Again">
+                Try Again
+              </button>
+              <button id="home-btn" type="button" aria-label="Return to Home">
+                Home
+              </button>
+            </nav>
+          </section>
 
-                <section id="controls-overlay" class="d-none" aria-label="Controls Guide">
-                    <h2>Controls</h2>
-                    <ul class="controls-grid">
-                        <li class="control-row">
-                            <kbd>&larr;</kbd>
-                            <span>Move Left</span>
-                        </li>
-                        <li class="control-row">
-                            <kbd>&rarr;</kbd>
-                            <span>Move Right</span>
-                        </li>
-                        <li class="control-row">
-                            <kbd>Space</kbd>
-                            <span>Jump</span>
-                        </li>
-                        <li class="control-row">
-                            <kbd>Enter</kbd>
-                            <span>Throw Bottle</span>
-                        </li>
-                    </ul>
-                    <button id="close-controls-btn">Got it!</button>
-                </section>
+          <nav id="game-controls-top" class="d-none" aria-label="Game Controls">
+            <button
+              id="btn-pause-top"
+              aria-label="Pause"
+              title="Pause"
+              onclick="togglePauseGame()"
+            >
+              ❚❚
+            </button>
+            <section class="volume-control">
+              <button
+                id="btn-volume-top"
+                aria-label="Volume"
+                aria-controls="game-volume-panel"
+                aria-expanded="false"
+                title="Volume"
+              >
+                🔊
+              </button>
 
-                <section id="start-screen">
-                    <img src="assets/images/9_intro_outro_screens/start/startscreen_2.png" alt="Start Screen"
-                        class="start-bg">
-                    <button id="start-btn" class="btn-primary" aria-label="Start Game">Start Game</button>
-                    <nav id="start-screen-controls">
-                        <button id="story-btn" aria-label="Replay Story" title="Story">📜</button>
-                        <button id="tutorial-btn" aria-label="Show Tutorial" title="Tutorial">❓</button>
-                        <div class="volume-wrapper">
-                            <button id="mute-all-btn" aria-label="Mute/Unmute All Audio" title="Mute All">🔊</button>
-                            <div id="volume-slider-container" class="d-none">
-                                <input type="range" id="volume-slider" min="0" max="100" value="100" aria-label="Volume">
-                            </div>
-                        </div>
-                        <button id="fullscreen-btn" aria-label="Enter Fullscreen" title="Fullscreen">⛶</button>
-                    </nav>
+              <form id="game-volume-panel" class="d-none">
+                <label>
+                  <input
+                    type="range"
+                    id="game-volume-slider"
+                    class="volume-slider"
+                    min="0"
+                    max="100"
+                    value="100"
+                  />
+                </label>
+              </form>
+            </section>
+            <button
+              id="btn-sfx-top"
+              aria-label="Toggle SFX Only"
+              title="SFX Only"
+              onclick="toggleSfxOnly()"
+            >
+              SFX
+            </button>
+            <button
+              id="btn-fullscreen-desktop"
+              aria-label="Enter Fullscreen"
+              title="Fullscreen"
+              onclick="toggleFullscreen()"
+            >
+              ⛶
+            </button>
+            <button id="btn-home" aria-label="Back to Home" onclick="goHome()">
+              &#127968;
+            </button>
+            <button
+              id="btn-controls-toggle"
+              class="d-none"
+              aria-label="Toggle Mobile Controls"
+              title="Mobile Controls"
+              onclick="toggleMobileControls()"
+            >
+              🕹️
+            </button>
+          </nav>
 
-                    <footer>
-                        <a id="link-imprint" href="#" aria-label="Legal Notice">Imprint</a>
-                        <a id="link-privacy" href="#" aria-label="Privacy Policy">Privacy Policy</a>
-                    </footer>
-                </section>
-
-                <section id="end-screen" class="d-none" aria-label="End Screen">
-                    <figure>
-                        <img id="end-screen-img" src="assets/images/9_intro_outro_screens/end_screens/You win B.png" alt="End Screen">
-                    </figure>
-                    <nav class="game-over-btns" aria-label="End Screen Actions">
-                        <button id="try-again-btn" type="button" aria-label="Try Again">Try Again</button>
-                        <button id="home-btn" type="button" aria-label="Return to Home">Home</button>
-                    </nav>
-                </section>
-
-                <nav id="game-controls-top" class="d-none" aria-label="Game Controls">
-                    <button id="btn-pause-top" aria-label="Pause" title="Pause" onclick="togglePauseGame()">❚❚</button>
-                    <section class="volume-control">
-                        <button 
-                            id="btn-volume-top"
-                            aria-label="Volume"
-                            aria-controls="game-volume-panel"
-                            aria-expanded="false"
-                            title="Volume"
-                        >
-                            🔊
-                        </button>
-
-                        <form id="game-volume-panel" class="d-none">
-                            <label>
-                                <input 
-                                    type="range"
-                                    id="game-volume-slider"
-                                    class="volume-slider"
-                                    min="0"
-                                    max="100"
-                                    value="100"
-                                >
-                            </label>
-                        </form>
-                    </section>
-                    <button id="btn-sfx-top" aria-label="Toggle SFX Only" title="SFX Only" onclick="toggleSfxOnly()">SFX</button>
-                    <button id="btn-fullscreen-desktop" aria-label="Enter Fullscreen" title="Fullscreen" onclick="toggleFullscreen()">⛶</button>
-                    <button id="btn-home" aria-label="Back to Home" onclick="goHome()">&#127968;</button>
-                    <button id="btn-controls-toggle" class="d-none" aria-label="Toggle Mobile Controls" title="Mobile Controls" onclick="toggleMobileControls()">🕹️</button>
-                </nav>
-
-                <nav id="mobile-controls" class="d-none" aria-label="Mobile Game Controls">
-                    <div id="joystick-zone" aria-label="Movement Joystick">
-                        <div id="joystick-base">
-                            <div id="joystick-thumb"></div>
-                        </div>
-                    </div>
-                    <div id="action-buttons">
-                        <button id="btn-jump" aria-label="Jump">&#8593;</button>
-                        <button id="btn-throw" aria-label="Throw Bottle">
-                            <img src="assets/images/6_salsa_bottle/salsa_bottle.png" alt="Throw Bottle">
-                        </button>
-                    </div>
-                </nav>
-
-                <section id="legal-overlay" class="legal-overlay d-none" aria-label="Legal Information">
-                    <button class="legal-close-btn" onclick="closeLegalOverlay()">&times;</button>
-                    <article id="legal-content" class="legal-content"></article>
-                </section>
+          <nav
+            id="mobile-controls"
+            class="d-none"
+            aria-label="Mobile Game Controls"
+          >
+            <div id="joystick-zone" aria-label="Movement Joystick">
+              <div id="joystick-base">
+                <div id="joystick-thumb"></div>
+              </div>
             </div>
-        </section>
-    </main>
-</body>
+            <div id="action-buttons">
+              <button id="btn-jump" aria-label="Jump">&#8593;</button>
+              <button id="btn-throw" aria-label="Throw Bottle">
+                <img
+                  src="assets/images/6_salsa_bottle/salsa_bottle.png"
+                  alt="Throw Bottle"
+                />
+              </button>
+            </div>
+          </nav>
 
+          <output id="joystick-status-message" class="joystick-status-message d-none" aria-live="polite"></output>
+
+          <section
+            id="legal-overlay"
+            class="legal-overlay d-none"
+            aria-label="Legal Information"
+          >
+            <button class="legal-close-btn" onclick="closeLegalOverlay()">
+              &times;
+            </button>
+            <article id="legal-content" class="legal-content"></article>
+          </section>
+        </div>
+      </section>
+    </main>
+  </body>
 </html>

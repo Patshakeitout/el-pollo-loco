@@ -271,17 +271,51 @@
 
 
 /**
- * Toggles mobile controls visibility on desktop.
+ * Joystick button handler: activates the mobile controls, or shows a
+ * "already activated" feedback message if they are already on.
  */
  function toggleMobileControls() {
     const mobileControls = document.getElementById('mobile-controls');
     const toggleBtn = document.getElementById('btn-controls-toggle');
     if (!mobileControls) return;
 
-    mobileControls.classList.toggle('show-controls');
-    if (toggleBtn) {
-        toggleBtn.style.opacity = mobileControls.classList.contains('show-controls') ? '1' : '0.6';
+    const isMobile = window.matchMedia('(max-width: 1024px)').matches;
+    const isAlreadyActive = mobileControls.classList.contains('show-controls');
+
+    if (isMobile && isAlreadyActive) {
+        showMessage("Mobile controls already activated!");
+        return;
     }
+
+    mobileControls.classList.toggle('show-controls');
+    const nowActive = mobileControls.classList.contains('show-controls');
+    if (toggleBtn) toggleBtn.style.opacity = nowActive ? '1' : '0.6';
+    if (nowActive) showMessage("Mobile controls activated!");
+}
+
+
+/**
+ * Outputs a transient feedback message in the joystick status box.
+ * @param {string} text
+ */
+ function showMessage(text) {
+    const statusBox = document.getElementById('joystick-status-message');
+    if (!statusBox) return;
+    
+    statusBox.textContent = text; 
+    statusBox.classList.remove('d-none');
+    
+    setTimeout(() => {
+        statusBox.style.opacity = "1";
+    }, 10);
+
+    setTimeout(() => {
+        statusBox.style.opacity = "0";
+        setTimeout(() => {
+            statusBox.classList.add('d-none');
+            statusBox.textContent = ""; 
+        }, 400);
+    }, 2000);
 }
 
 
