@@ -130,6 +130,8 @@
     sliders.forEach(slider => {
         if (slider && slider !== event.target) slider.value = value;
     });
+
+    syncVolumeButtonState();
 }
 
 
@@ -153,12 +155,17 @@
  */
  function syncVolumeButtonState() {
     if (!audioHub) return;
-    const allOn = !audioHub.isMuted && !audioHub.musicMuted && !audioHub.sfxMuted;
     const startBtn = document.getElementById('mute-all-btn');
     const gameBtn = document.getElementById('btn-volume-top');
-    if (startBtn) startBtn.textContent = allOn ? '🔊' : '🔇';
-    const gameMuted = audioHub.isMuted || audioHub.sfxMuted;
-    if (gameBtn) gameBtn.textContent = gameMuted ? '🔇' : '🔊';
+
+    // Start-screen button: 🔇 if anything muted OR volume is zero
+    const startSilent = audioHub.isMuted || audioHub.musicMuted || audioHub.sfxMuted ||
+                        (audioHub.musicVolume === 0 && audioHub.sfxVolume === 0);
+    if (startBtn) startBtn.textContent = startSilent ? '🔇' : '🔊';
+
+    // In-game button: 🔇 only when SFX is silent (SFX-only mode stays 🔊)
+    const gameSilent = audioHub.isMuted || audioHub.sfxMuted || audioHub.sfxVolume === 0;
+    if (gameBtn) gameBtn.textContent = gameSilent ? '🔇' : '🔊';
 }
 
 
