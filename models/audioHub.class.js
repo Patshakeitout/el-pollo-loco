@@ -438,7 +438,7 @@
      * @param {number} volume - Volume level (0-1)
      */
      playSfx(sound, volume = this.sfxVolume) {
-        if (this.sfxMuted) return;
+        if (this.isMuted || this.sfxMuted) return;
         this.play(sound, volume);
     }
 

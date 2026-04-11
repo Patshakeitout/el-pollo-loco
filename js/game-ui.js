@@ -144,8 +144,17 @@
     const vol = value / 100;
     audioHub.musicVolume = vol;
     audioHub.sfxVolume = vol;
-    if (audioHub.currentMusic) {
-        audioHub.currentMusic.volume = audioHub.musicVolume;
+
+    if (vol === 0) {
+        audioHub.isMuted = true;
+        if (audioHub.currentMusic) audioHub.currentMusic.muted = true;
+    } else {
+        audioHub.isMuted = false;
+        if (audioHub.currentMusic) {
+            audioHub.currentMusic.volume = vol;
+            audioHub.currentMusic.muted = audioHub.musicMuted;
+        }
+        if (!audioHub.musicMuted) audioHub.resumeMusic();
     }
 }
 
@@ -158,35 +167,28 @@
     const startBtn = document.getElementById('mute-all-btn');
     const gameBtn = document.getElementById('btn-volume-top');
 
-    // Start-screen button: 🔇 if anything muted OR volume is zero
-    const startSilent = audioHub.isMuted || audioHub.musicMuted || audioHub.sfxMuted ||
-                        (audioHub.musicVolume === 0 && audioHub.sfxVolume === 0);
-    if (startBtn) startBtn.textContent = startSilent ? '🔇' : '🔊';
-
-    // In-game button: 🔇 only when SFX is silent (SFX-only mode stays 🔊)
-    const gameSilent = audioHub.isMuted || audioHub.sfxMuted || audioHub.sfxVolume === 0;
-    if (gameBtn) gameBtn.textContent = gameSilent ? '🔇' : '🔊';
+    const silent = audioHub.isMuted || audioHub.musicVolume === 0;
+    if (startBtn) startBtn.textContent = silent ? '🔇' : '🔊';
+    if (gameBtn) gameBtn.textContent = silent ? '🔇' : '🔊';
 }
 
 
 /**
- * Toggles SFX-only mode during gameplay (binary):
- *   - SFX-only ON  → music muted, sfx on
- *   - SFX-only OFF → music on, sfx on
+ * SFX-only toggle:
+ *   - OFF (default) → music + sfx both play
+ *   - ON            → sfx only, music muted
+ * Volume=0 (isMuted) still forces full silence regardless of mode.
  */
  function toggleSfxOnly() {
     if (!audioHub) return;
-
-    const sfxOnlyActive = !audioHub.isMuted && audioHub.musicMuted && !audioHub.sfxMuted;
+    const sfxOnlyActive = audioHub.musicMuted && !audioHub.sfxMuted;
 
     if (sfxOnlyActive) {
-        audioHub.isMuted = false;
         audioHub.musicMuted = false;
         audioHub.sfxMuted = false;
-        if (audioHub.currentMusic) audioHub.currentMusic.muted = false;
-        audioHub.resumeMusic();
+        if (audioHub.currentMusic) audioHub.currentMusic.muted = audioHub.isMuted;
+        if (!audioHub.isMuted) audioHub.resumeMusic();
     } else {
-        audioHub.isMuted = false;
         audioHub.musicMuted = true;
         audioHub.sfxMuted = false;
         if (audioHub.currentMusic) audioHub.currentMusic.muted = true;
