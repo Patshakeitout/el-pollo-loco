@@ -250,8 +250,10 @@
             this.playAnimation(this.IMAGES_HURT);
             this.lastActionTime = new Date().getTime();
         } else if (this.isAboveGround()) {
+            audioHub?.stopSnoringSound();
             this.playJumpAnimation();
         } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+            audioHub?.stopSnoringSound();
             this.playAnimation(this.IMAGES_WALKING);
         } else if (this.isSleeping()) {
             this.playAnimation(this.IMAGES_LONG_IDLE);
