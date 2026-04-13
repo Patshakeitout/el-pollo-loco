@@ -160,6 +160,13 @@
     max-width: 100%;
 }
 
+#story-text .mirror-text {
+    display: inline-block;
+    transform: scaleX(-1);
+    color: #e04040;
+    font-style: italic;
+}
+
 #story-text .cursor {
     display: inline-block;
     width: 2px;

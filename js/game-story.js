@@ -12,6 +12,7 @@ const storyLines = [
     "Driven by ambition, he turned to\ngenetic engineering — breeding bigger,\ntastier, and stronger chickens.\n\n",
     "One morning, Pepe woke to silence.\n",
     "The lab was destroyed.\nCages ripped open. Equipment shattered.\n\n",
+    "Among the wreckage, strange marks glowed:\n❤❤❤❤  \x01lliktohepeP\x02\n\n",
     "His creations had escaped.\n",
     "And among them... one had grown\nbeyond control.\n\n",
     "They call it El Pollo Loco.\n\n",
@@ -45,7 +46,7 @@ const storyLines = [
     const storyScreen = document.getElementById('story-screen');
     const skipBtn = document.getElementById('skip-story-btn');
 
-    storyState = { skipped: false, charIndex: 0 };
+    storyState = { skipped: false, charIndex: 0, mirrorSpan: null };
     storyScreen.classList.remove('d-none');
     storyScreen.style.display = 'flex';
     document.getElementById('story-text').innerHTML = '<span class="cursor"></span>';
@@ -64,15 +65,33 @@ const storyLines = [
     const fullText = storyLines.join('');
     const storyText = document.getElementById('story-text');
     const storyScreen = document.getElementById('story-screen');
+    const cursor = storyText.querySelector('.cursor');
 
     if (storyState.charIndex < fullText.length) {
         const char = fullText[storyState.charIndex];
-        storyText.insertBefore(document.createTextNode(char), storyText.querySelector('.cursor'));
         storyState.charIndex++;
+
+        if (char === '\x01') {
+            const span = document.createElement('span');
+            span.className = 'mirror-text';
+            storyText.insertBefore(span, cursor);
+            storyState.mirrorSpan = span;
+            typeNextChar();
+            return;
+        } else if (char === '\x02') {
+            storyState.mirrorSpan = null;
+            typeNextChar();
+            return;
+        }
+
+        if (storyState.mirrorSpan) {
+            storyState.mirrorSpan.appendChild(document.createTextNode(char));
+        } else {
+            storyText.insertBefore(document.createTextNode(char), cursor);
+        }
         storyScreen.scrollTop = storyScreen.scrollHeight;
         setTimeout(typeNextChar, char === '\n' ? 120 : char === '.' ? 80 : 35);
     } else {
-        const cursor = storyText.querySelector('.cursor');
         if (cursor) cursor.remove();
     }
 }
