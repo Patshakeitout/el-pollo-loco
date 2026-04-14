@@ -197,7 +197,7 @@
      * Plays the 3-2-1 fight countdown sound.
      */
      playCountdownSound() {
-        const louderVolume = Math.min(this.sfxVolume * 1.5, 1); // never more than 1
+        const louderVolume = Math.min(this.sfxVolume, 1);
         this.play(this.music.countdown, louderVolume);
     }
 
@@ -206,9 +206,8 @@
      * Plays the game over sound.
      */
      playLostSound() {
-        if (this.music.gameOver) {
-            this.play(this.music.gameOver, 0.5);
-        }
+        if (this.isMuted || this.sfxMuted || !this.music.gameOver) return;
+        this.playMusic(this.music.gameOver, this.sfxVolume);
     }
 
 
@@ -216,9 +215,8 @@
      * Plays the game won sound.
      */
      playWinSound() {
-        if (this.music.youWonMusic) {
-            this.playMusic(this.music.youWonMusic, 0.5);
-        }
+        if (this.isMuted || this.sfxMuted || !this.music.youWonMusic) return;
+        this.playMusic(this.music.youWonMusic, this.sfxVolume);
     }
 
 
@@ -299,8 +297,10 @@
      * Plays snoring sound during long idle (loops).
      */
      playSnoringSound() {
-        if (!this.sounds.characterSnoring.paused) return;
-        this.playSfx(this.sounds.characterSnoring, this.sfxVolume * 0.4);
+        const snore = this.sounds.characterSnoring;
+        snore.volume = this.sfxVolume * 0.4;
+        if (!snore.paused) return;
+        this.playSfx(snore, this.sfxVolume * 0.4);
     }
 
 

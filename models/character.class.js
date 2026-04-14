@@ -92,7 +92,7 @@
         this.lastMovedLeft = false;
         this.lastDirection = null;
         this.lastActionTime = new Date().getTime();
-        this.idleThreshold = 10000;
+        this.idleThreshold = 5000;
     }
 
     /**
@@ -108,7 +108,7 @@
      */
      initOffsetBox() {
         this.hasOffsetBox = true;
-        this.offsetBox = { x: 0, y: 0, offsetX: 30, offsetY: 60, w: this.width - 65, h: this.height - 70 };
+        this.offsetBox = { x: 0, y: 0, offsetX: 30, offsetY: 120, w: this.width - 65, h: this.height - 130 };
     }
 
 

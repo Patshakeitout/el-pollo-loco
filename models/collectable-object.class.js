@@ -42,6 +42,8 @@ class CollectableObject extends DrawableObject {
         this.loadImage(randomImg);
         this.width = 100;
         this.height = 100;
+        this.hasOffsetBox = true;
+        this.offsetBox = { x: 0, y: 0, offsetX: 25, offsetY: 25, w: 50, h: 50 };
     }
 
 

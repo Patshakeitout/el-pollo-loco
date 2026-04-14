@@ -82,6 +82,20 @@ class World {
         if (mo.turnAround) { this.ctx.save(); this.ctx.translate(mo.width, 0); this.ctx.scale(-1, 1); mo.x *= -1; }
         mo.draw(this.ctx);
         if (mo instanceof MovableObject) mo.updateOffsetBox();
+        if (this.debugBoxes) {
+            this.ctx.lineWidth = 2;
+            if (mo instanceof MovableObject && mo.hasOffsetBox) {
+                mo.drawOffsetBox(this.ctx);
+            } else if (mo instanceof CollectableObject && mo.hasOffsetBox) {
+                this.ctx.strokeStyle = 'lime';
+                let bx = mo.centerX - mo.offsetBox.w / 2;
+                let by = mo.centerY - mo.offsetBox.h / 2;
+                this.ctx.strokeRect(bx, by, mo.offsetBox.w, mo.offsetBox.h);
+            } else if (mo.width && mo.height && !(mo instanceof Cloud) && !(mo instanceof Background)) {
+                this.ctx.strokeStyle = mo instanceof CollectableObject ? 'lime' : 'red';
+                this.ctx.strokeRect(mo.x, mo.y, mo.width, mo.height);
+            }
+        }
         if (mo.turnAround) { this.ctx.restore(); mo.x *= -1; }
     }
 
