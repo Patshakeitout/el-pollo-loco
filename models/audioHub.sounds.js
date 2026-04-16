@@ -1,190 +1,148 @@
 /**
- * @fileoverview AudioHub sound-trigger methods. Extends the AudioHub prototype
- * with named playback methods organized by source (music, character, enemy, items).
- * Loaded after audioHub.class.js.
+ * @fileoverview AudioHub sound-trigger methods. Extends the AudioHub prototype.
+ * Trivial SFX/stop wrappers are generated from data tables; methods with custom
+ * logic (music transitions, mute checks, special playback rates) are defined
+ * explicitly. Loaded after audioHub.class.js.
  */
 
 
-// ==================== MUSIC ====================
 /**
- * Internal helper: starts a looped music track if not already current.
- * @param {HTMLAudioElement} music
+ * Simple SFX wrappers: methodName -> [soundKey, volumeFactor, absolute?].
+ * `factor` multiplies sfxVolume by default; if `absolute` is true, factor is the literal volume.
  */
- AudioHub.prototype.playLoopedMusic = function(music) {
-    if (!music) return;
-    if (this.currentMusic && this.currentMusic !== music) {
-        this.currentMusic.pause();
-        this.currentMusic.currentTime = 0;
-    }
-    this.currentMusic = music;
-    if (this.isMuted || this.musicMuted) return;
-    music.loop = true;
-    music.volume = this.musicVolume;
-    music.muted = this.isMuted || this.musicMuted;
-    if (music.paused) music.play().catch(event => console.warn(event));
+const AUDIO_SFX_MAP = {
+    playJumpSound:           ['characterJump',  1.0],
+    playHurtSound:           ['characterHurt',  1.0],
+    playChickenDeathSound:   ['chickenDead',    0.8, true],
+    playChickDeathSound:     ['chickDead',      0.8, true],
+    playEndbossDeathSound:   ['endbossDead',    1.0],
+    playEndbossRollingSound: ['endbossRolling', 2.0],
+    playCoinSound:           ['coinCollect',    0.7],
+    playBottleCollectSound:  ['bottleCollect',  0.7],
+    playBottleBreakSound:    ['bottleBreak',    1.0],
 };
 
 
-/** Plays background music for gameplay. */
-AudioHub.prototype.playBackgroundMusic = function() {
-    this.playLoopedMusic(this.music.background);
+/** Simple stop wrappers: methodName -> soundKey. */
+const AUDIO_STOP_MAP = {
+    stopWalkSound:           'characterWalk',
+    stopSnoringSound:        'characterSnoring',
+    stopEndbossRollingSound: 'endbossRolling',
 };
 
 
-/** Plays the menu loop (Desert Winds) and tracks it. */
-AudioHub.prototype.playMenuMusic = function() {
-    this.playLoopedMusic(this.music.menu);
-};
+Object.entries(AUDIO_SFX_MAP).forEach(([method, [key, factor, absolute]]) => {
+    AudioHub.prototype[method] = function() {
+        this.playSfx(this.sounds[key], absolute ? factor : this.sfxVolume * factor);
+    };
+});
 
 
-/** Plays game start sound. */
-AudioHub.prototype.playGameStartSound = function() {
-    this.play(this.music.gameStart, this.sfxVolume);
-};
+Object.entries(AUDIO_STOP_MAP).forEach(([method, key]) => {
+    AudioHub.prototype[method] = function() { this.stop(this.sounds[key]); };
+});
 
 
-/** Plays the 3-2-1 fight countdown sound. */
-AudioHub.prototype.playCountdownSound = function() {
-    this.play(this.music.countdown, Math.min(this.sfxVolume, 1));
-};
+// ==================== METHODS WITH CUSTOM LOGIC ====================
+Object.assign(AudioHub.prototype, {
+
+    /**
+     * Internal helper: starts a looped music track if not already current.
+     * @param {HTMLAudioElement} music
+     */
+     playLoopedMusic(music) {
+        if (!music) return;
+        if (this.currentMusic && this.currentMusic !== music) {
+            this.currentMusic.pause();
+            this.currentMusic.currentTime = 0;
+        }
+        this.currentMusic = music;
+        if (this.isMuted || this.musicMuted) return;
+        music.loop = true;
+        music.volume = this.musicVolume;
+        music.muted = this.isMuted || this.musicMuted;
+        if (music.paused) music.play().catch(event => console.warn(event));
+    },
 
 
-/** Plays the game over sound. */
-AudioHub.prototype.playLostSound = function() {
-    if (this.isMuted || this.sfxMuted || !this.music.gameOver) return;
-    this.playMusic(this.music.gameOver, this.sfxVolume);
-};
+    /** Plays background music for gameplay. */
+    playBackgroundMusic() { this.playLoopedMusic(this.music.background); },
 
 
-/** Plays the game won sound. */
-AudioHub.prototype.playWinSound = function() {
-    if (this.isMuted || this.sfxMuted || !this.music.youWonMusic) return;
-    this.playMusic(this.music.youWonMusic, this.sfxVolume);
-};
+    /** Plays the menu loop (Desert Winds) and tracks it. */
+    playMenuMusic() { this.playLoopedMusic(this.music.menu); },
 
 
-/** Switches background music to battle music (a-calm-hellfire). */
-AudioHub.prototype.switchToBattleMusic = function() {
-    if (this.currentMusic === this.music.battle) return;
-    if (this.isMuted || this.musicMuted) {
-        this.currentMusic = this.music.battle;
-        return;
-    }
-    this.playMusic(this.music.battle, this.musicVolume);
-};
+    /** Plays game start sound. */
+    playGameStartSound() { this.play(this.music.gameStart, this.sfxVolume); },
 
 
-// ==================== CHARACTER SOUNDS ====================
-/** Plays walking sound (loops while walking). */
-AudioHub.prototype.playWalkSound = function() {
-    if (!this.sounds.characterWalk.paused) return;
-    this.playSfx(this.sounds.characterWalk, this.sfxVolume * 0.6);
-};
+    /** Plays the 3-2-1 fight countdown sound. */
+    playCountdownSound() { this.play(this.music.countdown, Math.min(this.sfxVolume, 1)); },
 
 
-/** Stops walking sound. */
-AudioHub.prototype.stopWalkSound = function() {
-    this.stop(this.sounds.characterWalk);
-};
+    /** Plays the game over jingle, respecting SFX mute. */
+     playLostSound() {
+        if (this.isMuted || this.sfxMuted || !this.music.gameOver) return;
+        this.playMusic(this.music.gameOver, this.sfxVolume);
+    },
 
 
-/** Plays jump sound. */
-AudioHub.prototype.playJumpSound = function() {
-    this.playSfx(this.sounds.characterJump, this.sfxVolume);
-};
+    /** Plays the win jingle, respecting SFX mute. */
+     playWinSound() {
+        if (this.isMuted || this.sfxMuted || !this.music.youWonMusic) return;
+        this.playMusic(this.music.youWonMusic, this.sfxVolume);
+    },
 
 
-/** Plays hurt sound when character takes damage. */
-AudioHub.prototype.playHurtSound = function() {
-    this.playSfx(this.sounds.characterHurt, this.sfxVolume);
-};
+    /** Switches background music to battle music (a-calm-hellfire). */
+     switchToBattleMusic() {
+        if (this.currentMusic === this.music.battle) return;
+        if (this.isMuted || this.musicMuted) {
+            this.currentMusic = this.music.battle;
+            return;
+        }
+        this.playMusic(this.music.battle, this.musicVolume);
+    },
 
 
-/** Plays death sound (extreme scream). */
-AudioHub.prototype.playDeathSound = function() {
-    this.stopAllSounds();
-    this.playSfx(this.sounds.characterScream, this.sfxVolume);
-};
+    /** Plays walking sound (loops while walking). */
+     playWalkSound() {
+        if (!this.sounds.characterWalk.paused) return;
+        this.playSfx(this.sounds.characterWalk, this.sfxVolume * 0.6);
+    },
 
 
-/** Plays snoring sound during long idle (loops). Updates volume live. */
-AudioHub.prototype.playSnoringSound = function() {
-    const snore = this.sounds.characterSnoring;
-    snore.volume = this.sfxVolume * 0.4;
-    if (!snore.paused) return;
-    this.playSfx(snore, this.sfxVolume * 0.4);
-};
+    /** Plays death sound (stops everything else first). */
+     playDeathSound() {
+        this.stopAllSounds();
+        this.playSfx(this.sounds.characterScream, this.sfxVolume);
+    },
 
 
-/** Stops snoring sound. */
-AudioHub.prototype.stopSnoringSound = function() {
-    this.stop(this.sounds.characterSnoring);
-};
+    /** Plays snoring sound during long idle (loops). Updates volume live. */
+     playSnoringSound() {
+        const snore = this.sounds.characterSnoring;
+        snore.volume = this.sfxVolume * 0.4;
+        if (!snore.paused) return;
+        this.playSfx(snore, this.sfxVolume * 0.4);
+    },
 
 
-// ==================== ENEMY SOUNDS ====================
-/** Plays chicken death sound. */
-AudioHub.prototype.playChickenDeathSound = function() {
-    this.playSfx(this.sounds.chickenDead, 0.8);
-};
+    /** Plays chicken cackle as a monster roar (lowered pitch). */
+     playEndbossCackleSound() {
+        const sound = this.sounds.chickenDead;
+        if (this.isMuted || this.sfxMuted || !sound) return;
+        sound.volume = 1.0;
+        sound.currentTime = 0;
+        sound.playbackRate = 0.6;
+        sound.play().catch(e => console.warn('AudioHub: Cackle play blocked:', e));
+    },
 
 
-/** Plays chick death sound. */
-AudioHub.prototype.playChickDeathSound = function() {
-    this.playSfx(this.sounds.chickDead, 0.8);
-};
-
-
-/** Plays chicken cackle as a monster roar (lowered pitch). */
-AudioHub.prototype.playEndbossCackleSound = function() {
-    const sound = this.sounds.chickenDead;
-    if (this.isMuted || this.sfxMuted || !sound) return;
-    sound.volume = 1.0;
-    sound.currentTime = 0;
-    sound.playbackRate = 0.6;
-    sound.play().catch(e => console.warn('AudioHub: Cackle play blocked:', e));
-};
-
-
-/** Plays endboss approach/alert sound and switches to battle music. */
-AudioHub.prototype.playEndbossApproachSound = function() {
-    this.playSfx(this.sounds.endbossApproach, this.sfxVolume);
-    this.switchToBattleMusic();
-};
-
-
-/** Plays endboss death sound (chicken noise). */
-AudioHub.prototype.playEndbossDeathSound = function() {
-    this.playSfx(this.sounds.endbossDead, this.sfxVolume);
-};
-
-
-/** Plays endboss rolling sound (loud attack sound). */
-AudioHub.prototype.playEndbossRollingSound = function() {
-    this.playSfx(this.sounds.endbossRolling, this.sfxVolume * 2.0);
-};
-
-
-/** Stops endboss rolling sound. */
-AudioHub.prototype.stopEndbossRollingSound = function() {
-    this.stop(this.sounds.endbossRolling);
-};
-
-
-// ==================== COLLECTIBLE & THROWABLE SOUNDS ====================
-/** Plays coin collection sound. */
-AudioHub.prototype.playCoinSound = function() {
-    this.playSfx(this.sounds.coinCollect, this.sfxVolume * 0.7);
-};
-
-
-/** Plays bottle collection sound. */
-AudioHub.prototype.playBottleCollectSound = function() {
-    this.playSfx(this.sounds.bottleCollect, this.sfxVolume * 0.7);
-};
-
-
-/** Plays bottle break/splash sound. */
-AudioHub.prototype.playBottleBreakSound = function() {
-    this.playSfx(this.sounds.bottleBreak, this.sfxVolume);
-};
+    /** Plays endboss approach/alert sound and switches to battle music. */
+     playEndbossApproachSound() {
+        this.playSfx(this.sounds.endbossApproach, this.sfxVolume);
+        this.switchToBattleMusic();
+    },
+});
