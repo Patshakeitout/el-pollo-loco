@@ -1,16 +1,14 @@
 /**
  * AudioHub - Manages all game audio including music and sound effects.
  * Singleton pattern ensures one centralized audio controller.
+ * Sound-trigger methods are defined in audioHub.sounds.js (prototype extension).
  */
- class AudioHub {
-    
+class AudioHub {
+
     static instance = null;
 
     constructor() {
-        if (AudioHub.instance) {
-            return AudioHub.instance;
-        }
-
+        if (AudioHub.instance) return AudioHub.instance;
         this.sounds = {};
         this.music = {};
         this.currentMusic = null;
@@ -20,7 +18,6 @@
         this.musicVolume = 0.2;
         this.sfxVolume = 0.3;
         this.isLoaded = false;
-
         AudioHub.instance = this;
     }
 
@@ -30,9 +27,7 @@
      * @returns {AudioHub}
      */
      static getInstance() {
-        if (!AudioHub.instance) {
-            AudioHub.instance = new AudioHub();
-        }
+        if (!AudioHub.instance) AudioHub.instance = new AudioHub();
         return AudioHub.instance;
     }
 
@@ -132,96 +127,9 @@
     }
 
 
-    // ==================== MUSIC CONTROLS ====================
+    // ==================== CORE AUDIO METHODS ====================
     /**
-     * Plays background music for gameplay.
-     */
-     playBackgroundMusic() {
-        const bgMusic = this.music.background;
-        if (!bgMusic) return;
-
-        if (this.currentMusic && this.currentMusic !== bgMusic) {
-            this.currentMusic.pause();
-            this.currentMusic.currentTime = 0;
-        }
-
-        this.currentMusic = bgMusic;
-        if (this.isMuted || this.musicMuted) return;
-
-        bgMusic.loop = true;
-        bgMusic.volume = this.musicVolume;
-        bgMusic.muted = this.isMuted || this.musicMuted;
-        
-        if (bgMusic.paused) {
-            bgMusic.play().catch(event => console.warn(event));
-        }
-    }
-
-
-    /**
-     * Plays the menu loop (Desert Winds) and tracks it.
-     */
-     playMenuMusic() {
-        const menuMusic = this.music.menu;
-        if (!menuMusic) return;
-
-        if (this.currentMusic && this.currentMusic !== menuMusic) {
-            this.currentMusic.pause();
-            this.currentMusic.currentTime = 0;
-        }
-
-        this.currentMusic = menuMusic;
-
-        if (this.isMuted || this.musicMuted) return;
-
-        menuMusic.loop = true;
-
-        menuMusic.volume = this.musicVolume;
-        menuMusic.muted = this.isMuted || this.musicMuted;
-
-        if (menuMusic.paused) {
-            menuMusic.play().catch(event => console.warn(event));
-        }
-    }
-
-
-    /**
-     * Plays game start sound.
-     */
-     playGameStartSound() {
-        this.play(this.music.gameStart, this.sfxVolume);
-    }
-
-
-    /**
-     * Plays the 3-2-1 fight countdown sound.
-     */
-     playCountdownSound() {
-        const louderVolume = Math.min(this.sfxVolume, 1);
-        this.play(this.music.countdown, louderVolume);
-    }
-
-
-    /**
-     * Plays the game over sound.
-     */
-     playLostSound() {
-        if (this.isMuted || this.sfxMuted || !this.music.gameOver) return;
-        this.playMusic(this.music.gameOver, this.sfxVolume);
-    }
-
-
-    /**
-     * Plays the game won sound.
-     */
-     playWinSound() {
-        if (this.isMuted || this.sfxMuted || !this.music.youWonMusic) return;
-        this.playMusic(this.music.youWonMusic, this.sfxVolume);
-    }
-
-
-    /**
-     * Generic music player with fade and tracking.
+     * Generic music player with tracking. Stops previous track first.
      * @param {HTMLAudioElement} music - The music audio element
      * @param {number} volume - Target volume
      */
@@ -230,7 +138,6 @@
             this.currentMusic.pause();
             this.currentMusic.currentTime = 0;
         }
-
         this.currentMusic = music;
         music.volume = volume;
         music.currentTime = 0;
@@ -239,7 +146,7 @@
 
 
     /**
-     * Stops current background music.
+     * Stops the currently tracked music track.
      */
      stopCurrentMusic() {
         if (this.currentMusic) {
@@ -250,185 +157,15 @@
     }
 
 
-    // ==================== CHARACTER SOUNDS ====================
     /**
-     * Plays walking sound (loops while walking).
-     */
-     playWalkSound() {
-        if (!this.sounds.characterWalk.paused) return;
-        this.playSfx(this.sounds.characterWalk, this.sfxVolume * 0.6);
-    }
-
-
-    /**
-     * Stops walking sound.
-     */
-     stopWalkSound() {
-        this.stop(this.sounds.characterWalk);
-    }
-
-
-    /**
-     * Plays jump sound.
-     */
-     playJumpSound() {
-        this.playSfx(this.sounds.characterJump, this.sfxVolume);
-    }
-
-
-    /**
-     * Plays hurt sound when character takes damage.
-     */
-     playHurtSound() {
-        this.playSfx(this.sounds.characterHurt, this.sfxVolume);
-    }
-
-
-    /**
-     * Plays death sound (extreme scream).
-     */
-     playDeathSound() {
-        this.stopAllSounds();
-        this.playSfx(this.sounds.characterScream, this.sfxVolume);
-    }
-
-
-    /**
-     * Plays snoring sound during long idle (loops).
-     */
-     playSnoringSound() {
-        const snore = this.sounds.characterSnoring;
-        snore.volume = this.sfxVolume * 0.4;
-        if (!snore.paused) return;
-        this.playSfx(snore, this.sfxVolume * 0.4);
-    }
-
-
-    /**
-     * Stops snoring sound.
-     */
-     stopSnoringSound() {
-        this.stop(this.sounds.characterSnoring);
-    }
-
-
-    // ==================== ENEMY SOUNDS ====================
-    /**
-     * Plays chicken death sound (randomizes between two variants).
-     */
-     playChickenDeathSound() {
-        const sound = this.sounds.chickenDead;
-        this.playSfx(sound, 0.8);
-    }
-
-
-    /**
-     * Plays chick death sound (randomizes between two variants).
-     */
-     playChickDeathSound() {
-        const sound = this.sounds.chickDead;
-        this.playSfx(sound, 0.8);
-    }
-
-    /**
-     * Plays chicken cackle as a monster roar (lowered pitch).
-     */
-     playEndbossCackleSound() {
-        const sound = this.sounds.chickenDead;
-        if (this.isMuted || this.sfxMuted || !sound) return;
-
-        sound.volume = 1.0;
-        sound.currentTime = 0;
-        sound.playbackRate = 0.6;
-        sound.play().catch(e => console.warn('AudioHub: Cackle play blocked:', e));
-    }
-
-
-    /**
-     * Plays endboss approach/alert sound and switches to battle music.
-     */
-     playEndbossApproachSound() {
-        this.playSfx(this.sounds.endbossApproach, this.sfxVolume);
-        this.switchToBattleMusic();
-    }
-
-
-    /**
-     * Plays endboss death sound (chicken noise).
-     */
-     playEndbossDeathSound() {
-        this.playSfx(this.sounds.endbossDead, this.sfxVolume);
-    }
-
-
-    /**
-     * Plays endboss rolling sound (loud attack sound).
-     */
-     playEndbossRollingSound() {
-        this.playSfx(this.sounds.endbossRolling, this.sfxVolume * 2.0);
-    }
-
-    /**
-     * Stops endboss rolling sound.
-     */
-     stopEndbossRollingSound() {
-        this.stop(this.sounds.endbossRolling);
-    }
-
-
-    /**
-     * Switches background music to battle music (a-calm-hellfire).
-     */
-     switchToBattleMusic() {
-        if (this.currentMusic === this.music.battle) return;
-        if (this.isMuted || this.musicMuted) {
-            this.currentMusic = this.music.battle;
-            return;
-        }
-        this.playMusic(this.music.battle, this.musicVolume);
-    }
-
-
-    // ==================== COLLECTIBLE SOUNDS ====================
-    /**
-     * Plays coin collection sound.
-     */
-     playCoinSound() {
-        this.playSfx(this.sounds.coinCollect, this.sfxVolume * 0.7);
-    }
-
-
-    /**
-     * Plays bottle collection sound.
-     */
-     playBottleCollectSound() {
-        this.playSfx(this.sounds.bottleCollect, this.sfxVolume * 0.7);
-    }
-
-
-    // ==================== THROWABLE SOUNDS ====================
-    /**
-     * Plays bottle break/splash sound.
-     */
-     playBottleBreakSound() {
-        this.playSfx(this.sounds.bottleBreak, this.sfxVolume);
-    }
-
-
-    // ==================== CORE AUDIO METHODS ====================
-    /**
-     * Plays an audio element from the beginning (used for both SFX and music).
+     * Plays an audio element from its current position (used for both SFX and music).
      * @param {HTMLAudioElement} sound - The sound to play
      * @param {number} volume - Volume level (0-1)
      */
      play(sound, volume = this.sfxVolume) {
         if (!sound) return;
-
         sound.volume = volume;
-
-        if (sound.paused) {
-            sound.play().catch(e => console.warn('AudioHub:', e));
-        }
+        if (sound.paused) sound.play().catch(e => console.warn('AudioHub:', e));
     }
 
 
@@ -444,7 +181,7 @@
 
 
     /**
-     * Stops a sound and resets to beginning.
+     * Stops a sound and resets it to the beginning.
      * @param {HTMLAudioElement} sound - The sound to stop
      */
      stop(sound) {
@@ -455,7 +192,7 @@
 
 
     /**
-     * Stops all currently playing sounds (not music).
+     * Stops all currently playing sound effects (not music).
      */
      stopAllSounds() {
         Object.values(this.sounds).forEach(sound => this.stop(sound));
@@ -463,7 +200,7 @@
 
 
     /**
-     * Stops everything including music. 
+     * Stops everything including music.
      */
      stopAll() {
         this.stopAllSounds();
@@ -511,37 +248,33 @@
 
 
     /**
-     * Sets master volume for music.
+     * Sets master volume for music. Updates the live track if one is playing.
      * @param {number} volume - Volume level (0-1)
      */
      setMusicVolume(volume) {
         this.musicVolume = Math.max(0, Math.min(1, volume));
-        if (this.currentMusic) {
-            this.currentMusic.volume = this.musicVolume;
-        }
+        if (this.currentMusic) this.currentMusic.volume = this.musicVolume;
     }
 
 
     /**
      * Syncs the current music track's muted state and volume with the hub's settings.
-     * Applies both master mute and music-specific mute. No-op if no music is playing.
      */
      syncAudioState() {
         if (!this.currentMusic) return;
-
         this.currentMusic.muted = this.isMuted || this.musicMuted;
         this.currentMusic.volume = this.musicVolume;
     }
 
 
-    resumeMusic() {
+    /**
+     * Resumes the currently tracked music if mute flags allow.
+     */
+     resumeMusic() {
         if (this.isMuted || this.musicMuted) return;
-        if (this.currentMusic) {
-            this.currentMusic.muted = false;
-            this.currentMusic.volume = this.musicVolume;
-            if (this.currentMusic.paused) {
-                this.currentMusic.play().catch(() => {});
-            }
-        }
+        if (!this.currentMusic) return;
+        this.currentMusic.muted = false;
+        this.currentMusic.volume = this.musicVolume;
+        if (this.currentMusic.paused) this.currentMusic.play().catch(() => {});
     }
 }

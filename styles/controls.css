@@ -32,11 +32,15 @@
     background: rgba(0, 0, 0, 0.6);
 }
 
-#btn-sfx-top {
+#btn-sfx-top,
+#btn-volume-top,
+#mute-all-btn {
     position: relative;
 }
 
-#btn-sfx-top.muted::after {
+#btn-sfx-top.muted::after,
+#btn-volume-top.muted::after,
+#mute-all-btn.muted::after {
     content: '';
     position: absolute;
     top: 50%;

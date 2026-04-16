@@ -45,7 +45,8 @@
         applyVolume(parseInt(savedVolume));
     }
 
-    btn.textContent = isMuted ? '🔇' : '🔊';
+    btn.textContent = '🔊';
+    btn.classList.toggle('muted', isMuted);
     btn.onclick = () => toggleVolumeSlider();
 
     setupVolumeSlider();
@@ -168,8 +169,8 @@
     const gameBtn = document.getElementById('btn-volume-top');
 
     const silent = audioHub.isMuted || audioHub.musicVolume === 0;
-    if (startBtn) startBtn.textContent = silent ? '🔇' : '🔊';
-    if (gameBtn) gameBtn.textContent = silent ? '🔇' : '🔊';
+    if (startBtn) { startBtn.textContent = '🔊'; startBtn.classList.toggle('muted', silent); }
+    if (gameBtn) { gameBtn.textContent = '🔊'; gameBtn.classList.toggle('muted', silent); }
 }
 
 

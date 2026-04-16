@@ -64,36 +64,57 @@ const storyLines = [
     if (storyState.skipped) return;
     const fullText = storyLines.join('');
     const storyText = document.getElementById('story-text');
-    const storyScreen = document.getElementById('story-screen');
     const cursor = storyText.querySelector('.cursor');
+    if (storyState.charIndex >= fullText.length) { if (cursor) cursor.remove(); return; }
+    const char = fullText[storyState.charIndex++];
+    if (handleStoryMarker(char, storyText, cursor)) { typeNextChar(); return; }
+    appendStoryChar(char, storyText, cursor);
+    autoScrollStory(document.getElementById('story-screen'));
+    setTimeout(typeNextChar, nextCharDelay(char));
+}
 
-    if (storyState.charIndex < fullText.length) {
-        const char = fullText[storyState.charIndex];
-        storyState.charIndex++;
 
-        if (char === '\x01') {
-            const span = document.createElement('span');
-            span.className = 'mirror-text';
-            storyText.insertBefore(span, cursor);
-            storyState.mirrorSpan = span;
-            typeNextChar();
-            return;
-        } else if (char === '\x02') {
-            storyState.mirrorSpan = null;
-            typeNextChar();
-            return;
-        }
-
-        if (storyState.mirrorSpan) {
-            storyState.mirrorSpan.appendChild(document.createTextNode(char));
-        } else {
-            storyText.insertBefore(document.createTextNode(char), cursor);
-        }
-        storyScreen.scrollTop = storyScreen.scrollHeight;
-        setTimeout(typeNextChar, char === '\n' ? 120 : char === '.' ? 80 : 35);
-    } else {
-        if (cursor) cursor.remove();
+/**
+ * Handles mirror-text markers (\x01 opens, \x02 closes a mirrored span).
+ * @returns {boolean} True if the char was a marker and was consumed.
+ */
+ function handleStoryMarker(char, storyText, cursor) {
+    if (char === '\x01') {
+        const span = document.createElement('span');
+        span.className = 'mirror-text';
+        storyText.insertBefore(span, cursor);
+        storyState.mirrorSpan = span;
+        return true;
     }
+    if (char === '\x02') { storyState.mirrorSpan = null; return true; }
+    return false;
+}
+
+
+/**
+ * Appends a character into the active mirror span or the main story flow.
+ */
+ function appendStoryChar(char, storyText, cursor) {
+    const node = document.createTextNode(char);
+    if (storyState.mirrorSpan) storyState.mirrorSpan.appendChild(node);
+    else storyText.insertBefore(node, cursor);
+}
+
+
+/**
+ * Auto-scrolls the story screen only when the user is near the bottom.
+ */
+ function autoScrollStory(storyScreen) {
+    const nearBottom = storyScreen.scrollHeight - storyScreen.scrollTop - storyScreen.clientHeight < 40;
+    if (nearBottom) storyScreen.scrollTop = storyScreen.scrollHeight;
+}
+
+
+/**
+ * Returns the delay (ms) before typing the next character.
+ */
+ function nextCharDelay(char) {
+    return char === '\n' ? 120 : char === '.' ? 80 : 35;
 }
 
 
