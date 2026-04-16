@@ -34,12 +34,14 @@
 
 #btn-sfx-top,
 #btn-volume-top,
+#btn-mute-top,
 #mute-all-btn {
     position: relative;
 }
 
 #btn-sfx-top.muted::after,
 #btn-volume-top.muted::after,
+#btn-mute-top.muted::after,
 #mute-all-btn.muted::after {
     content: '';
     position: absolute;

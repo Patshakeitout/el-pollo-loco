@@ -171,6 +171,42 @@
     const silent = audioHub.isMuted || audioHub.musicVolume === 0;
     if (startBtn) { startBtn.textContent = '🔊'; startBtn.classList.toggle('muted', silent); }
     if (gameBtn) { gameBtn.textContent = '🔊'; gameBtn.classList.toggle('muted', silent); }
+    const muteBtn = document.getElementById('btn-mute-top');
+    if (muteBtn) muteBtn.classList.toggle('muted', silent);
+}
+
+
+let savedVolumeBeforeMute = null;
+
+
+/**
+ * Full-mute toggle: sets volume=0 (same effect as dragging the slider to 0)
+ * and restores the previous level on the next click.
+ */
+ function toggleFullMute() {
+    if (!audioHub) return;
+    const sliders = [
+        document.getElementById('volume-slider'),
+        document.getElementById('game-volume-slider')
+    ];
+    const isCurrentlyMuted = audioHub.isMuted || audioHub.musicVolume === 0;
+
+    if (isCurrentlyMuted) {
+        const restore = savedVolumeBeforeMute ?? 100;
+        savedVolumeBeforeMute = null;
+        applyVolume(restore);
+        sliders.forEach(s => { if (s) s.value = restore; });
+        localStorage.setItem('elPolloVolume', restore);
+    } else {
+        const current = parseInt(sliders.find(s => s)?.value ?? 100);
+        savedVolumeBeforeMute = current > 0 ? current : 100;
+        applyVolume(0);
+        sliders.forEach(s => { if (s) s.value = 0; });
+        localStorage.setItem('elPolloVolume', 0);
+    }
+
+    syncVolumeButtonState();
+    syncSfxButtonState();
 }
 
 
