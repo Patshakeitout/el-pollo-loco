@@ -205,9 +205,10 @@
  */
  function syncSfxButtonState() {
     if (!audioHub) return;
-    const active = !audioHub.isMuted && audioHub.musicMuted;
     const btn = document.getElementById('btn-sfx-top');
-    if (btn) btn.style.opacity = active ? '1' : '0.3';
+    if (!btn) return;
+    const musicOff = audioHub.isMuted || audioHub.musicMuted || audioHub.musicVolume === 0;
+    btn.classList.toggle('muted', musicOff);
 }
 
 

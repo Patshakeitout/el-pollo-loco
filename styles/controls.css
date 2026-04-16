@@ -32,6 +32,22 @@
     background: rgba(0, 0, 0, 0.6);
 }
 
+#btn-sfx-top {
+    position: relative;
+}
+
+#btn-sfx-top.muted::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    width: 80%;
+    height: 2px;
+    background: #e04040;
+    transform: rotate(-20deg);
+    pointer-events: none;
+}
+
 .volume-control {
     position: relative;
 }
